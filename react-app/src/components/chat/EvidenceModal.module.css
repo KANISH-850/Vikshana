@@ -1,0 +1,37 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  width: 420px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  background: var(--bg-secondary);
+}
+.header h3 { margin: 0; color: var(--text-primary); font-size: 16px; }
+.closeBtn { background: none; border: none; color: var(--text-secondary); cursor: pointer; display: flex; padding: 4px; }
+.closeBtn:hover { color: var(--text-primary); }
+.body { padding: 16px 20px; }
+.empty { color: var(--text-secondary); font-size: 14px; margin: 0; }
+.detailList { display: grid; grid-template-columns: 130px 1fr; gap: 10px 12px; margin: 0; }
+.detailList dt { color: var(--text-muted); font-size: 12px; text-transform: capitalize; }
+.detailList dd { margin: 0; color: var(--text-primary); font-size: 14px; word-break: break-word; }

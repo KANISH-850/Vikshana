@@ -1,44 +1,42 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AppProvider } from './context/AppContext';
+
+// Components
+import Sidebar from './components/Sidebar';
+import Navbar from './components/Navbar';
+import Dashboard from './pages/Dashboard';
+import InvestigationWorkspace from './pages/InvestigationWorkspace';
+import RelationshipExplorer from './pages/RelationshipExplorer';
+import EvidenceLedger from './pages/EvidenceLedger';
+import Reports from './pages/Reports';
+import Settings from './pages/Settings';
+
 function App() {
   return (
-    <div
-      style={{
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background: "#f4f7fc",
-        fontFamily: "Arial",
-      }}
-    >
-      <div
-        style={{
-          background: "white",
-          padding: "40px",
-          borderRadius: "12px",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-          textAlign: "center",
-        }}
-      >
-        <h1>🚔 VIKSHANA</h1>
-        <h2>Crime Analytics Platform</h2>
-        <p>Frontend is running successfully.</p>
-
-        <button
-          onClick={() => alert("Catalyst React App is Working!")}
-          style={{
-            padding: "12px 25px",
-            border: "none",
-            background: "#0066ff",
-            color: "white",
-            borderRadius: "8px",
-            cursor: "pointer",
-            marginTop: "20px",
-          }}
-        >
-          Test Button
-        </button>
-      </div>
-    </div>
+    <AppProvider>
+      <Router>
+        <div style={{ display: 'flex', minHeight: '100vh', width: '100vw' }}>
+          <Sidebar />
+          
+          {/* Main Content Area */}
+          <div style={{ flex: 1, padding: '20px', display: 'flex', flexDirection: 'column', height: '100vh', overflowY: 'auto' }}>
+            <Navbar />
+            
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/investigate" element={<InvestigationWorkspace />} />
+              <Route path="/investigate/:caseId" element={<InvestigationWorkspace />} />
+              <Route path="/relationships" element={<RelationshipExplorer />} />
+              <Route path="/evidence" element={<EvidenceLedger />} />
+              <Route path="/reports" element={<Reports />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="*" element={<h2>404 Not Found - Module under construction</h2>} />
+            </Routes>
+          </div>
+        </div>
+      </Router>
+    </AppProvider>
   );
 }
 

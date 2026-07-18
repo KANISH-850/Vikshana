@@ -1,17 +1,37 @@
-/**
- * 
- * @param {import('./types/basicio').Context} context 
- * @param {import('./types/basicio').BasicIO} basicIO 
- */
-module.exports = (context, basicIO) => {
-	/* 
-        BASICIO FUNCTIONALITIES
-    */
-	basicIO.write('Hello from index.js'); //response stream (accepts only string, throws error if other than string)
-	basicIO.getArgument('argument1'); // returns QUERY_PARAM[argument1] || BODY_JSON[argument1] (takes argument from query and body, first preference to query)
-	/* 
-        CONTEXT FUNCTIONALITIES
-    */
-	console.log('successfully executed basicio functions');
-	context.close(); //end of application
-};
+const express = require('express');
+require('dotenv').config({ path: __dirname + '/.env' });
+const cors = require('cors');
+
+// Import routes
+const dashboardRoutes = require('./routes/dashboard.routes');
+const investigateRoutes = require('./routes/investigation.routes');
+const relationshipRoutes = require('./routes/relationship.routes');
+const evidenceRoutes = require('./routes/evidence.routes');
+const reportRoutes = require('./routes/report.routes');
+const devRoutes = require('./routes/dev.routes');
+const conversationRoutes = require('./routes/conversation.routes');
+const caseRoutes = require('./routes/case.routes');
+
+const app = express();
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Routes
+app.use('/dashboard', dashboardRoutes);
+app.use('/investigate', investigateRoutes); // @deprecated — superseded by /conversations; kept live and unreferenced by the frontend
+app.use('/relationships', relationshipRoutes);
+app.use('/evidence', evidenceRoutes);
+app.use('/reports', reportRoutes);
+app.use('/dev', devRoutes);
+app.use('/conversations', conversationRoutes);
+app.use('/cases', caseRoutes);
+
+// Fallback for missing routes
+app.use((req, res) => {
+    res.status(404).json({ error: 'Endpoint not found in VIKSHANA API' });
+});
+
+// Catalyst requires exporting the express app for advancedio
+module.exports = app;

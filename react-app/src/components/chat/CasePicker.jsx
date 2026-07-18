@@ -1,0 +1,43 @@
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FolderSearch } from 'lucide-react';
+import * as conversationService from '../../services/conversationService';
+import styles from './CasePicker.module.css';
+
+const CasePicker = () => {
+    const [cases, setCases] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        conversationService
+            .listCases()
+            .then(setCases)
+            .catch((err) => console.error('Failed to load cases', err))
+            .finally(() => setLoading(false));
+    }, []);
+
+    return (
+        <div className={styles.wrap}>
+            <div className={`glass-panel ${styles.card}`}>
+                <FolderSearch size={32} color="var(--accent-primary)" />
+                <h2>Select a case to investigate</h2>
+                <p>Choose an active case to open its persistent AI Investigation Copilot.</p>
+
+                {loading && <div className={styles.hint}>Loading cases...</div>}
+                {!loading && cases.length === 0 && <div className={styles.hint}>No cases found in CaseMaster.</div>}
+
+                <div className={styles.list}>
+                    {cases.map((c) => (
+                        <button key={c.id} type="button" className={styles.caseItem} onClick={() => navigate(`/investigate/${c.id}`)}>
+                            <span className={styles.caseTitle}>{c.title}</span>
+                            <span className={styles.caseMeta}>{c.status} · {c.jurisdiction}</span>
+                        </button>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default CasePicker;

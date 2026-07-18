@@ -2,7 +2,7 @@
 	"deployment": {
 		"name": "vikshana_function",
 		"stack": "node20",
-		"type": "basicio",
+		"type": "advancedio",
 		"env_variables": {}
 	},
 	"execution": {
