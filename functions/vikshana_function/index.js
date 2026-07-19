@@ -2,7 +2,7 @@ const express = require('express');
 require('dotenv').config({ path: __dirname + '/.env' });
 const cors = require('cors');
 
-// Import routes
+// Import route
 const dashboardRoutes = require('./routes/dashboard.routes');
 const investigateRoutes = require('./routes/investigation.routes');
 const relationshipRoutes = require('./routes/relationship.routes');
