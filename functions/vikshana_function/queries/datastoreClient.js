@@ -1,12 +1,35 @@
 const catalyst = require('zcatalyst-sdk-node');
+const fs = require('fs');
+const path = require('path');
 
-/**
- * Catalyst's getPagedRows()/insertRow() responses nest each row's columns
- * under the table name (e.g. { CaseMaster: { ROWID, ... } }) at runtime,
- * even though the SDK's .d.ts types claim a flat ICatalystRow. Every
- * pre-existing service in this codebase unwraps rows the same way
- * (`Object.values(row)[0] || {}`) — this helper centralizes that.
- */
+const LOCAL_DB_PATH = path.join(__dirname, '..', 'local_datastore.json');
+
+function loadLocalDb() {
+    try {
+        if (fs.existsSync(LOCAL_DB_PATH)) return JSON.parse(fs.readFileSync(LOCAL_DB_PATH, 'utf8'));
+    } catch (e) { }
+    return {};
+}
+
+function saveLocalDb(db) {
+    try { fs.writeFileSync(LOCAL_DB_PATH, JSON.stringify(db, null, 2)); } catch (e) {}
+}
+
+function generateId() {
+    return String(Math.floor(Math.random() * 100000000000000) + 100000000000000);
+}
+
+function isMissingTableError(error) {
+    if (!error) return false;
+    if (error.code === 'INVALID_ID') return true;
+    const msg = (error.message || '').toLowerCase();
+    return msg.includes('no table with the given name exists') ||
+        msg.includes('no such table with the given name exists') ||
+        msg.includes('no such resource with the given id exists') ||
+        msg.includes('table with the given name') ||
+        msg.includes('invalid table');
+}
+
 function unwrapRow(row) {
     if (!row) return null;
     if (Object.prototype.hasOwnProperty.call(row, 'ROWID')) return row;
@@ -23,6 +46,7 @@ async function getRows(req, tableName, { maxRows = 50 } = {}) {
         const response = await getTable(req, tableName).getPagedRows({ maxRows });
         return (response.data || []).map(unwrapRow);
     } catch (error) {
+        if (isMissingTableError(error)) return (loadLocalDb()[tableName] || []).slice(0, maxRows);
         console.error(`[datastoreClient] getRows(${tableName}) failed:`, error.message);
         return [];
     }
@@ -34,6 +58,10 @@ async function getRowById(req, tableName, id) {
         const row = await getTable(req, tableName).getRow(id);
         return unwrapRow(row);
     } catch (error) {
+        if (isMissingTableError(error)) {
+            const rows = loadLocalDb()[tableName] || [];
+            return rows.find(r => r.ROWID === String(id)) || null;
+        }
         console.error(`[datastoreClient] getRowById(${tableName}, ${id}) failed:`, error.message);
         return null;
     }
@@ -49,16 +77,12 @@ async function query(req, sql) {
         const rows = await app.zcql().executeZCQLQuery(sql);
         return rows || [];
     } catch (error) {
+        if (isMissingTableError(error)) throw error;
         console.error('[datastoreClient] query failed:', error.message, sql);
         return [];
     }
 }
 
-/**
- * Generic ZCQL equality-AND fetch (Catalyst's SQL dialect) instead of pulling
- * every row and filtering in JS. `conditions` values are simple equality
- * matches; undefined/null/'' entries are skipped so partial filters work.
- */
 async function getRowsWhere(req, tableName, conditions = {}, { maxRows = 50, orderBy, order = 'DESC' } = {}) {
     const clauses = Object.entries(conditions)
         .filter(([, v]) => v !== undefined && v !== null && v !== '')
@@ -66,33 +90,103 @@ async function getRowsWhere(req, tableName, conditions = {}, { maxRows = 50, ord
     const where = clauses.length ? ` WHERE ${clauses.join(' AND ')}` : '';
     const orderClause = orderBy ? ` ORDER BY ${orderBy} ${order}` : '';
     const sql = `SELECT * FROM ${tableName}${where}${orderClause} LIMIT ${Number(maxRows) || 50}`;
-    const rows = await query(req, sql);
-    return rows.map((r) => r[tableName] || unwrapRow(r));
+    try {
+        const rows = await query(req, sql);
+        return rows.map((r) => r[tableName] || unwrapRow(r));
+    } catch (error) {
+        if (isMissingTableError(error)) {
+            let rows = loadLocalDb()[tableName] || [];
+            for (const [k, v] of Object.entries(conditions)) {
+                if (v !== undefined && v !== null && v !== '') {
+                    rows = rows.filter(r => String(r[k]) === String(v));
+                }
+            }
+            if (orderBy) {
+                rows.sort((a, b) => {
+                    if (a[orderBy] < b[orderBy]) return order === 'ASC' ? -1 : 1;
+                    if (a[orderBy] > b[orderBy]) return order === 'ASC' ? 1 : -1;
+                    return 0;
+                });
+            }
+            return rows.slice(0, maxRows);
+        }
+        return [];
+    }
 }
 
-/** Case-scoped fetch — every new investigation-data table carries a `case_id` column by convention. */
 async function getRowsByCase(req, tableName, caseId, { maxRows = 25, orderBy } = {}) {
     if (!caseId) return [];
     return getRowsWhere(req, tableName, { case_id: caseId }, { maxRows, orderBy });
 }
 
 async function insertRow(req, tableName, data) {
-    const row = await getTable(req, tableName).insertRow(data);
-    return unwrapRow(row);
+    try {
+        const row = await getTable(req, tableName).insertRow(data);
+        return unwrapRow(row);
+    } catch (error) {
+        if (isMissingTableError(error)) {
+            const db = loadLocalDb();
+            if (!db[tableName]) db[tableName] = [];
+            const newRow = { ROWID: generateId(), CREATORID: 'system', CREATEDTIME: new Date().toISOString(), MODIFIEDTIME: new Date().toISOString(), ...data };
+            db[tableName].push(newRow);
+            saveLocalDb(db);
+            return newRow;
+        }
+        throw error;
+    }
 }
 
 async function insertRows(req, tableName, rows) {
-    const inserted = await getTable(req, tableName).insertRows(rows);
-    return (inserted || []).map(unwrapRow);
+    try {
+        const inserted = await getTable(req, tableName).insertRows(rows);
+        return (inserted || []).map(unwrapRow);
+    } catch (error) {
+        if (isMissingTableError(error)) {
+            const db = loadLocalDb();
+            if (!db[tableName]) db[tableName] = [];
+            const newRows = rows.map(r => ({ ROWID: generateId(), CREATORID: 'system', CREATEDTIME: new Date().toISOString(), MODIFIEDTIME: new Date().toISOString(), ...r }));
+            db[tableName].push(...newRows);
+            saveLocalDb(db);
+            return newRows;
+        }
+        throw error;
+    }
 }
 
 async function updateRow(req, tableName, id, data) {
-    const row = await getTable(req, tableName).updateRow({ ROWID: id, ...data });
-    return unwrapRow(row);
+    try {
+        const row = await getTable(req, tableName).updateRow({ ROWID: id, ...data });
+        return unwrapRow(row);
+    } catch (error) {
+        if (isMissingTableError(error)) {
+            const db = loadLocalDb();
+            const table = db[tableName] || [];
+            const idx = table.findIndex(r => String(r.ROWID) === String(id));
+            if (idx === -1) throw new Error(`Row ${id} not found in mock table ${tableName}`);
+            table[idx] = { ...table[idx], ...data, MODIFIEDTIME: new Date().toISOString() };
+            saveLocalDb(db);
+            return table[idx];
+        }
+        throw error;
+    }
 }
 
 async function deleteRow(req, tableName, id) {
-    return getTable(req, tableName).deleteRow(id);
+    try {
+        return await getTable(req, tableName).deleteRow(id);
+    } catch (error) {
+        if (isMissingTableError(error)) {
+            const db = loadLocalDb();
+            const table = db[tableName] || [];
+            const idx = table.findIndex(r => String(r.ROWID) === String(id));
+            if (idx !== -1) {
+                table.splice(idx, 1);
+                saveLocalDb(db);
+            }
+            return true;
+        }
+        throw error;
+    }
 }
 
 module.exports = {

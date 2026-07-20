@@ -117,7 +117,18 @@ class SeedService {
     }
 
     static async seedAllCases(req) {
-        const cases = await datastoreClient.getRows(req, 'CaseMaster', { maxRows: 100 });
+        let cases = await datastoreClient.getRows(req, 'CaseMaster', { maxRows: 100 });
+        
+        if (cases.length === 0) {
+            const dummyCases = [
+                { Status: 'Open', Jurisdiction: 'Indiranagar PS' },
+                { Status: 'Under Investigation', Jurisdiction: 'Koramangala PS' },
+                { Status: 'Closed', Jurisdiction: 'Whitefield PS' }
+            ];
+            await datastoreClient.insertRows(req, 'CaseMaster', dummyCases);
+            cases = await datastoreClient.getRows(req, 'CaseMaster', { maxRows: 100 });
+        }
+
         const results = [];
         for (const caseRow of cases) {
             if (!caseRow || !caseRow.ROWID) continue;
