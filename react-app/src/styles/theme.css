@@ -91,6 +91,12 @@ body {
   animation: vik-blink 1s step-start infinite;
 }
 
+a[href="cursor://"] {
+  text-decoration: none !important;
+  cursor: default !important;
+  pointer-events: none !important;
+}
+
 /* Markdown content rendered inside chat bubbles */
 .vik-markdown {
   color: var(--text-primary);

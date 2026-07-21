@@ -61,8 +61,8 @@ const InvestigationChat = ({ caseId }) => {
 
     const handleSend = useCallback(
         async (text) => {
-            await ensureConversation();
-            send(text);
+            const conversationId = await ensureConversation();
+            send(text, conversationId);
         },
         [ensureConversation, send]
     );

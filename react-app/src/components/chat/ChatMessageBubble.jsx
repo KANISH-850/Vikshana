@@ -35,9 +35,18 @@ const ChatMessageBubble = ({ message, onOpenEvidence, onFollowUp, onRegenerate, 
     const [feedback, setFeedback] = useState(null);
     const isUser = message.role === 'user';
 
-    const processedContent = useMemo(() => injectEvidenceLinks(message.content || ''), [message.content]);
+    const processedContent = useMemo(() => {
+        let text = message.content || '';
+        if (streaming) {
+            text += ' [cursor](cursor://)';
+        }
+        return injectEvidenceLinks(text);
+    }, [message.content, streaming]);
 
     function LinkRenderer({ href, children }) {
+        if (href === 'cursor://') {
+            return <span className="vik-streaming-cursor" />;
+        }
         if (href && href.startsWith('evidence://')) {
             const match = href.match(/^evidence:\/\/([^/]+)\/(.+)$/);
             const [, type, id] = match || [];
@@ -82,13 +91,6 @@ const ChatMessageBubble = ({ message, onOpenEvidence, onFollowUp, onRegenerate, 
             <div className={`${styles.bubble} ${isUser ? styles.bubbleUser : styles.bubbleAssistant}`}>
                 {isUser ? (
                     <div className={styles.userText}>{message.content}</div>
-                ) : streaming ? (
-                    // Raw text while streaming — partial markdown (an unclosed table/code fence mid-stream)
-                    // renders unpredictably, so we swap to full ReactMarkdown once the message finalizes.
-                    <div className={styles.streamingText}>
-                        {message.content}
-                        <span className="vik-streaming-cursor" />
-                    </div>
                 ) : (
                     <div className="vik-markdown">
                         <ReactMarkdown

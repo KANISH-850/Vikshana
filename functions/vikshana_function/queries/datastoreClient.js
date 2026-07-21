@@ -27,7 +27,11 @@ function isMissingTableError(error) {
         msg.includes('no such table with the given name exists') ||
         msg.includes('no such resource with the given id exists') ||
         msg.includes('table with the given name') ||
-        msg.includes('invalid table');
+        msg.includes('invalid table') ||
+        msg.includes('unkown table') ||    // Catalyst typo in error messages
+        msg.includes('unknown table') ||
+        msg.includes('unkown column') ||   // Catalyst typo in error messages
+        msg.includes('unknown column');
 }
 
 function unwrapRow(row) {

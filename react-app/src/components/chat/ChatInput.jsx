@@ -11,14 +11,25 @@ const ChatInput = ({ onSend, onRunQuickAction, onFilesSelected, isStreaming, onS
     const [isRecording, setIsRecording] = useState(false);
     const fileInputRef = useRef(null);
     const recognitionRef = useRef(null);
+    const textareaRef = useRef(null);
 
     const slashMatches = value.startsWith('/') && !value.includes(' ') ? matchSlashCommands(value) : [];
+
+    const adjustHeight = () => {
+        const textarea = textareaRef.current;
+        if (!textarea) return;
+        textarea.style.height = 'auto';
+        textarea.style.height = `${textarea.scrollHeight}px`;
+    };
 
     const submit = useCallback(() => {
         const text = value.trim();
         if (!text || disabled) return;
         onSend(text);
         setValue('');
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+        }
     }, [value, disabled, onSend]);
 
     const handleKeyDown = (e) => {
@@ -51,7 +62,16 @@ const ChatInput = ({ onSend, onRunQuickAction, onFilesSelected, isStreaming, onS
         recognition.interimResults = false;
         recognition.onresult = (event) => {
             const transcript = Array.from(event.results).map((r) => r[0].transcript).join(' ');
-            setValue((prev) => (prev ? `${prev} ${transcript}` : transcript));
+            setValue((prev) => {
+                const next = prev ? `${prev} ${transcript}` : transcript;
+                setTimeout(() => {
+                    if (textareaRef.current) {
+                        textareaRef.current.style.height = 'auto';
+                        textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+                    }
+                }, 0);
+                return next;
+            });
         };
         recognition.onend = () => setIsRecording(false);
         recognition.onerror = () => setIsRecording(false);
@@ -93,11 +113,15 @@ const ChatInput = ({ onSend, onRunQuickAction, onFilesSelected, isStreaming, onS
                     />
 
                     <textarea
+                        ref={textareaRef}
                         className={styles.textarea}
                         rows={1}
                         value={value}
                         placeholder="Ask anything about this investigation..."
-                        onChange={(e) => setValue(e.target.value)}
+                        onChange={(e) => {
+                            setValue(e.target.value);
+                            adjustHeight();
+                        }}
                         onKeyDown={handleKeyDown}
                         disabled={disabled}
                     />

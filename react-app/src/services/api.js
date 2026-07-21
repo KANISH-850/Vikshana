@@ -8,7 +8,7 @@ const api = axios.create({
     headers: {
         'Content-Type': 'application/json'
     },
-    timeout: 10000 // 10 second timeout for AI requests
+    timeout: 60000 // 60 second timeout — AI responses can take 20–30s
 });
 
 export default api;

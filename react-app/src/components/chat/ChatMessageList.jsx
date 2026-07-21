@@ -6,9 +6,23 @@ import styles from './ChatMessageList.module.css';
 const ChatMessageList = ({ messages, isStreaming, streamedText, onOpenEvidence, onFollowUp, onRegenerate }) => {
     const bottomRef = useRef(null);
 
+    const prevMessagesLength = useRef(messages.length);
+
     useEffect(() => {
         if (bottomRef.current) {
-            bottomRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            const container = bottomRef.current.closest(`.${styles.list}`)?.parentElement;
+            const hasNewMessage = messages.length !== prevMessagesLength.current;
+            prevMessagesLength.current = messages.length;
+
+            if (container) {
+                const { scrollTop, scrollHeight, clientHeight } = container;
+                const isNearBottom = scrollHeight - scrollTop - clientHeight < 200;
+                if (hasNewMessage || isNearBottom) {
+                    bottomRef.current.scrollIntoView({ behavior: 'auto', block: 'end' });
+                }
+            } else {
+                bottomRef.current.scrollIntoView({ behavior: 'auto', block: 'end' });
+            }
         }
     }, [messages, streamedText]);
 

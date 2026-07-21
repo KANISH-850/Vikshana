@@ -18,8 +18,9 @@ export function useStreamingChat({ conversationId, officerId, onUserMessage, onA
     const abortRef = useRef(null);
     const lastUserMessageRef = useRef(null);
 
-    const send = useCallback(async (content) => {
-        if (!conversationId || !content || !content.trim()) return;
+    const send = useCallback(async (content, explicitConversationId) => {
+        const resolvedId = explicitConversationId || conversationId;
+        if (!resolvedId || !content || !content.trim()) return;
         lastUserMessageRef.current = content;
 
         setIsStreaming(true);
@@ -40,7 +41,7 @@ export function useStreamingChat({ conversationId, officerId, onUserMessage, onA
         let finalSuggestions = [];
 
         try {
-            const response = await fetch(`${API_BASE_URL}/conversations/${conversationId}/messages`, {
+            const response = await fetch(`${API_BASE_URL}/conversations/${resolvedId}/messages`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ content, officerId }),
@@ -132,8 +133,8 @@ export function useStreamingChat({ conversationId, officerId, onUserMessage, onA
     }, []);
 
     const regenerate = useCallback(() => {
-        if (lastUserMessageRef.current) send(lastUserMessageRef.current);
-    }, [send]);
+        if (lastUserMessageRef.current) send(lastUserMessageRef.current, conversationId);
+    }, [send, conversationId]);
 
     return { send, stopGeneration, regenerate, isStreaming, streamedText, citations, suggestions, error };
 }
