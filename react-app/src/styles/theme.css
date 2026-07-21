@@ -1,26 +1,5 @@
 :root {
-  /* Dark Theme Colors */
-  --bg-primary: #0b0f19;
-  --bg-secondary: #131a2a;
-  --bg-tertiary: #1c263b;
-  
-  --accent-primary: #3b82f6; /* Police Blue */
-  --accent-secondary: #60a5fa;
-  --accent-danger: #ef4444; /* Alerts */
-  --accent-warning: #f59e0b; /* Investigations */
-  --accent-success: #10b981; /* Solved/Resolved */
-  
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-
-  --border-color: rgba(255, 255, 255, 0.1);
-  --glass-bg: rgba(19, 26, 42, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.05);
-}
-
-/* Light Theme overrides — applied via .light-theme on the app root (see AppContext.js) */
-.light-theme {
+  /* Light Theme Colors (Default) */
   --bg-primary: #f4f6fb;
   --bg-secondary: #ffffff;
   --bg-tertiary: #e9edf5;
@@ -35,9 +14,30 @@
   --text-secondary: #475569;
   --text-muted: #94a3b8;
 
-  --border-color: rgba(15, 23, 42, 0.1);
+  --border-color: rgba(15, 23, 42, 0.08);
   --glass-bg: rgba(255, 255, 255, 0.75);
   --glass-border: rgba(15, 23, 42, 0.06);
+}
+
+/* Dark Theme overrides — applied via .dark-theme on the app root (see AppContext.js) */
+.dark-theme {
+  --bg-primary: #0b0f19;
+  --bg-secondary: #131a2a;
+  --bg-tertiary: #1c263b;
+
+  --accent-primary: #3b82f6; /* Police Blue */
+  --accent-secondary: #60a5fa;
+  --accent-danger: #ef4444; /* Alerts */
+  --accent-warning: #f59e0b; /* Investigations */
+  --accent-success: #10b981; /* Solved/Resolved */
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  --border-color: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(19, 26, 42, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.05);
 }
 
 body {

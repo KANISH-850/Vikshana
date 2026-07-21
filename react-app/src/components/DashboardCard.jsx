@@ -6,7 +6,7 @@ const DashboardCard = ({ title, value, subtitle, icon: Icon, color = 'var(--acce
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -5, boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}
+      whileHover={{ y: -5, boxShadow: '0 10px 30px rgba(15, 23, 42, 0.08)' }}
       className="glass-panel"
       style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '12px' }}
     >

@@ -30,17 +30,93 @@ function CodeBlock({ inline, className, children }) {
     );
 }
 
+function parseMessageContent(content, streaming) {
+    let text = content || '';
+    if (streaming) {
+        text += ' [cursor](cursor://)';
+    }
+
+    const thinkStart = text.indexOf('<think>');
+    if (thinkStart === -1) {
+        return { thinking: null, body: injectEvidenceLinks(text) };
+    }
+
+    const thinkEnd = text.indexOf('</think>');
+    if (thinkEnd !== -1) {
+        const thinking = text.slice(thinkStart + 7, thinkEnd).trim();
+        const body = text.slice(thinkEnd + 8).trim();
+        return {
+            thinking,
+            body: injectEvidenceLinks(body),
+            isThinkingComplete: true
+        };
+    } else {
+        const thinking = text.slice(thinkStart + 7).trim();
+        return {
+            thinking,
+            body: '',
+            isThinkingComplete: false
+        };
+    }
+}
+
+function ReasoningBlock({ content, isComplete }) {
+    const [expanded, setExpanded] = useState(!isComplete);
+
+    return (
+        <div className={styles.thinkingContainer}>
+            <button
+                type="button"
+                className={styles.thinkingHeader}
+                onClick={() => setExpanded(!expanded)}
+            >
+                <div style={{
+                    width: '18px',
+                    height: '18px',
+                    borderRadius: '50%',
+                    border: '1px solid var(--border-color)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: 'var(--bg-tertiary)'
+                }}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                        <path d="M19 10v1a7 7 0 0 1-14 0v-1" />
+                    </svg>
+                </div>
+                <span>{isComplete ? 'Thought Process' : 'Thinking...'}</span>
+                <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    style={{
+                        transform: expanded ? 'rotate(180deg)' : 'none',
+                        transition: 'transform 0.2s ease',
+                    }}
+                >
+                    <polyline points="6 9 12 15 18 9" />
+                </svg>
+            </button>
+            {expanded && (
+                <div className={styles.thinkingBody}>
+                    {content}
+                </div>
+            )}
+        </div>
+    );
+}
+
 const ChatMessageBubble = ({ message, onOpenEvidence, onFollowUp, onRegenerate, isLast, streaming }) => {
     const [copied, setCopied] = useState(false);
     const [feedback, setFeedback] = useState(null);
     const isUser = message.role === 'user';
 
-    const processedContent = useMemo(() => {
-        let text = message.content || '';
-        if (streaming) {
-            text += ' [cursor](cursor://)';
-        }
-        return injectEvidenceLinks(text);
+    const { thinking, body, isThinkingComplete } = useMemo(() => {
+        return parseMessageContent(message.content, streaming);
     }, [message.content, streaming]);
 
     function LinkRenderer({ href, children }) {
@@ -93,13 +169,18 @@ const ChatMessageBubble = ({ message, onOpenEvidence, onFollowUp, onRegenerate, 
                     <div className={styles.userText}>{message.content}</div>
                 ) : (
                     <div className="vik-markdown">
-                        <ReactMarkdown
-                            remarkPlugins={[remarkGfm]}
-                            rehypePlugins={[rehypeHighlight]}
-                            components={{ code: CodeBlock, a: LinkRenderer }}
-                        >
-                            {processedContent}
-                        </ReactMarkdown>
+                        {thinking && (
+                            <ReasoningBlock content={thinking} isComplete={isThinkingComplete} />
+                        )}
+                        {body && (
+                            <ReactMarkdown
+                                remarkPlugins={[remarkGfm]}
+                                rehypePlugins={[rehypeHighlight]}
+                                components={{ code: CodeBlock, a: LinkRenderer }}
+                            >
+                                {body}
+                            </ReactMarkdown>
+                        )}
                     </div>
                 )}
 

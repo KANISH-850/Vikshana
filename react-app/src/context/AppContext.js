@@ -4,7 +4,7 @@ import { useOfficerIdentity } from '../hooks/useOfficerIdentity';
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-    const [theme, setTheme] = useState('dark');
+    const [theme, setTheme] = useState('light');
     const { officerId } = useOfficerIdentity();
     const [officer, setOfficer] = useState({ name: 'Officer K', role: 'Lead Investigator', id: officerId });
 

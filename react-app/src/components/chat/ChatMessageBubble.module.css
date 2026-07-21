@@ -16,10 +16,52 @@
 .streamingText { white-space: pre-wrap; word-wrap: break-word; color: var(--text-primary); line-height: 1.6; }
 
 .bubbleAssistant {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-bottom-left-radius: 4px;
-  max-width: 88%;
+  background: transparent;
+  border: none;
+  max-width: 100%;
+  padding: 12px 0;
+  border-radius: 0;
+}
+
+/* Collapsible Thinking/Reasoning Block */
+.thinkingContainer {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.thinkingHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  width: fit-content;
+  transition: color 0.15s ease;
+}
+.thinkingHeader:hover {
+  color: var(--text-secondary);
+}
+
+.thinkingBody {
+  padding-left: 14px;
+  border-left: 2px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  line-height: 1.6;
+  font-family: 'Fira Code', Consolas, Monaco, monospace;
+  white-space: pre-wrap;
+  background: rgba(0, 0, 0, 0.01);
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-right: 12px;
+  border-radius: 0 8px 8px 0;
 }
 
 .evidenceRow { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }

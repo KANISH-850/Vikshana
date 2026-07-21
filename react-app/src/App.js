@@ -15,7 +15,7 @@ import Settings from './pages/Settings';
 function App() {
   return (
     <AppProvider>
-      <Router>
+      <Router basename="/app">
         <div style={{ display: 'flex', minHeight: '100vh', width: '100vw' }}>
           <Sidebar />
           

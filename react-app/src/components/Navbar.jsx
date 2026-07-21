@@ -16,7 +16,7 @@ const Navbar = () => {
     }} className="glass-panel">
       
       {/* Global Search */}
-      <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(0,0,0,0.2)', padding: '8px 16px', borderRadius: '8px', width: '300px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', background: 'var(--bg-tertiary)', padding: '8px 16px', borderRadius: '8px', width: '300px' }}>
         <Search size={18} color="var(--text-muted)" style={{ marginRight: '8px' }} />
         <input 
           type="text" 

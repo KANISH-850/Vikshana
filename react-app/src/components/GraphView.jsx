@@ -15,7 +15,7 @@ const GraphView = ({ nodes, edges }) => {
   };
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '500px', background: 'rgba(0,0,0,0.2)', borderRadius: '12px', overflow: 'hidden' }}>
+    <div style={{ position: 'relative', width: '100%', height: '500px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '12px', overflow: 'hidden' }}>
       <svg width="100%" height="100%">
         {edges.map((edge, i) => {
           const source = nodes.find(n => n.id === edge.source);
