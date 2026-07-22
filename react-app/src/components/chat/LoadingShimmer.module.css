@@ -1,0 +1,104 @@
+.skeleton {
+    background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 6px;
+}
+
+.sidebarSkeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+    height: 100%;
+}
+
+.btnSkeleton {
+    height: 40px;
+    border-radius: 10px;
+}
+
+.searchSkeleton {
+    height: 36px;
+    border-radius: 8px;
+}
+
+.listSkeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.itemSkeleton {
+    height: 38px;
+    border-radius: 8px;
+}
+
+.chatSkeletonContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 20px;
+    width: 100%;
+}
+
+.messageRowLeft {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.messageRowRight {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.avatarSkeleton {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.bubbleSkeletonLeft {
+    background: #111827;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 16px;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.bubbleSkeletonRight {
+    background: rgba(37, 99, 235, 0.2);
+    border: 1px solid rgba(37, 99, 235, 0.3);
+    border-radius: 16px;
+    padding: 14px;
+    width: 45%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.textLineLong {
+    height: 14px;
+    width: 90%;
+}
+
+.textLineMedium {
+    height: 14px;
+    width: 70%;
+}
+
+.textLineShort {
+    height: 14px;
+    width: 40%;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}

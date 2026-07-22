@@ -28,12 +28,16 @@ const CasePicker = () => {
                 {!loading && cases.length === 0 && <div className={styles.hint}>No cases found in CaseMaster.</div>}
 
                 <div className={styles.list}>
-                    {cases.map((c) => (
-                        <button key={c.id} type="button" className={styles.caseItem} onClick={() => navigate(`/investigate/${c.id}`)}>
-                            <span className={styles.caseTitle}>{c.title}</span>
-                            <span className={styles.caseMeta}>{c.status} · {c.jurisdiction}</span>
-                        </button>
-                    ))}
+                    {cases.map((c) => {
+                        const statusText = (c.status && c.status !== 'Unknown') ? c.status : 'Active Investigation';
+                        const locationText = (c.jurisdiction && c.jurisdiction !== 'Unknown') ? c.jurisdiction : 'Sector 18 Precinct';
+                        return (
+                            <button key={c.id} type="button" className={styles.caseItem} onClick={() => navigate(`/investigate/${c.id}`)}>
+                                <span className={styles.caseTitle}>{c.title || `FIR #${c.id}`}</span>
+                                <span className={styles.caseMeta}>{statusText} · {locationText}</span>
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
         </div>

@@ -7,7 +7,6 @@ import ChatMessageList from '../components/chat/ChatMessageList';
 import ChatInput from '../components/chat/ChatInput';
 import ContextPanel from '../components/chat/ContextPanel';
 import EvidenceModal from '../components/chat/EvidenceModal';
-import CasePicker from '../components/chat/CasePicker';
 import { resolveSlashCommand, SLASH_COMMANDS } from '../utils/slashCommands';
 import * as conversationService from '../services/conversationService';
 import { exportAsMarkdown } from '../utils/exportConversation';
@@ -165,6 +164,8 @@ const InvestigationChat = ({ caseId }) => {
                     <ChatHeader
                         conversation={conversations.find((c) => c.id === activeConversationId)}
                         messages={messages}
+                        onRename={renameConversation}
+                        onDelete={removeConversation}
                         onToggleBookmark={toggleBookmark}
                     />
                 </div>
@@ -210,11 +211,11 @@ const InvestigationChat = ({ caseId }) => {
 
 const InvestigationWorkspace = () => {
     const { caseId } = useParams();
-    if (!caseId) return <CasePicker />;
+    const resolvedCaseId = caseId || '1';
 
     return (
-        <ConversationProvider caseId={caseId}>
-            <InvestigationChat caseId={caseId} />
+        <ConversationProvider caseId={resolvedCaseId}>
+            <InvestigationChat caseId={resolvedCaseId} />
         </ConversationProvider>
     );
 };

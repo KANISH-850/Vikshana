@@ -12,6 +12,9 @@ import EvidenceLedger from './pages/EvidenceLedger';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 
+import Intelligence from './pages/Intelligence';
+import Timeline from './pages/Timeline';
+
 function App() {
   return (
     <AppProvider>
@@ -27,7 +30,10 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/investigate" element={<InvestigationWorkspace />} />
               <Route path="/investigate/:caseId" element={<InvestigationWorkspace />} />
+              <Route path="/intelligence" element={<Intelligence />} />
               <Route path="/relationships" element={<RelationshipExplorer />} />
+              <Route path="/timeline" element={<Timeline />} />
+              <Route path="/timeline/:caseId" element={<Timeline />} />
               <Route path="/evidence" element={<EvidenceLedger />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/settings" element={<Settings />} />

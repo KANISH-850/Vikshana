@@ -1,22 +1,37 @@
 :root {
-  /* Light Theme Colors (Default) */
-  --bg-primary: #f4f6fb;
-  --bg-secondary: #ffffff;
-  --bg-tertiary: #e9edf5;
+  /* Design Tokens */
+  --color-primary: #2563EB;      /* Primary Blue - buttons, links, active states */
+  --color-primary-light: #DBEAFE; /* Light Blue - hover states, subtle highlights, selected items */
+  --color-bg: #F8FAFC;            /* Background */
+  --color-card: #FFFFFF;          /* Cards / message bubbles / panels */
+  --color-border: #E5E7EB;        /* Borders / dividers */
+  --color-text: #111827;          /* Primary text */
+  --color-text-secondary: #6B7280; /* Secondary text / timestamps / metadata */
+  --color-success: #10B981;       /* Success states */
+  --color-warning: #F59E0B;       /* Warning states */
+  --color-danger: #EF4444;        /* Errors / destructive actions */
 
-  --accent-primary: #2563eb;
-  --accent-secondary: #3b82f6;
-  --accent-danger: #dc2626;
-  --accent-warning: #d97706;
-  --accent-success: #059669;
+  /* Legacy Theme Mappings for App Compatibility */
+  --bg-primary: var(--color-bg);
+  --bg-secondary: var(--color-card);
+  --bg-tertiary: #F1F5F9;
 
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  --accent-primary: var(--color-primary);
+  --accent-secondary: #3B82F6;
+  --accent-danger: var(--color-danger);
+  --accent-warning: var(--color-warning);
+  --accent-success: var(--color-success);
 
-  --border-color: rgba(15, 23, 42, 0.08);
-  --glass-bg: rgba(255, 255, 255, 0.75);
-  --glass-border: rgba(15, 23, 42, 0.06);
+  --text-primary: var(--color-text);
+  --text-secondary: var(--color-text-secondary);
+  --text-muted: #9CA3AF;
+
+  --border-color: var(--color-border);
+  --glass-bg: rgba(255, 255, 255, 0.9);
+  --glass-border: var(--color-border);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 20px -2px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 30px -4px rgba(0, 0, 0, 0.08);
 }
 
 /* Dark Theme overrides — applied via .dark-theme on the app root (see AppContext.js) */

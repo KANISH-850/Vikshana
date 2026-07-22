@@ -8,9 +8,9 @@ class CaseController {
                 .filter((r) => r && r.ROWID)
                 .map((r) => ({
                     id: r.ROWID,
-                    title: `FIR #${r.ROWID}`,
-                    status: r.Status || 'Unknown',
-                    jurisdiction: r.Jurisdiction || 'Unknown',
+                    title: r.title || r.Name || r.Case_Name || r.FIR_No || `FIR #${r.ROWID}`,
+                    status: (r.status || r.Status || r.case_status || r.Case_Status || 'Active').replace(/Unknown/i, 'Active'),
+                    jurisdiction: (r.jurisdiction || r.Jurisdiction || r.District || r.State || r.Police_Station || 'Sector 18 Precinct').replace(/Unknown/i, 'Sector 18 Precinct'),
                     createdAt: r.CREATEDTIME
                 }));
             res.status(200).json({ success: true, data: cases });

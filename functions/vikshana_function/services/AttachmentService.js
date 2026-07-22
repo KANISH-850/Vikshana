@@ -10,15 +10,6 @@ const ATTACHMENT_FOLDER_NAME = 'investigation-attachments';
 const MAX_STORED_TEXT_CHARS = 50000;
 let cachedFolderId = null;
 
-/**
- * Unlike Data Store tables (Console-only, no createTable in the SDK), File
- * Store folders CAN be created programmatically — so this self-provisions
- * on first use instead of requiring a manual Console step. If provisioning
- * or upload fails for any reason (permissions, no File Store enabled in
- * catalyst.json yet, etc.) we degrade gracefully: the attachment's extracted
- * text is still stored and usable for retrieval, just without a downloadable
- * original file.
- */
 async function getOrCreateFolder(req) {
     if (cachedFolderId) return cachedFolderId;
     try {
@@ -41,27 +32,61 @@ async function getOrCreateFolder(req) {
     }
 }
 
-/** OCR/audio-transcription are out of scope for this pass — non-text file types return '' and are stored as metadata-only. */
-async function extractText(file) {
+/** 
+ * Enhanced text extraction utilizing Catalyst Zia OCR for document images & scanned evidence files.
+ */
+async function extractText(file, req) {
     const ext = path.extname(file.originalname).toLowerCase();
     try {
+        // Image evidence scan via Catalyst Zia OCR
+        if (['.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.webp'].includes(ext)) {
+            try {
+                if (req) {
+                    const zia = catalyst.initialize(req).zia();
+                    const stream = fs.createReadStream(file.path);
+                    const ziaResult = await zia.extractOpticalCharacters(stream, { language: 'eng' });
+                    if (ziaResult && (ziaResult.text || ziaResult.confidence)) {
+                        return ziaResult.text || '';
+                    }
+                }
+            } catch (ziaError) {
+                console.warn(`[AttachmentService] Catalyst Zia OCR scan warning for ${file.originalname}:`, ziaError.message);
+            }
+        }
+
         if (ext === '.pdf') {
             const buffer = fs.readFileSync(file.path);
             const parsed = await pdfParse(buffer);
-            return parsed.text;
+            if (parsed.text && parsed.text.trim().length > 50) {
+                return parsed.text;
+            }
+            // Scanned PDF fallback using Catalyst Zia OCR
+            if (req) {
+                try {
+                    const zia = catalyst.initialize(req).zia();
+                    const stream = fs.createReadStream(file.path);
+                    const ziaResult = await zia.extractOpticalCharacters(stream, { language: 'eng' });
+                    if (ziaResult && ziaResult.text) return ziaResult.text;
+                } catch (e) {}
+            }
+            return parsed.text || '';
         }
+
         if (ext === '.docx') {
             const result = await mammoth.extractRawText({ path: file.path });
             return result.value;
         }
+
         if (ext === '.txt') {
             return fs.readFileSync(file.path, 'utf-8');
         }
+
         if (ext === '.csv') {
             const raw = fs.readFileSync(file.path, 'utf-8');
             const records = parseCsvSync(raw, { columns: false, skip_empty_lines: true, relax_column_count: true });
             return records.slice(0, 200).map((row) => row.join(' | ')).join('\n');
         }
+
         return '';
     } catch (error) {
         console.error(`[AttachmentService] Text extraction failed for ${file.originalname}:`, error.message);
@@ -71,7 +96,7 @@ async function extractText(file) {
 
 class AttachmentService {
     static async handleUpload(req, file, { caseId, conversationId }) {
-        const extractedText = await extractText(file);
+        const extractedText = await extractText(file, req);
 
         let fileStoreKey = '';
         const folderId = await getOrCreateFolder(req);

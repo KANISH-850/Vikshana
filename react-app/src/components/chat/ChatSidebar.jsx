@@ -1,21 +1,54 @@
 import React, { useMemo, useState } from 'react';
-import { Plus, Search, Bookmark, Archive, Trash2, Pencil, MessageSquare } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Plus, Search, MessageSquare, ChevronLeft, ChevronRight, User, Trash2, Pencil } from 'lucide-react';
+import { useAppContext } from '../../context/AppContext';
 import styles from './ChatSidebar.module.css';
 
-const ChatSidebar = ({ conversations, activeConversationId, onSelect, onNew, onRename, onToggleBookmark, onArchive, onDelete }) => {
+const groupThreadsByRecency = (threads, query) => {
+    const filtered = threads.filter((t) =>
+        (t.title || 'New Investigation').toLowerCase().includes(query.toLowerCase())
+    );
+
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const sevenDaysAgo = todayStart - 7 * 24 * 60 * 60 * 1000;
+
+    const today = [];
+    const previous7Days = [];
+    const older = [];
+
+    filtered.forEach((t) => {
+        const time = t.updatedAt ? new Date(t.updatedAt).getTime() : Date.now();
+        if (time >= todayStart) {
+            today.push(t);
+        } else if (time >= sevenDaysAgo) {
+            previous7Days.push(t);
+        } else {
+            older.push(t);
+        }
+    });
+
+    return { today, previous7Days, older };
+};
+
+const ChatSidebar = ({
+    conversations = [],
+    activeConversationId,
+    onSelect,
+    onNew,
+    onRename,
+    onDelete,
+    collapsed,
+    onToggleCollapse
+}) => {
+    const { officer } = useAppContext();
     const [query, setQuery] = useState('');
-    const [showArchived, setShowArchived] = useState(false);
-    const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [editTitle, setEditTitle] = useState('');
 
-    const filtered = useMemo(
-        () =>
-            conversations
-                .filter((c) => (showArchived ? c.isArchived : !c.isArchived))
-                .filter((c) => (showBookmarkedOnly ? c.isBookmarked : true))
-                .filter((c) => c.title.toLowerCase().includes(query.toLowerCase())),
-        [conversations, showArchived, showBookmarkedOnly, query]
+    const grouped = useMemo(
+        () => groupThreadsByRecency(conversations, query),
+        [conversations, query]
     );
 
     const commitRename = (id) => {
@@ -23,86 +56,134 @@ const ChatSidebar = ({ conversations, activeConversationId, onSelect, onNew, onR
         setEditingId(null);
     };
 
+    const renderThreadItem = (c) => {
+        const isActive = c.id === activeConversationId;
+        const isEditing = editingId === c.id;
+
+        return (
+            <div
+                key={c.id}
+                className={`${styles.item} ${isActive ? styles.itemActive : ''}`}
+                onClick={() => onSelect(c.id)}
+            >
+                {isActive && <div className={styles.activeAccentBar} />}
+                <MessageSquare size={15} className={isActive ? styles.iconActive : styles.iconMuted} />
+                
+                {isEditing ? (
+                    <input
+                        autoFocus
+                        className={styles.renameInput}
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        onClick={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => e.key === 'Enter' && commitRename(c.id)}
+                        onBlur={() => commitRename(c.id)}
+                    />
+                ) : (
+                    <span className={styles.itemTitle}>{c.title || 'New Investigation'}</span>
+                )}
+
+                <div className={styles.itemActions} onClick={(e) => e.stopPropagation()}>
+                    <button
+                        type="button"
+                        title="Rename investigation"
+                        onClick={() => {
+                            setEditingId(c.id);
+                            setEditTitle(c.title || 'New Investigation');
+                        }}
+                    >
+                        <Pencil size={12} />
+                    </button>
+                    <button
+                        type="button"
+                        title="Delete investigation"
+                        onClick={() => onDelete(c.id)}
+                    >
+                        <Trash2 size={12} />
+                    </button>
+                </div>
+            </div>
+        );
+    };
+
     return (
-        <aside className={styles.sidebar}>
-            <button type="button" className={styles.newBtn} onClick={onNew}>
-                <Plus size={16} /> New Investigation Chat
+        <motion.aside
+            initial={false}
+            animate={{ width: collapsed ? 64 : 280 }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            className={`${styles.sidebar} ${collapsed ? styles.sidebarCollapsed : ''}`}
+        >
+            {/* Collapse Toggle Button */}
+            <button
+                type="button"
+                className={styles.collapseToggleBtn}
+                onClick={onToggleCollapse}
+                title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            >
+                {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
             </button>
 
-            <div className={styles.searchBox}>
-                <Search size={14} />
-                <input placeholder="Search conversations..." value={query} onChange={(e) => setQuery(e.target.value)} />
-            </div>
-
-            <div className={styles.filters}>
-                <button
-                    type="button"
-                    className={`${styles.filterBtn} ${showBookmarkedOnly ? styles.filterActive : ''}`}
-                    onClick={() => setShowBookmarkedOnly((v) => !v)}
-                >
-                    <Bookmark size={13} /> Bookmarked
-                </button>
-                <button
-                    type="button"
-                    className={`${styles.filterBtn} ${showArchived ? styles.filterActive : ''}`}
-                    onClick={() => setShowArchived((v) => !v)}
-                >
-                    <Archive size={13} /> Archived
+            {/* Top New Investigation Button */}
+            <div className={styles.topSection}>
+                <button type="button" className={styles.newBtn} onClick={onNew} title="New Investigation">
+                    <Plus size={18} />
+                    {!collapsed && <span>New Investigation</span>}
                 </button>
             </div>
 
-            <div className={styles.list}>
-                {filtered.length === 0 && <div className={styles.emptyHint}>No conversations yet.</div>}
-                {filtered.map((c) => (
-                    <div
-                        key={c.id}
-                        className={`${styles.item} ${c.id === activeConversationId ? styles.itemActive : ''}`}
-                        onClick={() => onSelect(c.id)}
-                    >
-                        <MessageSquare size={14} className={styles.itemIcon} />
-                        {editingId === c.id ? (
-                            <input
-                                autoFocus
-                                className={styles.renameInput}
-                                value={editTitle}
-                                onChange={(e) => setEditTitle(e.target.value)}
-                                onClick={(e) => e.stopPropagation()}
-                                onKeyDown={(e) => e.key === 'Enter' && commitRename(c.id)}
-                                onBlur={() => commitRename(c.id)}
-                            />
-                        ) : (
-                            <span className={styles.itemTitle}>{c.title}</span>
+            {!collapsed && (
+                <>
+                    {/* Search Bar */}
+                    <div className={styles.searchBox}>
+                        <Search size={14} className={styles.searchIcon} />
+                        <input
+                            placeholder="Search investigations..."
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                        />
+                    </div>
+
+                    {/* Scrollable Conversation List grouped by recency */}
+                    <div className={styles.listContainer}>
+                        {grouped.today.length > 0 && (
+                            <div className={styles.group}>
+                                <div className={styles.groupTitle}>Today</div>
+                                {grouped.today.map(renderThreadItem)}
+                            </div>
                         )}
 
-                        <div className={styles.itemActions} onClick={(e) => e.stopPropagation()}>
-                            <button
-                                type="button"
-                                title="Rename"
-                                onClick={() => {
-                                    setEditingId(c.id);
-                                    setEditTitle(c.title);
-                                }}
-                            >
-                                <Pencil size={12} />
-                            </button>
-                            <button type="button" title="Bookmark" onClick={() => onToggleBookmark(c.id, !c.isBookmarked)}>
-                                <Bookmark size={12} fill={c.isBookmarked ? 'currentColor' : 'none'} />
-                            </button>
-                            <button
-                                type="button"
-                                title={c.isArchived ? 'Unarchive' : 'Archive'}
-                                onClick={() => onArchive(c.id, !c.isArchived)}
-                            >
-                                <Archive size={12} />
-                            </button>
-                            <button type="button" title="Delete" onClick={() => onDelete(c.id)}>
-                                <Trash2 size={12} />
-                            </button>
+                        {grouped.previous7Days.length > 0 && (
+                            <div className={styles.group}>
+                                <div className={styles.groupTitle}>Previous 7 Days</div>
+                                {grouped.previous7Days.map(renderThreadItem)}
+                            </div>
+                        )}
+
+                        {grouped.older.length > 0 && (
+                            <div className={styles.group}>
+                                <div className={styles.groupTitle}>Older</div>
+                                {grouped.older.map(renderThreadItem)}
+                            </div>
+                        )}
+
+                        {conversations.length === 0 && (
+                            <div className={styles.emptyHint}>No past investigations yet.</div>
+                        )}
+                    </div>
+
+                    {/* Bottom User/Account Profile Section */}
+                    <div className={styles.userProfileSection}>
+                        <div className={styles.userAvatar}>
+                            <User size={16} color="#2563EB" />
+                        </div>
+                        <div className={styles.userInfo}>
+                            <div className={styles.userName}>{officer?.name || 'Officer Ajai Kumar'}</div>
+                            <div className={styles.userRole}>Lead Investigator</div>
                         </div>
                     </div>
-                ))}
-            </div>
-        </aside>
+                </>
+            )}
+        </motion.aside>
     );
 };
 
