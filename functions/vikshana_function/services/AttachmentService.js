@@ -125,6 +125,18 @@ class AttachmentService {
             status: 'ready'
         });
 
+        // Publish Serverless Event Signal
+        try {
+            const SignalService = require('./SignalService');
+            SignalService.publish(req, 'EVIDENCE_UPLOADED', {
+                caseId,
+                conversationId,
+                filename: file.originalname,
+                mimeType: file.mimetype,
+                hasText: !!extractedText
+            }).catch(() => {});
+        } catch (e) {}
+
         return {
             id: row.ROWID,
             filename: row.filename,

@@ -2,7 +2,7 @@ const express = require('express');
 require('dotenv').config({ path: __dirname + '/.env' });
 const cors = require('cors');
 
-// Import route
+// Import routes
 const dashboardRoutes = require('./routes/dashboard.routes');
 const investigateRoutes = require('./routes/investigation.routes');
 const relationshipRoutes = require('./routes/relationship.routes');
@@ -11,6 +11,10 @@ const reportRoutes = require('./routes/report.routes');
 const devRoutes = require('./routes/dev.routes');
 const conversationRoutes = require('./routes/conversation.routes');
 const caseRoutes = require('./routes/case.routes');
+const signalRoutes = require('./routes/signal.routes');
+const jobRoutes = require('./routes/job.routes');
+const mlRoutes = require('./routes/ml.routes');
+const convokraftRoutes = require('./routes/convokraft.routes');
 
 const app = express();
 
@@ -20,13 +24,17 @@ app.use(express.json());
 
 // Routes
 app.use('/dashboard', dashboardRoutes);
-app.use('/investigate', investigateRoutes); // @deprecated — superseded by /conversations; kept live and unreferenced by the frontend
+app.use('/investigate', investigateRoutes); // @deprecated — superseded by /conversations; kept live
 app.use('/relationships', relationshipRoutes);
 app.use('/evidence', evidenceRoutes);
 app.use('/reports', reportRoutes);
 app.use('/dev', devRoutes);
 app.use('/conversations', conversationRoutes);
 app.use('/cases', caseRoutes);
+app.use('/signals', signalRoutes);
+app.use('/jobs', jobRoutes);
+app.use('/ml', mlRoutes);
+app.use('/convokraft', convokraftRoutes);
 
 // Fallback for missing routes
 app.use((req, res) => {
