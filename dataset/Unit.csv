@@ -1,0 +1,733 @@
+UnitID,UnitName,TypeID,ParentUnit,NationalityID,StateID,DistrictID,Active
+1,Bengaluru City District Police Office,3,,1,1,1,1
+2,Mysuru City District Police Office,3,,1,1,2,1
+3,Mangaluru City District Police Office,3,,1,1,3,1
+4,Hubballi-Dharwad City District Police Office,3,,1,1,4,1
+5,Belagavi District Police Office,3,,1,1,5,1
+6,Tumakuru District Police Office,3,,1,1,6,1
+7,Shivamogga District Police Office,3,,1,1,7,1
+8,Ballari District Police Office,3,,1,1,8,1
+9,Kalaburagi District Police Office,3,,1,1,9,1
+10,Hassan District Police Office,3,,1,1,10,1
+11,Davanagere District Police Office,3,,1,1,11,1
+12,Vijayapura District Police Office,3,,1,1,12,1
+13,Bengaluru Dist District Police Office,3,,1,1,13,1
+14,Mysuru Dist District Police Office,3,,1,1,14,1
+15,Dakshina Kannada District Police Office,3,,1,1,15,1
+16,Udupi District Police Office,3,,1,1,16,1
+17,Chitradurga District Police Office,3,,1,1,17,1
+18,Kolar District Police Office,3,,1,1,18,1
+19,Mandya District Police Office,3,,1,1,19,1
+20,Raichur District Police Office,3,,1,1,20,1
+21,Bidar District Police Office,3,,1,1,21,1
+22,Bagalkot District Police Office,3,,1,1,22,1
+23,Gadag District Police Office,3,,1,1,23,1
+24,Haveri District Police Office,3,,1,1,24,1
+25,Koppal District Police Office,3,,1,1,25,1
+26,Yadgir District Police Office,3,,1,1,26,1
+27,Chikkamagaluru District Police Office,3,,1,1,27,1
+28,Chikkaballapura District Police Office,3,,1,1,28,1
+29,Ramanagara District Police Office,3,,1,1,29,1
+30,Uttara Kannada District Police Office,3,,1,1,30,1
+31,Dharwad Dist District Police Office,3,,1,1,31,1
+32,Vijayanagara District Police Office,3,,1,1,32,1
+33,Kodagu District Police Office,3,,1,1,33,1
+34,Chamarajanagar District Police Office,3,,1,1,34,1
+35,Kalyana Karnataka Rly District Police Office,3,,1,1,35,1
+36,Bengaluru City PS-01,6,1.0,1,1,1,1
+37,Bengaluru City PS-02,6,1.0,1,1,1,1
+38,Bengaluru City PS-03,6,1.0,1,1,1,1
+39,Bengaluru City PS-04,6,1.0,1,1,1,1
+40,Bengaluru City PS-05,6,1.0,1,1,1,1
+41,Bengaluru City PS-06,6,1.0,1,1,1,1
+42,Bengaluru City PS-07,6,1.0,1,1,1,1
+43,Bengaluru City PS-08,6,1.0,1,1,1,1
+44,Bengaluru City PS-09,6,1.0,1,1,1,1
+45,Bengaluru City PS-10,6,1.0,1,1,1,1
+46,Bengaluru City PS-11,6,1.0,1,1,1,1
+47,Bengaluru City PS-12,6,1.0,1,1,1,1
+48,Bengaluru City PS-13,6,1.0,1,1,1,1
+49,Bengaluru City PS-14,6,1.0,1,1,1,1
+50,Bengaluru City PS-15,6,1.0,1,1,1,1
+51,Bengaluru City PS-16,6,1.0,1,1,1,1
+52,Bengaluru City PS-17,6,1.0,1,1,1,1
+53,Bengaluru City PS-18,6,1.0,1,1,1,1
+54,Bengaluru City PS-19,6,1.0,1,1,1,1
+55,Bengaluru City PS-20,6,1.0,1,1,1,1
+56,Bengaluru City PS-21,6,1.0,1,1,1,1
+57,Bengaluru City PS-22,6,1.0,1,1,1,1
+58,Bengaluru City PS-23,6,1.0,1,1,1,1
+59,Bengaluru City PS-24,6,1.0,1,1,1,1
+60,Bengaluru City PS-25,6,1.0,1,1,1,1
+61,Bengaluru City PS-26,6,1.0,1,1,1,1
+62,Bengaluru City PS-27,6,1.0,1,1,1,1
+63,Bengaluru City PS-28,6,1.0,1,1,1,1
+64,Bengaluru City PS-29,6,1.0,1,1,1,1
+65,Bengaluru City PS-30,6,1.0,1,1,1,1
+66,Bengaluru City PS-31,6,1.0,1,1,1,1
+67,Bengaluru City PS-32,6,1.0,1,1,1,1
+68,Bengaluru City PS-33,6,1.0,1,1,1,1
+69,Bengaluru City PS-34,6,1.0,1,1,1,1
+70,Bengaluru City PS-35,6,1.0,1,1,1,1
+71,Bengaluru City PS-36,6,1.0,1,1,1,1
+72,Bengaluru City PS-37,6,1.0,1,1,1,1
+73,Bengaluru City PS-38,6,1.0,1,1,1,1
+74,Bengaluru City PS-39,6,1.0,1,1,1,1
+75,Bengaluru City PS-40,6,1.0,1,1,1,1
+76,Bengaluru City PS-41,6,1.0,1,1,1,1
+77,Bengaluru City PS-42,6,1.0,1,1,1,1
+78,Bengaluru City PS-43,6,1.0,1,1,1,1
+79,Bengaluru City PS-44,6,1.0,1,1,1,1
+80,Bengaluru City PS-45,6,1.0,1,1,1,1
+81,Bengaluru City PS-46,6,1.0,1,1,1,1
+82,Bengaluru City PS-47,6,1.0,1,1,1,1
+83,Bengaluru City PS-48,6,1.0,1,1,1,1
+84,Bengaluru City PS-49,6,1.0,1,1,1,1
+85,Bengaluru City PS-50,6,1.0,1,1,1,1
+86,Bengaluru City PS-51,6,1.0,1,1,1,1
+87,Bengaluru City PS-52,6,1.0,1,1,1,1
+88,Bengaluru City PS-53,6,1.0,1,1,1,1
+89,Bengaluru City PS-54,6,1.0,1,1,1,1
+90,Bengaluru City PS-55,6,1.0,1,1,1,1
+91,Bengaluru City PS-56,6,1.0,1,1,1,1
+92,Bengaluru City PS-57,6,1.0,1,1,1,1
+93,Bengaluru City PS-58,6,1.0,1,1,1,1
+94,Bengaluru City PS-59,6,1.0,1,1,1,1
+95,Bengaluru City PS-60,6,1.0,1,1,1,1
+96,Bengaluru City PS-61,6,1.0,1,1,1,1
+97,Bengaluru City PS-62,6,1.0,1,1,1,1
+98,Bengaluru City PS-63,6,1.0,1,1,1,1
+99,Bengaluru City PS-64,6,1.0,1,1,1,1
+100,Bengaluru City PS-65,6,1.0,1,1,1,1
+101,Bengaluru City PS-66,6,1.0,1,1,1,1
+102,Bengaluru City PS-67,6,1.0,1,1,1,1
+103,Bengaluru City PS-68,6,1.0,1,1,1,1
+104,Bengaluru City PS-69,6,1.0,1,1,1,1
+105,Bengaluru City PS-70,6,1.0,1,1,1,1
+106,Bengaluru City PS-71,6,1.0,1,1,1,1
+107,Bengaluru City PS-72,6,1.0,1,1,1,1
+108,Bengaluru City PS-73,6,1.0,1,1,1,1
+109,Bengaluru City PS-74,6,1.0,1,1,1,1
+110,Bengaluru City PS-75,6,1.0,1,1,1,1
+111,Bengaluru City PS-76,6,1.0,1,1,1,1
+112,Bengaluru City PS-77,6,1.0,1,1,1,1
+113,Bengaluru City PS-78,6,1.0,1,1,1,1
+114,Bengaluru City PS-79,6,1.0,1,1,1,1
+115,Bengaluru City PS-80,6,1.0,1,1,1,1
+116,Bengaluru City PS-81,6,1.0,1,1,1,1
+117,Bengaluru City PS-82,6,1.0,1,1,1,1
+118,Bengaluru City PS-83,6,1.0,1,1,1,1
+119,Bengaluru City PS-84,6,1.0,1,1,1,1
+120,Bengaluru City PS-85,6,1.0,1,1,1,1
+121,Bengaluru City PS-86,6,1.0,1,1,1,1
+122,Bengaluru City PS-87,6,1.0,1,1,1,1
+123,Bengaluru City PS-88,6,1.0,1,1,1,1
+124,Bengaluru City PS-89,6,1.0,1,1,1,1
+125,Bengaluru City PS-90,6,1.0,1,1,1,1
+126,Bengaluru City PS-91,6,1.0,1,1,1,1
+127,Bengaluru City PS-92,6,1.0,1,1,1,1
+128,Bengaluru City PS-93,6,1.0,1,1,1,1
+129,Bengaluru City PS-94,6,1.0,1,1,1,1
+130,Bengaluru City PS-95,6,1.0,1,1,1,1
+131,Bengaluru City PS-96,6,1.0,1,1,1,1
+132,Bengaluru City PS-97,6,1.0,1,1,1,1
+133,Bengaluru City PS-98,6,1.0,1,1,1,1
+134,Bengaluru City PS-99,6,1.0,1,1,1,1
+135,Bengaluru City PS-100,6,1.0,1,1,1,1
+136,Bengaluru City PS-101,6,1.0,1,1,1,1
+137,Bengaluru City PS-102,6,1.0,1,1,1,1
+138,Bengaluru City PS-103,6,1.0,1,1,1,1
+139,Bengaluru City PS-104,6,1.0,1,1,1,1
+140,Bengaluru City PS-105,6,1.0,1,1,1,1
+141,Bengaluru City PS-106,6,1.0,1,1,1,1
+142,Bengaluru City PS-107,6,1.0,1,1,1,1
+143,Bengaluru City PS-108,6,1.0,1,1,1,1
+144,Bengaluru City PS-109,6,1.0,1,1,1,1
+145,Bengaluru City PS-110,6,1.0,1,1,1,1
+146,Bengaluru City PS-111,6,1.0,1,1,1,1
+147,Bengaluru City PS-112,6,1.0,1,1,1,1
+148,Bengaluru City PS-113,6,1.0,1,1,1,1
+149,Bengaluru City PS-114,6,1.0,1,1,1,1
+150,Bengaluru City PS-115,6,1.0,1,1,1,1
+151,Bengaluru City PS-116,6,1.0,1,1,1,1
+152,Bengaluru City PS-117,6,1.0,1,1,1,1
+153,Bengaluru City PS-118,6,1.0,1,1,1,1
+154,Bengaluru City PS-119,6,1.0,1,1,1,1
+155,Bengaluru City PS-120,6,1.0,1,1,1,1
+156,Bengaluru City PS-121,6,1.0,1,1,1,1
+157,Bengaluru City PS-122,6,1.0,1,1,1,1
+158,Bengaluru City PS-123,6,1.0,1,1,1,1
+159,Bengaluru City PS-124,6,1.0,1,1,1,1
+160,Bengaluru City PS-125,6,1.0,1,1,1,1
+161,Bengaluru City PS-126,6,1.0,1,1,1,1
+162,Bengaluru City PS-127,6,1.0,1,1,1,1
+163,Bengaluru City PS-128,6,1.0,1,1,1,1
+164,Bengaluru City PS-129,6,1.0,1,1,1,1
+165,Bengaluru City PS-130,6,1.0,1,1,1,1
+166,Bengaluru City PS-131,6,1.0,1,1,1,1
+167,Bengaluru City PS-132,6,1.0,1,1,1,1
+168,Bengaluru City PS-133,6,1.0,1,1,1,1
+169,Bengaluru City PS-134,6,1.0,1,1,1,1
+170,Bengaluru City PS-135,6,1.0,1,1,1,1
+171,Bengaluru City PS-136,6,1.0,1,1,1,1
+172,Bengaluru City PS-137,6,1.0,1,1,1,1
+173,Bengaluru City PS-138,6,1.0,1,1,1,1
+174,Bengaluru City PS-139,6,1.0,1,1,1,1
+175,Bengaluru City PS-140,6,1.0,1,1,1,1
+176,Bengaluru City PS-141,6,1.0,1,1,1,1
+177,Bengaluru City PS-142,6,1.0,1,1,1,1
+178,Bengaluru City PS-143,6,1.0,1,1,1,1
+179,Bengaluru City PS-144,6,1.0,1,1,1,1
+180,Bengaluru City PS-145,6,1.0,1,1,1,1
+181,Bengaluru City PS-146,6,1.0,1,1,1,1
+182,Bengaluru City PS-147,6,1.0,1,1,1,1
+183,Bengaluru City PS-148,6,1.0,1,1,1,1
+184,Bengaluru City PS-149,6,1.0,1,1,1,1
+185,Bengaluru City PS-150,6,1.0,1,1,1,1
+186,Bengaluru City PS-151,6,1.0,1,1,1,1
+187,Bengaluru City PS-152,6,1.0,1,1,1,1
+188,Bengaluru City PS-153,6,1.0,1,1,1,1
+189,Bengaluru City PS-154,6,1.0,1,1,1,1
+190,Bengaluru City PS-155,6,1.0,1,1,1,1
+191,Bengaluru City PS-156,6,1.0,1,1,1,1
+192,Bengaluru City PS-157,6,1.0,1,1,1,1
+193,Bengaluru City PS-158,6,1.0,1,1,1,1
+194,Bengaluru City PS-159,6,1.0,1,1,1,1
+195,Bengaluru City PS-160,6,1.0,1,1,1,1
+196,Bengaluru City PS-161,6,1.0,1,1,1,1
+197,Bengaluru City PS-162,6,1.0,1,1,1,1
+198,Bengaluru City PS-163,6,1.0,1,1,1,1
+199,Bengaluru City PS-164,6,1.0,1,1,1,1
+200,Bengaluru City PS-165,6,1.0,1,1,1,1
+201,Bengaluru City PS-166,6,1.0,1,1,1,1
+202,Bengaluru City PS-167,6,1.0,1,1,1,1
+203,Bengaluru City PS-168,6,1.0,1,1,1,1
+204,Bengaluru City PS-169,6,1.0,1,1,1,1
+205,Bengaluru City PS-170,6,1.0,1,1,1,1
+206,Bengaluru City PS-171,6,1.0,1,1,1,1
+207,Bengaluru City PS-172,6,1.0,1,1,1,1
+208,Bengaluru City PS-173,6,1.0,1,1,1,1
+209,Bengaluru City PS-174,6,1.0,1,1,1,1
+210,Bengaluru City PS-175,6,1.0,1,1,1,1
+211,Mysuru City PS-01,6,2.0,1,1,2,1
+212,Mysuru City PS-02,6,2.0,1,1,2,1
+213,Mysuru City PS-03,6,2.0,1,1,2,1
+214,Mysuru City PS-04,6,2.0,1,1,2,1
+215,Mysuru City PS-05,6,2.0,1,1,2,1
+216,Mysuru City PS-06,6,2.0,1,1,2,1
+217,Mysuru City PS-07,6,2.0,1,1,2,1
+218,Mysuru City PS-08,6,2.0,1,1,2,1
+219,Mysuru City PS-09,6,2.0,1,1,2,1
+220,Mysuru City PS-10,6,2.0,1,1,2,1
+221,Mysuru City PS-11,6,2.0,1,1,2,1
+222,Mysuru City PS-12,6,2.0,1,1,2,1
+223,Mysuru City PS-13,6,2.0,1,1,2,1
+224,Mysuru City PS-14,6,2.0,1,1,2,1
+225,Mysuru City PS-15,6,2.0,1,1,2,1
+226,Mysuru City PS-16,6,2.0,1,1,2,1
+227,Mysuru City PS-17,6,2.0,1,1,2,1
+228,Mysuru City PS-18,6,2.0,1,1,2,1
+229,Mysuru City PS-19,6,2.0,1,1,2,1
+230,Mysuru City PS-20,6,2.0,1,1,2,1
+231,Mysuru City PS-21,6,2.0,1,1,2,1
+232,Mysuru City PS-22,6,2.0,1,1,2,1
+233,Mysuru City PS-23,6,2.0,1,1,2,1
+234,Mysuru City PS-24,6,2.0,1,1,2,1
+235,Mysuru City PS-25,6,2.0,1,1,2,1
+236,Mysuru City PS-26,6,2.0,1,1,2,1
+237,Mysuru City PS-27,6,2.0,1,1,2,1
+238,Mysuru City PS-28,6,2.0,1,1,2,1
+239,Mysuru City PS-29,6,2.0,1,1,2,1
+240,Mysuru City PS-30,6,2.0,1,1,2,1
+241,Mysuru City PS-31,6,2.0,1,1,2,1
+242,Mysuru City PS-32,6,2.0,1,1,2,1
+243,Mysuru City PS-33,6,2.0,1,1,2,1
+244,Mysuru City PS-34,6,2.0,1,1,2,1
+245,Mysuru City PS-35,6,2.0,1,1,2,1
+246,Mysuru City PS-36,6,2.0,1,1,2,1
+247,Mysuru City PS-37,6,2.0,1,1,2,1
+248,Mysuru City PS-38,6,2.0,1,1,2,1
+249,Mysuru City PS-39,6,2.0,1,1,2,1
+250,Mysuru City PS-40,6,2.0,1,1,2,1
+251,Mangaluru City PS-01,6,3.0,1,1,3,1
+252,Mangaluru City PS-02,6,3.0,1,1,3,1
+253,Mangaluru City PS-03,6,3.0,1,1,3,1
+254,Mangaluru City PS-04,6,3.0,1,1,3,1
+255,Mangaluru City PS-05,6,3.0,1,1,3,1
+256,Mangaluru City PS-06,6,3.0,1,1,3,1
+257,Mangaluru City PS-07,6,3.0,1,1,3,1
+258,Mangaluru City PS-08,6,3.0,1,1,3,1
+259,Mangaluru City PS-09,6,3.0,1,1,3,1
+260,Mangaluru City PS-10,6,3.0,1,1,3,1
+261,Mangaluru City PS-11,6,3.0,1,1,3,1
+262,Mangaluru City PS-12,6,3.0,1,1,3,1
+263,Mangaluru City PS-13,6,3.0,1,1,3,1
+264,Mangaluru City PS-14,6,3.0,1,1,3,1
+265,Mangaluru City PS-15,6,3.0,1,1,3,1
+266,Mangaluru City PS-16,6,3.0,1,1,3,1
+267,Mangaluru City PS-17,6,3.0,1,1,3,1
+268,Mangaluru City PS-18,6,3.0,1,1,3,1
+269,Mangaluru City PS-19,6,3.0,1,1,3,1
+270,Mangaluru City PS-20,6,3.0,1,1,3,1
+271,Mangaluru City PS-21,6,3.0,1,1,3,1
+272,Mangaluru City PS-22,6,3.0,1,1,3,1
+273,Mangaluru City PS-23,6,3.0,1,1,3,1
+274,Mangaluru City PS-24,6,3.0,1,1,3,1
+275,Mangaluru City PS-25,6,3.0,1,1,3,1
+276,Mangaluru City PS-26,6,3.0,1,1,3,1
+277,Mangaluru City PS-27,6,3.0,1,1,3,1
+278,Mangaluru City PS-28,6,3.0,1,1,3,1
+279,Mangaluru City PS-29,6,3.0,1,1,3,1
+280,Mangaluru City PS-30,6,3.0,1,1,3,1
+281,Mangaluru City PS-31,6,3.0,1,1,3,1
+282,Mangaluru City PS-32,6,3.0,1,1,3,1
+283,Mangaluru City PS-33,6,3.0,1,1,3,1
+284,Mangaluru City PS-34,6,3.0,1,1,3,1
+285,Hubballi-Dharwad City PS-01,6,4.0,1,1,4,1
+286,Hubballi-Dharwad City PS-02,6,4.0,1,1,4,1
+287,Hubballi-Dharwad City PS-03,6,4.0,1,1,4,1
+288,Hubballi-Dharwad City PS-04,6,4.0,1,1,4,1
+289,Hubballi-Dharwad City PS-05,6,4.0,1,1,4,1
+290,Hubballi-Dharwad City PS-06,6,4.0,1,1,4,1
+291,Hubballi-Dharwad City PS-07,6,4.0,1,1,4,1
+292,Hubballi-Dharwad City PS-08,6,4.0,1,1,4,1
+293,Hubballi-Dharwad City PS-09,6,4.0,1,1,4,1
+294,Hubballi-Dharwad City PS-10,6,4.0,1,1,4,1
+295,Hubballi-Dharwad City PS-11,6,4.0,1,1,4,1
+296,Hubballi-Dharwad City PS-12,6,4.0,1,1,4,1
+297,Hubballi-Dharwad City PS-13,6,4.0,1,1,4,1
+298,Hubballi-Dharwad City PS-14,6,4.0,1,1,4,1
+299,Hubballi-Dharwad City PS-15,6,4.0,1,1,4,1
+300,Hubballi-Dharwad City PS-16,6,4.0,1,1,4,1
+301,Hubballi-Dharwad City PS-17,6,4.0,1,1,4,1
+302,Hubballi-Dharwad City PS-18,6,4.0,1,1,4,1
+303,Hubballi-Dharwad City PS-19,6,4.0,1,1,4,1
+304,Hubballi-Dharwad City PS-20,6,4.0,1,1,4,1
+305,Hubballi-Dharwad City PS-21,6,4.0,1,1,4,1
+306,Hubballi-Dharwad City PS-22,6,4.0,1,1,4,1
+307,Hubballi-Dharwad City PS-23,6,4.0,1,1,4,1
+308,Hubballi-Dharwad City PS-24,6,4.0,1,1,4,1
+309,Hubballi-Dharwad City PS-25,6,4.0,1,1,4,1
+310,Hubballi-Dharwad City PS-26,6,4.0,1,1,4,1
+311,Hubballi-Dharwad City PS-27,6,4.0,1,1,4,1
+312,Hubballi-Dharwad City PS-28,6,4.0,1,1,4,1
+313,Hubballi-Dharwad City PS-29,6,4.0,1,1,4,1
+314,Hubballi-Dharwad City PS-30,6,4.0,1,1,4,1
+315,Hubballi-Dharwad City PS-31,6,4.0,1,1,4,1
+316,Hubballi-Dharwad City PS-32,6,4.0,1,1,4,1
+317,Hubballi-Dharwad City PS-33,6,4.0,1,1,4,1
+318,Hubballi-Dharwad City PS-34,6,4.0,1,1,4,1
+319,Belagavi PS-01,6,5.0,1,1,5,1
+320,Belagavi PS-02,6,5.0,1,1,5,1
+321,Belagavi PS-03,6,5.0,1,1,5,1
+322,Belagavi PS-04,6,5.0,1,1,5,1
+323,Belagavi PS-05,6,5.0,1,1,5,1
+324,Belagavi PS-06,6,5.0,1,1,5,1
+325,Belagavi PS-07,6,5.0,1,1,5,1
+326,Belagavi PS-08,6,5.0,1,1,5,1
+327,Belagavi PS-09,6,5.0,1,1,5,1
+328,Belagavi PS-10,6,5.0,1,1,5,1
+329,Belagavi PS-11,6,5.0,1,1,5,1
+330,Belagavi PS-12,6,5.0,1,1,5,1
+331,Belagavi PS-13,6,5.0,1,1,5,1
+332,Belagavi PS-14,6,5.0,1,1,5,1
+333,Belagavi PS-15,6,5.0,1,1,5,1
+334,Belagavi PS-16,6,5.0,1,1,5,1
+335,Belagavi PS-17,6,5.0,1,1,5,1
+336,Belagavi PS-18,6,5.0,1,1,5,1
+337,Belagavi PS-19,6,5.0,1,1,5,1
+338,Belagavi PS-20,6,5.0,1,1,5,1
+339,Belagavi PS-21,6,5.0,1,1,5,1
+340,Belagavi PS-22,6,5.0,1,1,5,1
+341,Belagavi PS-23,6,5.0,1,1,5,1
+342,Belagavi PS-24,6,5.0,1,1,5,1
+343,Belagavi PS-25,6,5.0,1,1,5,1
+344,Belagavi PS-26,6,5.0,1,1,5,1
+345,Belagavi PS-27,6,5.0,1,1,5,1
+346,Belagavi PS-28,6,5.0,1,1,5,1
+347,Belagavi PS-29,6,5.0,1,1,5,1
+348,Belagavi PS-30,6,5.0,1,1,5,1
+349,Belagavi PS-31,6,5.0,1,1,5,1
+350,Belagavi PS-32,6,5.0,1,1,5,1
+351,Belagavi PS-33,6,5.0,1,1,5,1
+352,Belagavi PS-34,6,5.0,1,1,5,1
+353,Tumakuru PS-01,6,6.0,1,1,6,1
+354,Tumakuru PS-02,6,6.0,1,1,6,1
+355,Tumakuru PS-03,6,6.0,1,1,6,1
+356,Tumakuru PS-04,6,6.0,1,1,6,1
+357,Tumakuru PS-05,6,6.0,1,1,6,1
+358,Tumakuru PS-06,6,6.0,1,1,6,1
+359,Tumakuru PS-07,6,6.0,1,1,6,1
+360,Tumakuru PS-08,6,6.0,1,1,6,1
+361,Tumakuru PS-09,6,6.0,1,1,6,1
+362,Tumakuru PS-10,6,6.0,1,1,6,1
+363,Tumakuru PS-11,6,6.0,1,1,6,1
+364,Tumakuru PS-12,6,6.0,1,1,6,1
+365,Tumakuru PS-13,6,6.0,1,1,6,1
+366,Tumakuru PS-14,6,6.0,1,1,6,1
+367,Tumakuru PS-15,6,6.0,1,1,6,1
+368,Tumakuru PS-16,6,6.0,1,1,6,1
+369,Tumakuru PS-17,6,6.0,1,1,6,1
+370,Tumakuru PS-18,6,6.0,1,1,6,1
+371,Tumakuru PS-19,6,6.0,1,1,6,1
+372,Tumakuru PS-20,6,6.0,1,1,6,1
+373,Tumakuru PS-21,6,6.0,1,1,6,1
+374,Tumakuru PS-22,6,6.0,1,1,6,1
+375,Tumakuru PS-23,6,6.0,1,1,6,1
+376,Tumakuru PS-24,6,6.0,1,1,6,1
+377,Tumakuru PS-25,6,6.0,1,1,6,1
+378,Tumakuru PS-26,6,6.0,1,1,6,1
+379,Tumakuru PS-27,6,6.0,1,1,6,1
+380,Shivamogga PS-01,6,7.0,1,1,7,1
+381,Shivamogga PS-02,6,7.0,1,1,7,1
+382,Shivamogga PS-03,6,7.0,1,1,7,1
+383,Shivamogga PS-04,6,7.0,1,1,7,1
+384,Shivamogga PS-05,6,7.0,1,1,7,1
+385,Shivamogga PS-06,6,7.0,1,1,7,1
+386,Shivamogga PS-07,6,7.0,1,1,7,1
+387,Shivamogga PS-08,6,7.0,1,1,7,1
+388,Shivamogga PS-09,6,7.0,1,1,7,1
+389,Shivamogga PS-10,6,7.0,1,1,7,1
+390,Shivamogga PS-11,6,7.0,1,1,7,1
+391,Shivamogga PS-12,6,7.0,1,1,7,1
+392,Shivamogga PS-13,6,7.0,1,1,7,1
+393,Shivamogga PS-14,6,7.0,1,1,7,1
+394,Shivamogga PS-15,6,7.0,1,1,7,1
+395,Shivamogga PS-16,6,7.0,1,1,7,1
+396,Shivamogga PS-17,6,7.0,1,1,7,1
+397,Shivamogga PS-18,6,7.0,1,1,7,1
+398,Shivamogga PS-19,6,7.0,1,1,7,1
+399,Shivamogga PS-20,6,7.0,1,1,7,1
+400,Shivamogga PS-21,6,7.0,1,1,7,1
+401,Shivamogga PS-22,6,7.0,1,1,7,1
+402,Shivamogga PS-23,6,7.0,1,1,7,1
+403,Shivamogga PS-24,6,7.0,1,1,7,1
+404,Ballari PS-01,6,8.0,1,1,8,1
+405,Ballari PS-02,6,8.0,1,1,8,1
+406,Ballari PS-03,6,8.0,1,1,8,1
+407,Ballari PS-04,6,8.0,1,1,8,1
+408,Ballari PS-05,6,8.0,1,1,8,1
+409,Ballari PS-06,6,8.0,1,1,8,1
+410,Ballari PS-07,6,8.0,1,1,8,1
+411,Ballari PS-08,6,8.0,1,1,8,1
+412,Ballari PS-09,6,8.0,1,1,8,1
+413,Ballari PS-10,6,8.0,1,1,8,1
+414,Ballari PS-11,6,8.0,1,1,8,1
+415,Ballari PS-12,6,8.0,1,1,8,1
+416,Ballari PS-13,6,8.0,1,1,8,1
+417,Ballari PS-14,6,8.0,1,1,8,1
+418,Ballari PS-15,6,8.0,1,1,8,1
+419,Ballari PS-16,6,8.0,1,1,8,1
+420,Ballari PS-17,6,8.0,1,1,8,1
+421,Ballari PS-18,6,8.0,1,1,8,1
+422,Ballari PS-19,6,8.0,1,1,8,1
+423,Ballari PS-20,6,8.0,1,1,8,1
+424,Ballari PS-21,6,8.0,1,1,8,1
+425,Ballari PS-22,6,8.0,1,1,8,1
+426,Ballari PS-23,6,8.0,1,1,8,1
+427,Ballari PS-24,6,8.0,1,1,8,1
+428,Kalaburagi PS-01,6,9.0,1,1,9,1
+429,Kalaburagi PS-02,6,9.0,1,1,9,1
+430,Kalaburagi PS-03,6,9.0,1,1,9,1
+431,Kalaburagi PS-04,6,9.0,1,1,9,1
+432,Kalaburagi PS-05,6,9.0,1,1,9,1
+433,Kalaburagi PS-06,6,9.0,1,1,9,1
+434,Kalaburagi PS-07,6,9.0,1,1,9,1
+435,Kalaburagi PS-08,6,9.0,1,1,9,1
+436,Kalaburagi PS-09,6,9.0,1,1,9,1
+437,Kalaburagi PS-10,6,9.0,1,1,9,1
+438,Kalaburagi PS-11,6,9.0,1,1,9,1
+439,Kalaburagi PS-12,6,9.0,1,1,9,1
+440,Kalaburagi PS-13,6,9.0,1,1,9,1
+441,Kalaburagi PS-14,6,9.0,1,1,9,1
+442,Kalaburagi PS-15,6,9.0,1,1,9,1
+443,Kalaburagi PS-16,6,9.0,1,1,9,1
+444,Kalaburagi PS-17,6,9.0,1,1,9,1
+445,Kalaburagi PS-18,6,9.0,1,1,9,1
+446,Kalaburagi PS-19,6,9.0,1,1,9,1
+447,Kalaburagi PS-20,6,9.0,1,1,9,1
+448,Kalaburagi PS-21,6,9.0,1,1,9,1
+449,Kalaburagi PS-22,6,9.0,1,1,9,1
+450,Kalaburagi PS-23,6,9.0,1,1,9,1
+451,Kalaburagi PS-24,6,9.0,1,1,9,1
+452,Hassan PS-01,6,10.0,1,1,10,1
+453,Hassan PS-02,6,10.0,1,1,10,1
+454,Hassan PS-03,6,10.0,1,1,10,1
+455,Hassan PS-04,6,10.0,1,1,10,1
+456,Hassan PS-05,6,10.0,1,1,10,1
+457,Hassan PS-06,6,10.0,1,1,10,1
+458,Hassan PS-07,6,10.0,1,1,10,1
+459,Hassan PS-08,6,10.0,1,1,10,1
+460,Hassan PS-09,6,10.0,1,1,10,1
+461,Hassan PS-10,6,10.0,1,1,10,1
+462,Hassan PS-11,6,10.0,1,1,10,1
+463,Hassan PS-12,6,10.0,1,1,10,1
+464,Hassan PS-13,6,10.0,1,1,10,1
+465,Hassan PS-14,6,10.0,1,1,10,1
+466,Hassan PS-15,6,10.0,1,1,10,1
+467,Hassan PS-16,6,10.0,1,1,10,1
+468,Hassan PS-17,6,10.0,1,1,10,1
+469,Hassan PS-18,6,10.0,1,1,10,1
+470,Hassan PS-19,6,10.0,1,1,10,1
+471,Hassan PS-20,6,10.0,1,1,10,1
+472,Davanagere PS-01,6,11.0,1,1,11,1
+473,Davanagere PS-02,6,11.0,1,1,11,1
+474,Davanagere PS-03,6,11.0,1,1,11,1
+475,Davanagere PS-04,6,11.0,1,1,11,1
+476,Davanagere PS-05,6,11.0,1,1,11,1
+477,Davanagere PS-06,6,11.0,1,1,11,1
+478,Davanagere PS-07,6,11.0,1,1,11,1
+479,Davanagere PS-08,6,11.0,1,1,11,1
+480,Davanagere PS-09,6,11.0,1,1,11,1
+481,Davanagere PS-10,6,11.0,1,1,11,1
+482,Davanagere PS-11,6,11.0,1,1,11,1
+483,Davanagere PS-12,6,11.0,1,1,11,1
+484,Davanagere PS-13,6,11.0,1,1,11,1
+485,Davanagere PS-14,6,11.0,1,1,11,1
+486,Davanagere PS-15,6,11.0,1,1,11,1
+487,Davanagere PS-16,6,11.0,1,1,11,1
+488,Davanagere PS-17,6,11.0,1,1,11,1
+489,Davanagere PS-18,6,11.0,1,1,11,1
+490,Davanagere PS-19,6,11.0,1,1,11,1
+491,Davanagere PS-20,6,11.0,1,1,11,1
+492,Vijayapura PS-01,6,12.0,1,1,12,1
+493,Vijayapura PS-02,6,12.0,1,1,12,1
+494,Vijayapura PS-03,6,12.0,1,1,12,1
+495,Vijayapura PS-04,6,12.0,1,1,12,1
+496,Vijayapura PS-05,6,12.0,1,1,12,1
+497,Vijayapura PS-06,6,12.0,1,1,12,1
+498,Vijayapura PS-07,6,12.0,1,1,12,1
+499,Vijayapura PS-08,6,12.0,1,1,12,1
+500,Vijayapura PS-09,6,12.0,1,1,12,1
+501,Vijayapura PS-10,6,12.0,1,1,12,1
+502,Vijayapura PS-11,6,12.0,1,1,12,1
+503,Vijayapura PS-12,6,12.0,1,1,12,1
+504,Vijayapura PS-13,6,12.0,1,1,12,1
+505,Vijayapura PS-14,6,12.0,1,1,12,1
+506,Vijayapura PS-15,6,12.0,1,1,12,1
+507,Vijayapura PS-16,6,12.0,1,1,12,1
+508,Vijayapura PS-17,6,12.0,1,1,12,1
+509,Vijayapura PS-18,6,12.0,1,1,12,1
+510,Vijayapura PS-19,6,12.0,1,1,12,1
+511,Vijayapura PS-20,6,12.0,1,1,12,1
+512,Bengaluru Dist PS-01,6,13.0,1,1,13,1
+513,Bengaluru Dist PS-02,6,13.0,1,1,13,1
+514,Bengaluru Dist PS-03,6,13.0,1,1,13,1
+515,Bengaluru Dist PS-04,6,13.0,1,1,13,1
+516,Bengaluru Dist PS-05,6,13.0,1,1,13,1
+517,Bengaluru Dist PS-06,6,13.0,1,1,13,1
+518,Bengaluru Dist PS-07,6,13.0,1,1,13,1
+519,Bengaluru Dist PS-08,6,13.0,1,1,13,1
+520,Bengaluru Dist PS-09,6,13.0,1,1,13,1
+521,Bengaluru Dist PS-10,6,13.0,1,1,13,1
+522,Bengaluru Dist PS-11,6,13.0,1,1,13,1
+523,Bengaluru Dist PS-12,6,13.0,1,1,13,1
+524,Bengaluru Dist PS-13,6,13.0,1,1,13,1
+525,Bengaluru Dist PS-14,6,13.0,1,1,13,1
+526,Bengaluru Dist PS-15,6,13.0,1,1,13,1
+527,Bengaluru Dist PS-16,6,13.0,1,1,13,1
+528,Bengaluru Dist PS-17,6,13.0,1,1,13,1
+529,Mysuru Dist PS-01,6,14.0,1,1,14,1
+530,Mysuru Dist PS-02,6,14.0,1,1,14,1
+531,Mysuru Dist PS-03,6,14.0,1,1,14,1
+532,Mysuru Dist PS-04,6,14.0,1,1,14,1
+533,Mysuru Dist PS-05,6,14.0,1,1,14,1
+534,Mysuru Dist PS-06,6,14.0,1,1,14,1
+535,Mysuru Dist PS-07,6,14.0,1,1,14,1
+536,Mysuru Dist PS-08,6,14.0,1,1,14,1
+537,Mysuru Dist PS-09,6,14.0,1,1,14,1
+538,Mysuru Dist PS-10,6,14.0,1,1,14,1
+539,Mysuru Dist PS-11,6,14.0,1,1,14,1
+540,Mysuru Dist PS-12,6,14.0,1,1,14,1
+541,Mysuru Dist PS-13,6,14.0,1,1,14,1
+542,Dakshina Kannada PS-01,6,15.0,1,1,15,1
+543,Dakshina Kannada PS-02,6,15.0,1,1,15,1
+544,Dakshina Kannada PS-03,6,15.0,1,1,15,1
+545,Dakshina Kannada PS-04,6,15.0,1,1,15,1
+546,Dakshina Kannada PS-05,6,15.0,1,1,15,1
+547,Dakshina Kannada PS-06,6,15.0,1,1,15,1
+548,Dakshina Kannada PS-07,6,15.0,1,1,15,1
+549,Dakshina Kannada PS-08,6,15.0,1,1,15,1
+550,Dakshina Kannada PS-09,6,15.0,1,1,15,1
+551,Dakshina Kannada PS-10,6,15.0,1,1,15,1
+552,Dakshina Kannada PS-11,6,15.0,1,1,15,1
+553,Dakshina Kannada PS-12,6,15.0,1,1,15,1
+554,Dakshina Kannada PS-13,6,15.0,1,1,15,1
+555,Udupi PS-01,6,16.0,1,1,16,1
+556,Udupi PS-02,6,16.0,1,1,16,1
+557,Udupi PS-03,6,16.0,1,1,16,1
+558,Udupi PS-04,6,16.0,1,1,16,1
+559,Udupi PS-05,6,16.0,1,1,16,1
+560,Udupi PS-06,6,16.0,1,1,16,1
+561,Udupi PS-07,6,16.0,1,1,16,1
+562,Udupi PS-08,6,16.0,1,1,16,1
+563,Udupi PS-09,6,16.0,1,1,16,1
+564,Udupi PS-10,6,16.0,1,1,16,1
+565,Udupi PS-11,6,16.0,1,1,16,1
+566,Udupi PS-12,6,16.0,1,1,16,1
+567,Chitradurga PS-01,6,17.0,1,1,17,1
+568,Chitradurga PS-02,6,17.0,1,1,17,1
+569,Chitradurga PS-03,6,17.0,1,1,17,1
+570,Chitradurga PS-04,6,17.0,1,1,17,1
+571,Chitradurga PS-05,6,17.0,1,1,17,1
+572,Chitradurga PS-06,6,17.0,1,1,17,1
+573,Chitradurga PS-07,6,17.0,1,1,17,1
+574,Chitradurga PS-08,6,17.0,1,1,17,1
+575,Chitradurga PS-09,6,17.0,1,1,17,1
+576,Chitradurga PS-10,6,17.0,1,1,17,1
+577,Chitradurga PS-11,6,17.0,1,1,17,1
+578,Chitradurga PS-12,6,17.0,1,1,17,1
+579,Kolar PS-01,6,18.0,1,1,18,1
+580,Kolar PS-02,6,18.0,1,1,18,1
+581,Kolar PS-03,6,18.0,1,1,18,1
+582,Kolar PS-04,6,18.0,1,1,18,1
+583,Kolar PS-05,6,18.0,1,1,18,1
+584,Kolar PS-06,6,18.0,1,1,18,1
+585,Kolar PS-07,6,18.0,1,1,18,1
+586,Kolar PS-08,6,18.0,1,1,18,1
+587,Kolar PS-09,6,18.0,1,1,18,1
+588,Kolar PS-10,6,18.0,1,1,18,1
+589,Kolar PS-11,6,18.0,1,1,18,1
+590,Kolar PS-12,6,18.0,1,1,18,1
+591,Mandya PS-01,6,19.0,1,1,19,1
+592,Mandya PS-02,6,19.0,1,1,19,1
+593,Mandya PS-03,6,19.0,1,1,19,1
+594,Mandya PS-04,6,19.0,1,1,19,1
+595,Mandya PS-05,6,19.0,1,1,19,1
+596,Mandya PS-06,6,19.0,1,1,19,1
+597,Mandya PS-07,6,19.0,1,1,19,1
+598,Mandya PS-08,6,19.0,1,1,19,1
+599,Mandya PS-09,6,19.0,1,1,19,1
+600,Mandya PS-10,6,19.0,1,1,19,1
+601,Mandya PS-11,6,19.0,1,1,19,1
+602,Mandya PS-12,6,19.0,1,1,19,1
+603,Raichur PS-01,6,20.0,1,1,20,1
+604,Raichur PS-02,6,20.0,1,1,20,1
+605,Raichur PS-03,6,20.0,1,1,20,1
+606,Raichur PS-04,6,20.0,1,1,20,1
+607,Raichur PS-05,6,20.0,1,1,20,1
+608,Raichur PS-06,6,20.0,1,1,20,1
+609,Raichur PS-07,6,20.0,1,1,20,1
+610,Raichur PS-08,6,20.0,1,1,20,1
+611,Raichur PS-09,6,20.0,1,1,20,1
+612,Raichur PS-10,6,20.0,1,1,20,1
+613,Raichur PS-11,6,20.0,1,1,20,1
+614,Raichur PS-12,6,20.0,1,1,20,1
+615,Bidar PS-01,6,21.0,1,1,21,1
+616,Bidar PS-02,6,21.0,1,1,21,1
+617,Bidar PS-03,6,21.0,1,1,21,1
+618,Bidar PS-04,6,21.0,1,1,21,1
+619,Bidar PS-05,6,21.0,1,1,21,1
+620,Bidar PS-06,6,21.0,1,1,21,1
+621,Bidar PS-07,6,21.0,1,1,21,1
+622,Bidar PS-08,6,21.0,1,1,21,1
+623,Bidar PS-09,6,21.0,1,1,21,1
+624,Bidar PS-10,6,21.0,1,1,21,1
+625,Bidar PS-11,6,21.0,1,1,21,1
+626,Bagalkot PS-01,6,22.0,1,1,22,1
+627,Bagalkot PS-02,6,22.0,1,1,22,1
+628,Bagalkot PS-03,6,22.0,1,1,22,1
+629,Bagalkot PS-04,6,22.0,1,1,22,1
+630,Bagalkot PS-05,6,22.0,1,1,22,1
+631,Bagalkot PS-06,6,22.0,1,1,22,1
+632,Bagalkot PS-07,6,22.0,1,1,22,1
+633,Bagalkot PS-08,6,22.0,1,1,22,1
+634,Bagalkot PS-09,6,22.0,1,1,22,1
+635,Bagalkot PS-10,6,22.0,1,1,22,1
+636,Bagalkot PS-11,6,22.0,1,1,22,1
+637,Gadag PS-01,6,23.0,1,1,23,1
+638,Gadag PS-02,6,23.0,1,1,23,1
+639,Gadag PS-03,6,23.0,1,1,23,1
+640,Gadag PS-04,6,23.0,1,1,23,1
+641,Gadag PS-05,6,23.0,1,1,23,1
+642,Gadag PS-06,6,23.0,1,1,23,1
+643,Gadag PS-07,6,23.0,1,1,23,1
+644,Gadag PS-08,6,23.0,1,1,23,1
+645,Gadag PS-09,6,23.0,1,1,23,1
+646,Haveri PS-01,6,24.0,1,1,24,1
+647,Haveri PS-02,6,24.0,1,1,24,1
+648,Haveri PS-03,6,24.0,1,1,24,1
+649,Haveri PS-04,6,24.0,1,1,24,1
+650,Haveri PS-05,6,24.0,1,1,24,1
+651,Haveri PS-06,6,24.0,1,1,24,1
+652,Haveri PS-07,6,24.0,1,1,24,1
+653,Haveri PS-08,6,24.0,1,1,24,1
+654,Haveri PS-09,6,24.0,1,1,24,1
+655,Koppal PS-01,6,25.0,1,1,25,1
+656,Koppal PS-02,6,25.0,1,1,25,1
+657,Koppal PS-03,6,25.0,1,1,25,1
+658,Koppal PS-04,6,25.0,1,1,25,1
+659,Koppal PS-05,6,25.0,1,1,25,1
+660,Koppal PS-06,6,25.0,1,1,25,1
+661,Koppal PS-07,6,25.0,1,1,25,1
+662,Koppal PS-08,6,25.0,1,1,25,1
+663,Koppal PS-09,6,25.0,1,1,25,1
+664,Yadgir PS-01,6,26.0,1,1,26,1
+665,Yadgir PS-02,6,26.0,1,1,26,1
+666,Yadgir PS-03,6,26.0,1,1,26,1
+667,Yadgir PS-04,6,26.0,1,1,26,1
+668,Yadgir PS-05,6,26.0,1,1,26,1
+669,Yadgir PS-06,6,26.0,1,1,26,1
+670,Yadgir PS-07,6,26.0,1,1,26,1
+671,Yadgir PS-08,6,26.0,1,1,26,1
+672,Chikkamagaluru PS-01,6,27.0,1,1,27,1
+673,Chikkamagaluru PS-02,6,27.0,1,1,27,1
+674,Chikkamagaluru PS-03,6,27.0,1,1,27,1
+675,Chikkamagaluru PS-04,6,27.0,1,1,27,1
+676,Chikkamagaluru PS-05,6,27.0,1,1,27,1
+677,Chikkamagaluru PS-06,6,27.0,1,1,27,1
+678,Chikkamagaluru PS-07,6,27.0,1,1,27,1
+679,Chikkamagaluru PS-08,6,27.0,1,1,27,1
+680,Chikkaballapura PS-01,6,28.0,1,1,28,1
+681,Chikkaballapura PS-02,6,28.0,1,1,28,1
+682,Chikkaballapura PS-03,6,28.0,1,1,28,1
+683,Chikkaballapura PS-04,6,28.0,1,1,28,1
+684,Chikkaballapura PS-05,6,28.0,1,1,28,1
+685,Chikkaballapura PS-06,6,28.0,1,1,28,1
+686,Chikkaballapura PS-07,6,28.0,1,1,28,1
+687,Chikkaballapura PS-08,6,28.0,1,1,28,1
+688,Ramanagara PS-01,6,29.0,1,1,29,1
+689,Ramanagara PS-02,6,29.0,1,1,29,1
+690,Ramanagara PS-03,6,29.0,1,1,29,1
+691,Ramanagara PS-04,6,29.0,1,1,29,1
+692,Ramanagara PS-05,6,29.0,1,1,29,1
+693,Ramanagara PS-06,6,29.0,1,1,29,1
+694,Ramanagara PS-07,6,29.0,1,1,29,1
+695,Ramanagara PS-08,6,29.0,1,1,29,1
+696,Uttara Kannada PS-01,6,30.0,1,1,30,1
+697,Uttara Kannada PS-02,6,30.0,1,1,30,1
+698,Uttara Kannada PS-03,6,30.0,1,1,30,1
+699,Uttara Kannada PS-04,6,30.0,1,1,30,1
+700,Uttara Kannada PS-05,6,30.0,1,1,30,1
+701,Uttara Kannada PS-06,6,30.0,1,1,30,1
+702,Uttara Kannada PS-07,6,30.0,1,1,30,1
+703,Uttara Kannada PS-08,6,30.0,1,1,30,1
+704,Dharwad Dist PS-01,6,31.0,1,1,31,1
+705,Dharwad Dist PS-02,6,31.0,1,1,31,1
+706,Dharwad Dist PS-03,6,31.0,1,1,31,1
+707,Dharwad Dist PS-04,6,31.0,1,1,31,1
+708,Dharwad Dist PS-05,6,31.0,1,1,31,1
+709,Dharwad Dist PS-06,6,31.0,1,1,31,1
+710,Dharwad Dist PS-07,6,31.0,1,1,31,1
+711,Vijayanagara PS-01,6,32.0,1,1,32,1
+712,Vijayanagara PS-02,6,32.0,1,1,32,1
+713,Vijayanagara PS-03,6,32.0,1,1,32,1
+714,Vijayanagara PS-04,6,32.0,1,1,32,1
+715,Vijayanagara PS-05,6,32.0,1,1,32,1
+716,Vijayanagara PS-06,6,32.0,1,1,32,1
+717,Vijayanagara PS-07,6,32.0,1,1,32,1
+718,Kodagu PS-01,6,33.0,1,1,33,1
+719,Kodagu PS-02,6,33.0,1,1,33,1
+720,Kodagu PS-03,6,33.0,1,1,33,1
+721,Kodagu PS-04,6,33.0,1,1,33,1
+722,Kodagu PS-05,6,33.0,1,1,33,1
+723,Chamarajanagar PS-01,6,34.0,1,1,34,1
+724,Chamarajanagar PS-02,6,34.0,1,1,34,1
+725,Chamarajanagar PS-03,6,34.0,1,1,34,1
+726,Chamarajanagar PS-04,6,34.0,1,1,34,1
+727,Chamarajanagar PS-05,6,34.0,1,1,34,1
+728,Kalyana Karnataka Rly PS-01,6,35.0,1,1,35,1
+729,Kalyana Karnataka Rly PS-02,6,35.0,1,1,35,1
+730,Kalyana Karnataka Rly PS-03,6,35.0,1,1,35,1
+731,Kalyana Karnataka Rly PS-04,6,35.0,1,1,35,1
+732,Kalyana Karnataka Rly PS-05,6,35.0,1,1,35,1

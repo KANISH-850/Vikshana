@@ -1,12 +1,26 @@
-import React, { createContext, useContext, useState } from 'react';
-import { useOfficerIdentity } from '../hooks/useOfficerIdentity';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import useAuth from '../hooks/useAuth';
 
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
     const [theme, setTheme] = useState('light');
-    const { officerId } = useOfficerIdentity();
-    const [officer, setOfficer] = useState({ name: 'Officer K', role: 'Lead Investigator', id: officerId });
+    const { user } = useAuth();
+    
+    const [officer, setOfficer] = useState({ name: '', role: '', id: null });
+
+    useEffect(() => {
+        if (user) {
+            setOfficer({
+                name: user.name || 'Officer',
+                role: user.email || 'Investigator',
+                id: user.id
+            });
+        } else {
+            setOfficer({ name: '', role: '', id: null });
+        }
+    }, [user]);
+
     const [selectedCase, setSelectedCase] = useState(null);
 
     const toggleTheme = () => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));

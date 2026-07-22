@@ -7,5 +7,6 @@ const router = express.Router();
 // FinancialTransaction/TimelineEvent rows for every existing case so the
 // investigation copilot has real, citable data. Idempotent per case/table.
 router.post('/seed', DevController.seed);
+router.get('/check-tables', DevController.checkTables);
 
 module.exports = router;

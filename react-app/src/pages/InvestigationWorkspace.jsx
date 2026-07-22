@@ -10,6 +10,7 @@ import EvidenceModal from '../components/chat/EvidenceModal';
 import { resolveSlashCommand, SLASH_COMMANDS } from '../utils/slashCommands';
 import * as conversationService from '../services/conversationService';
 import { exportAsMarkdown } from '../utils/exportConversation';
+import DecisionSupportPanel from '../components/investigation/DecisionSupportPanel';
 import styles from './InvestigationWorkspace.module.css';
 
 const HELP_TEXT = `**Available commands**\n\n${SLASH_COMMANDS.map((c) => `- \`${c.command}\` — ${c.description}`).join('\n')}`;
@@ -192,6 +193,11 @@ const InvestigationChat = ({ caseId }) => {
                         onStop={stopGeneration}
                         disabled={loading || uploading}
                     />
+                </div>
+
+                {/* Investigator Decision Support Module */}
+                <div style={{ marginTop: '16px' }} data-vik-no-print>
+                    <DecisionSupportPanel caseId={caseId} />
                 </div>
             </div>
 

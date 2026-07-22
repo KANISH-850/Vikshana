@@ -15,6 +15,10 @@ const signalRoutes = require('./routes/signal.routes');
 const jobRoutes = require('./routes/job.routes');
 const mlRoutes = require('./routes/ml.routes');
 const convokraftRoutes = require('./routes/convokraft.routes');
+const sociologicalRoutes = require('./routes/sociological.routes');
+const offenderRoutes = require('./routes/offender.routes');
+const decisionRoutes = require('./routes/decision.routes');
+const forecastingRoutes = require('./routes/forecasting.routes');
 
 const app = express();
 
@@ -35,6 +39,10 @@ app.use('/signals', signalRoutes);
 app.use('/jobs', jobRoutes);
 app.use('/ml', mlRoutes);
 app.use('/convokraft', convokraftRoutes);
+app.use('/sociological', sociologicalRoutes);
+app.use('/offender', offenderRoutes);
+app.use('/decision', decisionRoutes);
+app.use('/forecasting', forecastingRoutes);
 
 // Fallback for missing routes
 app.use((req, res) => {

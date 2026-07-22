@@ -1,0 +1,258 @@
+CourtID,CourtName,DistrictID,StateID,Active
+1,Bengaluru City Sessions Court,1,1,1
+2,Bengaluru City Special Court,1,1,1
+3,Bengaluru City JMFC Court 2,1,1,1
+4,Bengaluru City JMFC Court 3,1,1,1
+5,Bengaluru City JMFC Court 4,1,1,1
+6,Bengaluru City JMFC Court 5,1,1,1
+7,Bengaluru City JMFC Court 6,1,1,1
+8,Bengaluru City JMFC Court 7,1,1,1
+9,Bengaluru City JMFC Court 8,1,1,1
+10,Bengaluru City JMFC Court 9,1,1,1
+11,Mysuru City Sessions Court,2,1,1
+12,Mysuru City Special Court,2,1,1
+13,Mysuru City JMFC Court 2,2,1,1
+14,Mysuru City JMFC Court 3,2,1,1
+15,Mysuru City JMFC Court 4,2,1,1
+16,Mysuru City JMFC Court 5,2,1,1
+17,Mysuru City JMFC Court 6,2,1,1
+18,Mysuru City JMFC Court 7,2,1,1
+19,Mysuru City JMFC Court 8,2,1,1
+20,Mysuru City JMFC Court 9,2,1,1
+21,Mangaluru City Sessions Court,3,1,1
+22,Mangaluru City Special Court,3,1,1
+23,Mangaluru City JMFC Court 2,3,1,1
+24,Mangaluru City JMFC Court 3,3,1,1
+25,Mangaluru City JMFC Court 4,3,1,1
+26,Mangaluru City JMFC Court 5,3,1,1
+27,Mangaluru City JMFC Court 6,3,1,1
+28,Mangaluru City JMFC Court 7,3,1,1
+29,Mangaluru City JMFC Court 8,3,1,1
+30,Mangaluru City JMFC Court 9,3,1,1
+31,Hubballi-Dharwad City Sessions Court,4,1,1
+32,Hubballi-Dharwad City Special Court,4,1,1
+33,Hubballi-Dharwad City JMFC Court 2,4,1,1
+34,Hubballi-Dharwad City JMFC Court 3,4,1,1
+35,Hubballi-Dharwad City JMFC Court 4,4,1,1
+36,Hubballi-Dharwad City JMFC Court 5,4,1,1
+37,Hubballi-Dharwad City JMFC Court 6,4,1,1
+38,Hubballi-Dharwad City JMFC Court 7,4,1,1
+39,Hubballi-Dharwad City JMFC Court 8,4,1,1
+40,Hubballi-Dharwad City JMFC Court 9,4,1,1
+41,Belagavi Sessions Court,5,1,1
+42,Belagavi JMFC Court 1,5,1,1
+43,Belagavi JMFC Court 2,5,1,1
+44,Belagavi JMFC Court 3,5,1,1
+45,Belagavi JMFC Court 4,5,1,1
+46,Belagavi JMFC Court 5,5,1,1
+47,Belagavi JMFC Court 6,5,1,1
+48,Tumakuru Sessions Court,6,1,1
+49,Tumakuru JMFC Court 1,6,1,1
+50,Tumakuru JMFC Court 2,6,1,1
+51,Tumakuru JMFC Court 3,6,1,1
+52,Tumakuru JMFC Court 4,6,1,1
+53,Tumakuru JMFC Court 5,6,1,1
+54,Tumakuru JMFC Court 6,6,1,1
+55,Shivamogga Sessions Court,7,1,1
+56,Shivamogga JMFC Court 1,7,1,1
+57,Shivamogga JMFC Court 2,7,1,1
+58,Shivamogga JMFC Court 3,7,1,1
+59,Shivamogga JMFC Court 4,7,1,1
+60,Shivamogga JMFC Court 5,7,1,1
+61,Shivamogga JMFC Court 6,7,1,1
+62,Ballari Sessions Court,8,1,1
+63,Ballari JMFC Court 1,8,1,1
+64,Ballari JMFC Court 2,8,1,1
+65,Ballari JMFC Court 3,8,1,1
+66,Ballari JMFC Court 4,8,1,1
+67,Ballari JMFC Court 5,8,1,1
+68,Ballari JMFC Court 6,8,1,1
+69,Kalaburagi Sessions Court,9,1,1
+70,Kalaburagi JMFC Court 1,9,1,1
+71,Kalaburagi JMFC Court 2,9,1,1
+72,Kalaburagi JMFC Court 3,9,1,1
+73,Kalaburagi JMFC Court 4,9,1,1
+74,Kalaburagi JMFC Court 5,9,1,1
+75,Kalaburagi JMFC Court 6,9,1,1
+76,Hassan Sessions Court,10,1,1
+77,Hassan JMFC Court 1,10,1,1
+78,Hassan JMFC Court 2,10,1,1
+79,Hassan JMFC Court 3,10,1,1
+80,Hassan JMFC Court 4,10,1,1
+81,Hassan JMFC Court 5,10,1,1
+82,Hassan JMFC Court 6,10,1,1
+83,Davanagere Sessions Court,11,1,1
+84,Davanagere JMFC Court 1,11,1,1
+85,Davanagere JMFC Court 2,11,1,1
+86,Davanagere JMFC Court 3,11,1,1
+87,Davanagere JMFC Court 4,11,1,1
+88,Davanagere JMFC Court 5,11,1,1
+89,Davanagere JMFC Court 6,11,1,1
+90,Vijayapura Sessions Court,12,1,1
+91,Vijayapura JMFC Court 1,12,1,1
+92,Vijayapura JMFC Court 2,12,1,1
+93,Vijayapura JMFC Court 3,12,1,1
+94,Vijayapura JMFC Court 4,12,1,1
+95,Vijayapura JMFC Court 5,12,1,1
+96,Vijayapura JMFC Court 6,12,1,1
+97,Bengaluru Dist Sessions Court,13,1,1
+98,Bengaluru Dist JMFC Court 1,13,1,1
+99,Bengaluru Dist JMFC Court 2,13,1,1
+100,Bengaluru Dist JMFC Court 3,13,1,1
+101,Bengaluru Dist JMFC Court 4,13,1,1
+102,Bengaluru Dist JMFC Court 5,13,1,1
+103,Bengaluru Dist JMFC Court 6,13,1,1
+104,Mysuru Dist Sessions Court,14,1,1
+105,Mysuru Dist JMFC Court 1,14,1,1
+106,Mysuru Dist JMFC Court 2,14,1,1
+107,Mysuru Dist JMFC Court 3,14,1,1
+108,Mysuru Dist JMFC Court 4,14,1,1
+109,Mysuru Dist JMFC Court 5,14,1,1
+110,Mysuru Dist JMFC Court 6,14,1,1
+111,Dakshina Kannada Sessions Court,15,1,1
+112,Dakshina Kannada JMFC Court 1,15,1,1
+113,Dakshina Kannada JMFC Court 2,15,1,1
+114,Dakshina Kannada JMFC Court 3,15,1,1
+115,Dakshina Kannada JMFC Court 4,15,1,1
+116,Dakshina Kannada JMFC Court 5,15,1,1
+117,Dakshina Kannada JMFC Court 6,15,1,1
+118,Udupi Sessions Court,16,1,1
+119,Udupi JMFC Court 1,16,1,1
+120,Udupi JMFC Court 2,16,1,1
+121,Udupi JMFC Court 3,16,1,1
+122,Udupi JMFC Court 4,16,1,1
+123,Udupi JMFC Court 5,16,1,1
+124,Udupi JMFC Court 6,16,1,1
+125,Chitradurga Sessions Court,17,1,1
+126,Chitradurga JMFC Court 1,17,1,1
+127,Chitradurga JMFC Court 2,17,1,1
+128,Chitradurga JMFC Court 3,17,1,1
+129,Chitradurga JMFC Court 4,17,1,1
+130,Chitradurga JMFC Court 5,17,1,1
+131,Chitradurga JMFC Court 6,17,1,1
+132,Kolar Sessions Court,18,1,1
+133,Kolar JMFC Court 1,18,1,1
+134,Kolar JMFC Court 2,18,1,1
+135,Kolar JMFC Court 3,18,1,1
+136,Kolar JMFC Court 4,18,1,1
+137,Kolar JMFC Court 5,18,1,1
+138,Kolar JMFC Court 6,18,1,1
+139,Mandya Sessions Court,19,1,1
+140,Mandya JMFC Court 1,19,1,1
+141,Mandya JMFC Court 2,19,1,1
+142,Mandya JMFC Court 3,19,1,1
+143,Mandya JMFC Court 4,19,1,1
+144,Mandya JMFC Court 5,19,1,1
+145,Mandya JMFC Court 6,19,1,1
+146,Raichur Sessions Court,20,1,1
+147,Raichur JMFC Court 1,20,1,1
+148,Raichur JMFC Court 2,20,1,1
+149,Raichur JMFC Court 3,20,1,1
+150,Raichur JMFC Court 4,20,1,1
+151,Raichur JMFC Court 5,20,1,1
+152,Raichur JMFC Court 6,20,1,1
+153,Bidar Sessions Court,21,1,1
+154,Bidar JMFC Court 1,21,1,1
+155,Bidar JMFC Court 2,21,1,1
+156,Bidar JMFC Court 3,21,1,1
+157,Bidar JMFC Court 4,21,1,1
+158,Bidar JMFC Court 5,21,1,1
+159,Bidar JMFC Court 6,21,1,1
+160,Bagalkot Sessions Court,22,1,1
+161,Bagalkot JMFC Court 1,22,1,1
+162,Bagalkot JMFC Court 2,22,1,1
+163,Bagalkot JMFC Court 3,22,1,1
+164,Bagalkot JMFC Court 4,22,1,1
+165,Bagalkot JMFC Court 5,22,1,1
+166,Bagalkot JMFC Court 6,22,1,1
+167,Gadag Sessions Court,23,1,1
+168,Gadag JMFC Court 1,23,1,1
+169,Gadag JMFC Court 2,23,1,1
+170,Gadag JMFC Court 3,23,1,1
+171,Gadag JMFC Court 4,23,1,1
+172,Gadag JMFC Court 5,23,1,1
+173,Gadag JMFC Court 6,23,1,1
+174,Haveri Sessions Court,24,1,1
+175,Haveri JMFC Court 1,24,1,1
+176,Haveri JMFC Court 2,24,1,1
+177,Haveri JMFC Court 3,24,1,1
+178,Haveri JMFC Court 4,24,1,1
+179,Haveri JMFC Court 5,24,1,1
+180,Haveri JMFC Court 6,24,1,1
+181,Koppal Sessions Court,25,1,1
+182,Koppal JMFC Court 1,25,1,1
+183,Koppal JMFC Court 2,25,1,1
+184,Koppal JMFC Court 3,25,1,1
+185,Koppal JMFC Court 4,25,1,1
+186,Koppal JMFC Court 5,25,1,1
+187,Koppal JMFC Court 6,25,1,1
+188,Yadgir Sessions Court,26,1,1
+189,Yadgir JMFC Court 1,26,1,1
+190,Yadgir JMFC Court 2,26,1,1
+191,Yadgir JMFC Court 3,26,1,1
+192,Yadgir JMFC Court 4,26,1,1
+193,Yadgir JMFC Court 5,26,1,1
+194,Yadgir JMFC Court 6,26,1,1
+195,Chikkamagaluru Sessions Court,27,1,1
+196,Chikkamagaluru JMFC Court 1,27,1,1
+197,Chikkamagaluru JMFC Court 2,27,1,1
+198,Chikkamagaluru JMFC Court 3,27,1,1
+199,Chikkamagaluru JMFC Court 4,27,1,1
+200,Chikkamagaluru JMFC Court 5,27,1,1
+201,Chikkamagaluru JMFC Court 6,27,1,1
+202,Chikkaballapura Sessions Court,28,1,1
+203,Chikkaballapura JMFC Court 1,28,1,1
+204,Chikkaballapura JMFC Court 2,28,1,1
+205,Chikkaballapura JMFC Court 3,28,1,1
+206,Chikkaballapura JMFC Court 4,28,1,1
+207,Chikkaballapura JMFC Court 5,28,1,1
+208,Chikkaballapura JMFC Court 6,28,1,1
+209,Ramanagara Sessions Court,29,1,1
+210,Ramanagara JMFC Court 1,29,1,1
+211,Ramanagara JMFC Court 2,29,1,1
+212,Ramanagara JMFC Court 3,29,1,1
+213,Ramanagara JMFC Court 4,29,1,1
+214,Ramanagara JMFC Court 5,29,1,1
+215,Ramanagara JMFC Court 6,29,1,1
+216,Uttara Kannada Sessions Court,30,1,1
+217,Uttara Kannada JMFC Court 1,30,1,1
+218,Uttara Kannada JMFC Court 2,30,1,1
+219,Uttara Kannada JMFC Court 3,30,1,1
+220,Uttara Kannada JMFC Court 4,30,1,1
+221,Uttara Kannada JMFC Court 5,30,1,1
+222,Uttara Kannada JMFC Court 6,30,1,1
+223,Dharwad Dist Sessions Court,31,1,1
+224,Dharwad Dist JMFC Court 1,31,1,1
+225,Dharwad Dist JMFC Court 2,31,1,1
+226,Dharwad Dist JMFC Court 3,31,1,1
+227,Dharwad Dist JMFC Court 4,31,1,1
+228,Dharwad Dist JMFC Court 5,31,1,1
+229,Dharwad Dist JMFC Court 6,31,1,1
+230,Vijayanagara Sessions Court,32,1,1
+231,Vijayanagara JMFC Court 1,32,1,1
+232,Vijayanagara JMFC Court 2,32,1,1
+233,Vijayanagara JMFC Court 3,32,1,1
+234,Vijayanagara JMFC Court 4,32,1,1
+235,Vijayanagara JMFC Court 5,32,1,1
+236,Vijayanagara JMFC Court 6,32,1,1
+237,Kodagu Sessions Court,33,1,1
+238,Kodagu JMFC Court 1,33,1,1
+239,Kodagu JMFC Court 2,33,1,1
+240,Kodagu JMFC Court 3,33,1,1
+241,Kodagu JMFC Court 4,33,1,1
+242,Kodagu JMFC Court 5,33,1,1
+243,Kodagu JMFC Court 6,33,1,1
+244,Chamarajanagar Sessions Court,34,1,1
+245,Chamarajanagar JMFC Court 1,34,1,1
+246,Chamarajanagar JMFC Court 2,34,1,1
+247,Chamarajanagar JMFC Court 3,34,1,1
+248,Chamarajanagar JMFC Court 4,34,1,1
+249,Chamarajanagar JMFC Court 5,34,1,1
+250,Chamarajanagar JMFC Court 6,34,1,1
+251,Kalyana Karnataka Rly Sessions Court,35,1,1
+252,Kalyana Karnataka Rly JMFC Court 1,35,1,1
+253,Kalyana Karnataka Rly JMFC Court 2,35,1,1
+254,Kalyana Karnataka Rly JMFC Court 3,35,1,1
+255,Kalyana Karnataka Rly JMFC Court 4,35,1,1
+256,Kalyana Karnataka Rly JMFC Court 5,35,1,1
+257,Kalyana Karnataka Rly JMFC Court 6,35,1,1

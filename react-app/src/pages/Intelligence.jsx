@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldAlert, AlertTriangle, TrendingUp, Users, Target, Activity } from 'lucide-react';
+import { ShieldAlert, AlertTriangle, TrendingUp, Users, Target, Activity, LayoutGrid, Brain, UserCheck } from 'lucide-react';
 import api from '../services/api';
+import SociologicalInsights from './SociologicalInsights';
+import SocialRiskIntelligence from './SocialRiskIntelligence';
+import OffenderProfiling from '../components/offender/OffenderProfiling';
+import CrimeForecasting from '../components/forecasting/CrimeForecasting';
+import { useLanguage } from '../context/LanguageContext';
 
 const Intelligence = () => {
+    const { t } = useLanguage();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState('crime');
 
     useEffect(() => {
         api.get('/dashboard')
@@ -17,17 +24,87 @@ const Intelligence = () => {
             .finally(() => setLoading(false));
     }, []);
 
-    if (loading) return <div style={{ color: 'var(--text-secondary)', padding: '20px' }}>Syncing with sector intelligence networks...</div>;
-    if (!data) return <div style={{ color: 'var(--accent-danger)', padding: '20px' }}>Failed to establish connection with Vikshana Intelligence Services.</div>;
+    if (loading) return <div style={{ color: 'var(--text-secondary)', padding: '20px' }}>{t('common.loading', 'Syncing with sector intelligence networks...')}</div>;
+    if (!data) return <div style={{ color: 'var(--accent-danger)', padding: '20px' }}>{t('intelligence.analysisEngineError', 'Failed to establish connection with Vikshana Intelligence Services.')}</div>;
 
     return (
         <div className="page-container" style={{ padding: '0 20px', height: '100%', display: 'flex', flexDirection: 'column', overflowY: 'auto', paddingBottom: '32px' }}>
-            <div style={{ marginBottom: '8px', flexShrink: 0 }}>
-                <h1 className="premium-title">Crime Intelligence Command</h1>
-                <p className="premium-subtitle">Automated sector analysis, high-threat alerts, and suspect tracking feeds.</p>
+            <div style={{ marginBottom: '16px', flexShrink: 0 }}>
+                <h1 className="premium-title">{t('intelligence.crimeIntelligenceTab', 'Intelligence Command')}</h1>
+                <p className="premium-subtitle">Comprehensive analysis of criminal activity and socio-economic factors.</p>
             </div>
 
-            {/* Top Threat Grid */}
+            {/* Custom Tabs */}
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '24px', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px', flexShrink: 0, flexWrap: 'wrap' }}>
+                <button 
+                    onClick={() => setActiveTab('crime')}
+                    style={{ 
+                        display: 'flex', alignItems: 'center', gap: '8px', 
+                        padding: '10px 18px', borderRadius: '8px', 
+                        background: activeTab === 'crime' ? 'var(--accent-primary)' : 'transparent',
+                        color: activeTab === 'crime' ? '#fff' : 'var(--text-secondary)',
+                        border: 'none', cursor: 'pointer', fontWeight: '600', transition: 'all 0.2s',
+                        boxShadow: activeTab === 'crime' ? '0 4px 12px rgba(59, 130, 246, 0.3)' : 'none'
+                    }}
+                >
+                    <LayoutGrid size={18} />
+                    {t('intelligence.crimeIntelligenceTab', 'Crime Intelligence')}
+                </button>
+                <button 
+                    onClick={() => setActiveTab('sociological')}
+                    style={{ 
+                        display: 'flex', alignItems: 'center', gap: '8px', 
+                        padding: '10px 18px', borderRadius: '8px', 
+                        background: activeTab === 'sociological' ? 'var(--accent-primary)' : 'transparent',
+                        color: activeTab === 'sociological' ? '#fff' : 'var(--text-secondary)',
+                        border: 'none', cursor: 'pointer', fontWeight: '600', transition: 'all 0.2s',
+                        boxShadow: activeTab === 'sociological' ? '0 4px 12px rgba(59, 130, 246, 0.3)' : 'none'
+                    }}
+                >
+                    <Brain size={18} />
+                    {t('intelligence.sociologicalInsightsTab', 'Sociological Insights')}
+                </button>
+                <button 
+                    onClick={() => setActiveTab('offender')}
+                    style={{ 
+                        display: 'flex', alignItems: 'center', gap: '8px', 
+                        padding: '10px 18px', borderRadius: '8px', 
+                        background: activeTab === 'offender' ? '#8b5cf6' : 'transparent',
+                        color: activeTab === 'offender' ? '#fff' : 'var(--text-secondary)',
+                        border: 'none', cursor: 'pointer', fontWeight: '600', transition: 'all 0.2s',
+                        boxShadow: activeTab === 'offender' ? '0 4px 12px rgba(139, 92, 246, 0.35)' : 'none'
+                    }}
+                >
+                    <UserCheck size={18} />
+                    Offender Profiling
+                </button>
+                <button 
+                    onClick={() => setActiveTab('forecasting')}
+                    style={{ 
+                        display: 'flex', alignItems: 'center', gap: '8px', 
+                        padding: '10px 18px', borderRadius: '8px', 
+                        background: activeTab === 'forecasting' ? '#10b981' : 'transparent',
+                        color: activeTab === 'forecasting' ? '#fff' : 'var(--text-secondary)',
+                        border: 'none', cursor: 'pointer', fontWeight: '600', transition: 'all 0.2s',
+                        boxShadow: activeTab === 'forecasting' ? '0 4px 12px rgba(16, 185, 129, 0.35)' : 'none'
+                    }}
+                >
+                    <TrendingUp size={18} />
+                    Crime Forecasting
+                </button>
+            </div>
+
+            {activeTab === 'sociological' ? (
+                <SociologicalInsights />
+            ) : activeTab === 'risk' ? (
+                <SocialRiskIntelligence />
+            ) : activeTab === 'offender' ? (
+                <OffenderProfiling />
+            ) : activeTab === 'forecasting' ? (
+                <CrimeForecasting />
+            ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    {/* Top Threat Grid */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', flexShrink: 0 }}>
                 <div className="glass-panel" style={{ padding: '20px', display: 'flex', alignItems: 'center', gap: '16px' }}>
                     <div style={{ background: 'rgba(239, 68, 68, 0.1)', padding: '12px', borderRadius: '10px' }}>
@@ -149,7 +226,9 @@ const Intelligence = () => {
                         ))}
                     </div>
                 </div>
-            </div>
+                </div>
+                </div>
+            )}
         </div>
     );
 };

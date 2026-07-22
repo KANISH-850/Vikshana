@@ -1,0 +1,46 @@
+DistrictID,DistrictName,StateID,Active
+1,Bengaluru City,1,1
+2,Mysuru City,1,1
+3,Mangaluru City,1,1
+4,Hubballi-Dharwad City,1,1
+5,Belagavi,1,1
+6,Tumakuru,1,1
+7,Shivamogga,1,1
+8,Ballari,1,1
+9,Kalaburagi,1,1
+10,Hassan,1,1
+11,Davanagere,1,1
+12,Vijayapura,1,1
+13,Bengaluru Dist,1,1
+14,Mysuru Dist,1,1
+15,Dakshina Kannada,1,1
+16,Udupi,1,1
+17,Chitradurga,1,1
+18,Kolar,1,1
+19,Mandya,1,1
+20,Raichur,1,1
+21,Bidar,1,1
+22,Bagalkot,1,1
+23,Gadag,1,1
+24,Haveri,1,1
+25,Koppal,1,1
+26,Yadgir,1,1
+27,Chikkamagaluru,1,1
+28,Chikkaballapura,1,1
+29,Ramanagara,1,1
+30,Uttara Kannada,1,1
+31,Dharwad Dist,1,1
+32,Vijayanagara,1,1
+33,Kodagu,1,1
+34,Chamarajanagar,1,1
+35,Kalyana Karnataka Rly,1,1
+36,Mumbai City,2,1
+37,Pune,2,1
+38,Chennai City,3,1
+39,Hyderabad City,4,1
+40,Deoghar,5,1
+41,Jamtara,5,1
+42,Bharatpur,6,1
+43,Goa North,7,1
+44,Kasaragod,8,1
+45,Anantapur,9,1

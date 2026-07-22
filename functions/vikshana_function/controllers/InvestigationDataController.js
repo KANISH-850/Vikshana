@@ -41,7 +41,7 @@ class InvestigationDataController {
             });
         } catch (error) {
             console.error('Error in InvestigationDataController.getCaseSummary:', error);
-            res.status(500).json({ success: false, error: 'Failed to load case summary' });
+            res.status(500).json({ success: false, error: 'Failed to load case summary', details: error.message, stack: error.stack });
         }
     }
 
