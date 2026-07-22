@@ -422,3 +422,108 @@ export function exportOffenderProfilePDF(profile) {
   });
 }
 
+export function exportDecisionSupportCourtPDF(caseData, userRole = 'Investigator') {
+  return new Promise((resolve, reject) => {
+    try {
+      const now = new Date();
+      const formattedDate = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' });
+      const ov = caseData.overview || {};
+      const acs = caseData.aiCaseSummary || {};
+      const sus = caseData.suspectSummary || {};
+      const ev = caseData.evidenceSummary || {};
+      const pr = caseData.investigationPriority || {};
+      const ra = caseData.investigationRisk || {};
+
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>VIKSHANA Court Briefing - ${ov.caseId}</title>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+            body { font-family: 'Inter', sans-serif; color: #0f172a; padding: 30px; font-size: 12px; line-height: 1.5; }
+            .header { border-bottom: 3px double #0f172a; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; }
+            .title { font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #0f172a; }
+            .badge { padding: 4px 8px; border-radius: 4px; background: #dc2626; color: #fff; font-weight: 800; font-size: 11px; }
+            .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+            .box { padding: 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; }
+            .label { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+            .val { font-size: 13px; font-weight: 700; color: #0f172a; }
+            .sig { margin-top: 40px; border-top: 1px solid #0f172a; padding-top: 8px; width: 220px; text-align: center; font-weight: 700; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div>
+              <div class="title">VIKSHANA COURT-READY INVESTIGATION BRIEFING</div>
+              <div style="font-size: 11px; color: #475569;">Official Judicial & Prosecutorial Record · ${ov.caseId} (${ov.firNumber})</div>
+            </div>
+            <div>
+              <span class="badge">PRIORITY ${pr.priorityScore || 89}/100</span>
+            </div>
+          </div>
+
+          <div class="grid">
+            <div class="box">
+              <div class="label">Crime Type & Severity</div>
+              <div class="val">${ov.crimeType}</div>
+              <div style="font-size: 11px; color: #475569; margin-top: 4px;">Status: ${ov.investigationStatus} · District: ${ov.district}</div>
+            </div>
+            <div class="box">
+              <div class="label">Primary Suspect Profile</div>
+              <div class="val">${sus.name} (${sus.offenderId})</div>
+              <div style="font-size: 11px; color: #dc2626; margin-top: 4px;">Charges: ${sus.currentCharges}</div>
+            </div>
+          </div>
+
+          <div class="box" style="margin-bottom: 16px;">
+            <div class="label">Executive Summary & GLM Findings</div>
+            <div style="font-size: 12px; color: #1e293b; margin-top: 4px;">${acs.executiveSummary}</div>
+          </div>
+
+          <div class="grid">
+            <div class="box">
+              <div class="label">Secured Evidence Summary</div>
+              <div style="font-size: 11px; color: #0f172a;">${ev.physical?.join(', ')}</div>
+            </div>
+            <div class="box">
+              <div class="label">Predicted Risk Assessment</div>
+              <div style="font-size: 11px; color: #dc2626;">Escape Risk: ${ra.offenderEscapeRisk} · Tampering Risk: ${ra.evidenceTamperingRisk}</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+              <div style="font-size: 10px; color: #64748b;">Generated via VIKSHANA AI Systems · Role: ${userRole}</div>
+              <div style="font-size: 10px; color: #64748b;">Date: ${formattedDate}</div>
+            </div>
+            <div class="sig">
+              <div>${ov.officerAssigned}</div>
+              <div style="font-size: 10px; color: #64748b; font-weight: 400;">Investigating Officer Signature</div>
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
+
+      const printWin = window.open('', '_blank', 'width=850,height=950');
+      if (!printWin) throw new Error('Pop-up blocked.');
+      printWin.document.open();
+      printWin.document.write(htmlContent);
+      printWin.document.close();
+      printWin.onload = () => {
+        setTimeout(() => {
+          printWin.focus();
+          printWin.print();
+          resolve(true);
+        }, 400);
+      };
+    } catch (err) {
+      console.error('[pdfExport] Decision Support PDF error:', err);
+      reject(err);
+    }
+  });
+}
+
+

@@ -3,6 +3,7 @@ require('dotenv').config({ path: __dirname + '/.env' });
 const cors = require('cors');
 
 // Import routes
+const authRoutes = require('./routes/auth.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
 const investigateRoutes = require('./routes/investigation.routes');
 const relationshipRoutes = require('./routes/relationship.routes');
@@ -27,8 +28,9 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+app.use('/auth', authRoutes);
 app.use('/dashboard', dashboardRoutes);
-app.use('/investigate', investigateRoutes); // @deprecated — superseded by /conversations; kept live
+app.use('/investigate', investigateRoutes);
 app.use('/relationships', relationshipRoutes);
 app.use('/evidence', evidenceRoutes);
 app.use('/reports', reportRoutes);
@@ -49,5 +51,4 @@ app.use((req, res) => {
     res.status(404).json({ error: 'Endpoint not found in VIKSHANA API' });
 });
 
-// Catalyst requires exporting the express app for advancedio
 module.exports = app;

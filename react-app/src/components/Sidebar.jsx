@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Shield, LayoutDashboard, Search, Network, Clock, FileText, Settings, ShieldAlert } from 'lucide-react';
+import { Shield, LayoutDashboard, Search, Network, Clock, FileText, Settings, ShieldAlert, Compass } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 const Sidebar = () => {
@@ -9,6 +9,7 @@ const Sidebar = () => {
   const menuItems = [
     { name: t('nav.dashboard', 'Dashboard'), icon: LayoutDashboard, path: '/dashboard' },
     { name: t('nav.investigationWorkspace', 'Investigation Workspace'), icon: Search, path: '/investigate' },
+    { name: t('nav.decisionSupport', 'Decision Support'), icon: Compass, path: '/decision-support' },
     { name: t('nav.crimeIntelligence', 'Crime Intelligence'), icon: ShieldAlert, path: '/intelligence' },
     { name: t('nav.relationshipExplorer', 'Relationship Explorer'), icon: Network, path: '/relationships' },
     { name: t('nav.caseTimeline', 'Case Timeline'), icon: Clock, path: '/timeline' },

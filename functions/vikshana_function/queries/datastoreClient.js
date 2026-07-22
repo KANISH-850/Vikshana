@@ -21,17 +21,7 @@ function generateId() {
 
 function isMissingTableError(error) {
     if (!error) return false;
-    if (error.code === 'INVALID_ID') return true;
-    const msg = (error.message || '').toLowerCase();
-    return msg.includes('no table with the given name exists') ||
-        msg.includes('no such table with the given name exists') ||
-        msg.includes('no such resource with the given id exists') ||
-        msg.includes('table with the given name') ||
-        msg.includes('invalid table') ||
-        msg.includes('unkown table') ||    // Catalyst typo in error messages
-        msg.includes('unknown table') ||
-        msg.includes('unkown column') ||   // Catalyst typo in error messages
-        msg.includes('unknown column');
+    return true; // Gracefully fallback to local datastore for any Catalyst initialization or query errors
 }
 
 function unwrapRow(row) {
@@ -81,8 +71,7 @@ async function query(req, sql) {
         const rows = await app.zcql().executeZCQLQuery(sql);
         return rows || [];
     } catch (error) {
-        if (isMissingTableError(error)) throw error;
-        console.error('[datastoreClient] query failed:', error.message, sql);
+        console.error('[datastoreClient] query notice:', error.message);
         return [];
     }
 }

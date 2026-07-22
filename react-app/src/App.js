@@ -23,6 +23,7 @@ import Settings from './pages/Settings';
 
 import Intelligence from './pages/Intelligence';
 import Timeline from './pages/Timeline';
+import InvestigatorDecisionSupport from './pages/InvestigatorDecisionSupport';
 
 const DashboardLayout = ({ children }) => (
   <div style={{ display: 'flex', minHeight: '100vh', width: '100vw' }}>
@@ -58,6 +59,7 @@ function App() {
             <Route path="/relationships" element={<ProtectedRoute><DashboardLayout><RelationshipExplorer /></DashboardLayout></ProtectedRoute>} />
             <Route path="/timeline" element={<ProtectedRoute><DashboardLayout><Timeline /></DashboardLayout></ProtectedRoute>} />
             <Route path="/timeline/:caseId" element={<ProtectedRoute><DashboardLayout><Timeline /></DashboardLayout></ProtectedRoute>} />
+            <Route path="/decision-support" element={<ProtectedRoute><DashboardLayout><InvestigatorDecisionSupport /></DashboardLayout></ProtectedRoute>} />
             <Route path="/evidence" element={<ProtectedRoute><DashboardLayout><EvidenceLedger /></DashboardLayout></ProtectedRoute>} />
             <Route path="/reports" element={<ProtectedRoute><DashboardLayout><Reports /></DashboardLayout></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><DashboardLayout><Settings /></DashboardLayout></ProtectedRoute>} />

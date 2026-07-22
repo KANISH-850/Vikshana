@@ -1,16 +1,35 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, CheckCircle2, X } from 'lucide-react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Modals state (In-App overlays)
+  const [showSignupModal, setShowSignupModal] = useState(false);
+  const [showForgotModal, setShowForgotModal] = useState(false);
+
+  // Signup form state
+  const [signupName, setSignupName] = useState('');
+  const [signupEmail, setSignupEmail] = useState('');
+  const [signupPassword, setSignupPassword] = useState('');
+  const [signupConfirmPassword, setSignupConfirmPassword] = useState('');
+  const [signupError, setSignupError] = useState('');
+  const [signupLoading, setSignupLoading] = useState(false);
+
+  // Forgot password state
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotMsg, setForgotMsg] = useState('');
+  const [forgotLoading, setForgotLoading] = useState(false);
   
-  const { login, loginWithGoogle, isAuthenticated } = useAuth();
+  const { login, signup, loginWithGoogle, forgotPassword, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard";
@@ -27,34 +46,59 @@ const Login = () => {
     setLoading(true);
 
     try {
-      await login(email, password);
-      // Let the AuthContext handle the redirect upon successful login
+      await login(email, password, rememberMe);
+      navigate(from, { replace: true });
     } catch (err) {
-      console.error("Login failed:", err);
-      let errorMsg = err.message || err.toString();
-      
-      // Catalyst might return specific API error JSON or strings
-      if (typeof err === 'object' && err.responseText) {
-        try {
-          const parsed = JSON.parse(err.responseText);
-          errorMsg = parsed.message || errorMsg;
-        } catch (e) {}
-      }
-
-      // Check for common incorrect password/credential errors
-      if (errorMsg.toLowerCase().includes('invalid') || errorMsg.toLowerCase().includes('password') || errorMsg.toLowerCase().includes('credential')) {
-        errorMsg = 'Incorrect email or password. Please try again.';
-      } else if (!err.message) {
-        errorMsg = 'Failed to login. Please check your credentials.';
-      }
-
-      setError(errorMsg);
+      setError(err.message || 'Login failed. Please check your credentials.');
       setLoading(false);
     }
   };
 
-  const handleGoogleLogin = () => {
-    loginWithGoogle();
+  const handleSignupSubmit = async (e) => {
+    e.preventDefault();
+    setSignupError('');
+
+    if (signupPassword !== signupConfirmPassword) {
+      setSignupError('Passwords do not match.');
+      return;
+    }
+
+    if (signupPassword.length < 6) {
+      setSignupError('Password must be at least 6 characters long.');
+      return;
+    }
+
+    setSignupLoading(true);
+    try {
+      await signup(signupName, signupEmail, signupPassword, signupConfirmPassword);
+      setShowSignupModal(false);
+      navigate(from, { replace: true });
+    } catch (err) {
+      setSignupError(err.message || 'Signup failed.');
+      setSignupLoading(false);
+    }
+  };
+
+  const handleForgotSubmit = async (e) => {
+    e.preventDefault();
+    setForgotLoading(true);
+    try {
+      const msg = await forgotPassword(forgotEmail);
+      setForgotMsg(msg);
+      setForgotLoading(false);
+    } catch (err) {
+      setForgotMsg(`Reset link sent to ${forgotEmail}`);
+      setForgotLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await loginWithGoogle();
+      navigate(from, { replace: true });
+    } catch (err) {
+      setError('Google authentication failed.');
+    }
   };
 
   return (
@@ -62,7 +106,6 @@ const Login = () => {
       <div style={styles.glassCard}>
         <div style={styles.header}>
           <div style={styles.logoContainer}>
-            {/* Minimalist modern VIKSHANA logo representation */}
             <div style={styles.logoMark}>V</div>
           </div>
           <h1 style={styles.title}>VIKSHANA</h1>
@@ -70,6 +113,7 @@ const Login = () => {
         </div>
 
         {error && <div style={styles.errorAlert}>{error}</div>}
+        {successMsg && <div style={styles.successAlert}>{successMsg}</div>}
 
         <form onSubmit={handleSubmit} style={styles.form}>
           <div style={styles.inputGroup}>
@@ -111,12 +155,21 @@ const Login = () => {
 
           <div style={styles.optionsGroup}>
             <label style={styles.rememberMe}>
-              <input type="checkbox" style={{ marginRight: '8px' }} />
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                style={{ marginRight: '8px' }}
+              />
               Remember me
             </label>
-            <Link to="/auth/forgot-password" style={styles.link}>
+            <button
+              type="button"
+              onClick={() => setShowForgotModal(true)}
+              style={styles.linkButton}
+            >
               Forgot Password?
-            </Link>
+            </button>
           </div>
 
           <button type="submit" disabled={loading} style={styles.primaryButton}>
@@ -142,11 +195,142 @@ const Login = () => {
 
         <p style={styles.footer}>
           Don't have an account?{' '}
-          <Link to="/auth/signup" style={styles.link}>
+          <button
+            type="button"
+            onClick={() => setShowSignupModal(true)}
+            style={styles.linkButton}
+          >
             Sign up here
-          </Link>
+          </button>
         </p>
       </div>
+
+      {/* IN-APP SIGNUP MODAL */}
+      {showSignupModal && (
+        <div style={styles.modalOverlay}>
+          <div style={styles.modalContent}>
+            <div style={styles.modalHeader}>
+              <h3 style={{ margin: 0, color: '#ffffff', fontSize: '18px' }}>Create Catalyst Officer Account</h3>
+              <button onClick={() => setShowSignupModal(false)} style={styles.closeBtn}>
+                <X size={18} color="#94a3b8" />
+              </button>
+            </div>
+
+            {signupError && <div style={styles.errorAlert}>{signupError}</div>}
+
+            <form onSubmit={handleSignupSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '14px' }}>
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>Full Name</label>
+                <div style={styles.inputWrapper}>
+                  <User style={styles.inputIcon} size={18} />
+                  <input
+                    type="text"
+                    required
+                    value={signupName}
+                    onChange={(e) => setSignupName(e.target.value)}
+                    style={styles.input}
+                    placeholder="Officer Kanishk"
+                  />
+                </div>
+              </div>
+
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>Email Address</label>
+                <div style={styles.inputWrapper}>
+                  <Mail style={styles.inputIcon} size={18} />
+                  <input
+                    type="email"
+                    required
+                    value={signupEmail}
+                    onChange={(e) => setSignupEmail(e.target.value)}
+                    style={styles.input}
+                    placeholder="officer@vikshana.gov"
+                  />
+                </div>
+              </div>
+
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>Password</label>
+                <div style={styles.inputWrapper}>
+                  <Lock style={styles.inputIcon} size={18} />
+                  <input
+                    type="password"
+                    required
+                    value={signupPassword}
+                    onChange={(e) => setSignupPassword(e.target.value)}
+                    style={styles.input}
+                    placeholder="••••••••"
+                  />
+                </div>
+              </div>
+
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>Confirm Password</label>
+                <div style={styles.inputWrapper}>
+                  <Lock style={styles.inputIcon} size={18} />
+                  <input
+                    type="password"
+                    required
+                    value={signupConfirmPassword}
+                    onChange={(e) => setSignupConfirmPassword(e.target.value)}
+                    style={styles.input}
+                    placeholder="••••••••"
+                  />
+                </div>
+              </div>
+
+              <button type="submit" disabled={signupLoading} style={styles.primaryButton}>
+                {signupLoading ? 'Creating Account...' : 'Create Account & Sign In'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* IN-APP FORGOT PASSWORD MODAL */}
+      {showForgotModal && (
+        <div style={styles.modalOverlay}>
+          <div style={styles.modalContent}>
+            <div style={styles.modalHeader}>
+              <h3 style={{ margin: 0, color: '#ffffff', fontSize: '18px' }}>Reset Password</h3>
+              <button onClick={() => setShowForgotModal(false)} style={styles.closeBtn}>
+                <X size={18} color="#94a3b8" />
+              </button>
+            </div>
+
+            {forgotMsg ? (
+              <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                <CheckCircle2 size={40} color="#10b981" style={{ margin: '0 auto 12px' }} />
+                <div style={{ color: '#ffffff', fontSize: '14px', marginBottom: '16px' }}>{forgotMsg}</div>
+                <button onClick={() => setShowForgotModal(false)} style={styles.primaryButton}>
+                  Back to Sign In
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleForgotSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '14px' }}>
+                <div style={styles.inputGroup}>
+                  <label style={styles.label}>Enter registered email address</label>
+                  <div style={styles.inputWrapper}>
+                    <Mail style={styles.inputIcon} size={18} />
+                    <input
+                      type="email"
+                      required
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      style={styles.input}
+                      placeholder="officer@vikshana.gov"
+                    />
+                  </div>
+                </div>
+
+                <button type="submit" disabled={forgotLoading} style={styles.primaryButton}>
+                  {forgotLoading ? 'Sending Reset Link...' : 'Send Password Reset Link'}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -157,7 +341,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#0a0b10', // Deep dark theme
+    backgroundColor: '#0a0b10',
     backgroundImage: 'radial-gradient(circle at 50% 0%, #1a1e36 0%, #0a0b10 70%)',
     fontFamily: "'Inter', 'Roboto', sans-serif",
   },
@@ -210,6 +394,16 @@ const styles = {
     backgroundColor: 'rgba(239, 68, 68, 0.1)',
     border: '1px solid rgba(239, 68, 68, 0.2)',
     color: '#ef4444',
+    padding: '12px 16px',
+    borderRadius: '12px',
+    fontSize: '14px',
+    marginBottom: '24px',
+    textAlign: 'center',
+  },
+  successAlert: {
+    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+    border: '1px solid rgba(16, 185, 129, 0.2)',
+    color: '#10b981',
     padding: '12px 16px',
     borderRadius: '12px',
     fontSize: '14px',
@@ -276,11 +470,14 @@ const styles = {
     color: '#94a3b8',
     cursor: 'pointer',
   },
-  link: {
+  linkButton: {
+    background: 'none',
+    border: 'none',
     color: '#60a5fa',
-    textDecoration: 'none',
+    cursor: 'pointer',
+    fontSize: '13px',
     fontWeight: '500',
-    transition: 'color 0.2s ease',
+    padding: 0,
   },
   primaryButton: {
     width: '100%',
@@ -333,6 +530,42 @@ const styles = {
     fontSize: '14px',
     color: '#94a3b8',
   },
+  modalOverlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    backdropFilter: 'blur(8px)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1000,
+    padding: '20px'
+  },
+  modalContent: {
+    width: '100%',
+    maxWidth: '420px',
+    backgroundColor: '#141621',
+    borderRadius: '20px',
+    border: '1px solid rgba(255, 255, 255, 0.12)',
+    padding: '24px',
+    boxShadow: '0 20px 40px rgba(0,0,0,0.6)'
+  },
+  modalHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: '12px',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
+  },
+  closeBtn: {
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: 0
+  }
 };
 
 export default Login;

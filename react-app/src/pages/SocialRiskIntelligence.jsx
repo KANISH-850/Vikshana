@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import {
-    ShieldAlert, TrendingUp, TrendingDown, AlertTriangle, 
-    Activity, Loader2, AlertCircle, Info, CheckCircle2,
-    ChevronUp, ChevronDown, Minus, Users, BookOpen,
+    ShieldAlert, TrendingUp, AlertTriangle, 
+    Activity, Loader2, AlertCircle, Info,
+    ChevronUp, ChevronDown, Users, BookOpen,
     Briefcase, Home, HeartPulse, Siren, Star
 } from 'lucide-react';
 import {
     AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
-    Tooltip as RechartsTooltip, Legend, ResponsiveContainer,
-    RadialBarChart, RadialBar, Cell, LineChart, Line
+    Tooltip as RechartsTooltip, ResponsiveContainer,
+    RadialBarChart, RadialBar, Cell
 } from 'recharts';
 
 // ─── MOCK DATA ─────────────────────────────────────────────────────────────────
