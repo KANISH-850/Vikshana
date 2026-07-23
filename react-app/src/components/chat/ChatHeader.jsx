@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { MoreVertical, Pencil, Trash2, FileText, FileJson, Printer, Shield, Check, Menu } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { MoreVertical, Pencil, Trash2, FileText, FileJson, Printer, Shield, Check, Menu, Database, FolderSearch } from 'lucide-react';
 import { exportAsMarkdown, exportAsJSON, exportAsPDF } from '../../utils/exportConversation';
+import * as conversationService from '../../services/conversationService';
 import styles from './ChatHeader.module.css';
 
 const ChatHeader = ({
@@ -13,10 +15,45 @@ const ChatHeader = ({
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [titleInput, setTitleInput] = useState('');
     const [menuOpen, setMenuOpen] = useState(false);
+    const [cases, setCases] = useState([]);
+    const [casesLoading, setCasesLoading] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        setCasesLoading(true);
+        conversationService.listCases()
+            .then((res) => {
+                if (Array.isArray(res) && res.length > 0) {
+                    setCases(res);
+                } else {
+                    setCases([
+                        { id: '1', title: 'Case #1 — Primary Investigation' },
+                        { id: '2', title: 'Case #2 — Sector 18 Homicide' },
+                        { id: '3', title: 'Case #3 — Financial Fraud Syndicate' }
+                    ]);
+                }
+            })
+            .catch(() => {
+                setCases([
+                    { id: '1', title: 'Case #1 — Primary Investigation' },
+                    { id: '2', title: 'Case #2 — Sector 18 Homicide' },
+                    { id: '3', title: 'Case #3 — Financial Fraud Syndicate' }
+                ]);
+            })
+            .finally(() => setCasesLoading(false));
+    }, []);
 
     if (!conversation) return null;
 
     const currentTitle = conversation.title || 'New Investigation';
+    const currentCaseId = String(conversation.caseId || '1');
+
+    const handleCaseChange = (e) => {
+        const selectedId = e.target.value;
+        if (selectedId && selectedId !== currentCaseId) {
+            navigate(`/investigate/${selectedId}`);
+        }
+    };
 
     const startEditing = () => {
         setTitleInput(currentTitle);
@@ -53,6 +90,42 @@ const ChatHeader = ({
 
                 <div className={styles.iconWrap}>
                     <Shield size={18} color="#2563EB" />
+                </div>
+
+                {/* Case Selector Dropdown Badge */}
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    background: '#EFF6FF',
+                    border: '1px solid #BFDBFE',
+                    borderRadius: '8px',
+                    padding: '4px 10px',
+                    marginRight: '8px'
+                }}>
+                    <FolderSearch size={14} color="#2563EB" />
+                    <span style={{ fontSize: '11px', fontWeight: '700', color: '#1E40AF', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Case:</span>
+                    <select
+                        value={currentCaseId}
+                        onChange={handleCaseChange}
+                        disabled={casesLoading}
+                        style={{
+                            background: 'transparent',
+                            border: 'none',
+                            color: '#1E3A8A',
+                            fontWeight: '600',
+                            fontSize: '13px',
+                            outline: 'none',
+                            cursor: 'pointer',
+                            paddingRight: '4px'
+                        }}
+                    >
+                        {cases.map((c) => (
+                            <option key={c.id} value={String(c.id)}>
+                                {c.title || `Case #${c.id}`}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
                 {isEditingTitle ? (
@@ -96,6 +169,22 @@ const ChatHeader = ({
                             </button>
                             <button type="button" onClick={() => runExport('pdf')}>
                                 <Printer size={14} /> Print / Export PDF
+                            </button>
+                            <button
+                                type="button"
+                                onClick={async () => {
+                                    setMenuOpen(false);
+                                    try {
+                                        const conversationService = require('../../services/conversationService');
+                                        await conversationService.seedDatabase();
+                                        alert('Sample case evidence seeded into Catalyst Data Store!');
+                                        window.location.reload();
+                                    } catch (e) {
+                                        alert('Failed to seed database.');
+                                    }
+                                }}
+                            >
+                                <Database size={14} /> Seed Sample Case Evidence
                             </button>
                             <div className={styles.menuDivider} />
                             <button

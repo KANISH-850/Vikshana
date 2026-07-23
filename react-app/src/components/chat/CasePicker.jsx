@@ -1,21 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FolderSearch } from 'lucide-react';
+import { FolderSearch, Database, Check } from 'lucide-react';
 import * as conversationService from '../../services/conversationService';
 import styles from './CasePicker.module.css';
 
 const CasePicker = () => {
     const [cases, setCases] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [seeding, setSeeding] = useState(false);
+    const [seeded, setSeeded] = useState(false);
     const navigate = useNavigate();
 
-    useEffect(() => {
+    const loadCases = () => {
+        setLoading(true);
         conversationService
             .listCases()
             .then(setCases)
             .catch((err) => console.error('Failed to load cases', err))
             .finally(() => setLoading(false));
+    };
+
+    useEffect(() => {
+        loadCases();
     }, []);
+
+    const handleSeedData = async () => {
+        setSeeding(true);
+        try {
+            await conversationService.seedDatabase();
+            setSeeded(true);
+            setTimeout(() => setSeeded(false), 3000);
+            loadCases();
+        } catch (error) {
+            console.error('Failed to seed database:', error);
+        } finally {
+            setSeeding(false);
+        }
+    };
 
     return (
         <div className={styles.wrap}>
@@ -23,6 +44,31 @@ const CasePicker = () => {
                 <FolderSearch size={32} color="var(--accent-primary)" />
                 <h2>Select a case to investigate</h2>
                 <p>Choose an active case to open its persistent AI Investigation Copilot.</p>
+
+                <div style={{ margin: '12px 0 16px 0', display: 'flex', justifyContent: 'center' }}>
+                    <button
+                        type="button"
+                        onClick={handleSeedData}
+                        disabled={seeding}
+                        style={{
+                            background: '#DBEAFE',
+                            color: '#2563EB',
+                            border: '1px solid rgba(37, 99, 235, 0.2)',
+                            borderRadius: '10px',
+                            padding: '8px 16px',
+                            cursor: seeding ? 'not-allowed' : 'pointer',
+                            fontSize: '13px',
+                            fontWeight: '600',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            transition: 'all 0.15s ease'
+                        }}
+                    >
+                        {seeded ? <Check size={15} color="#10B981" /> : <Database size={15} />}
+                        {seeding ? 'Seeding Catalyst Data Store...' : seeded ? 'Datastore Seeded Successfully!' : 'Seed Sample Case Evidence'}
+                    </button>
+                </div>
 
                 {loading && <div className={styles.hint}>Loading cases...</div>}
                 {!loading && cases.length === 0 && <div className={styles.hint}>No cases found in CaseMaster.</div>}

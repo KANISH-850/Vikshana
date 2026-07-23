@@ -107,9 +107,69 @@ async function getRowsWhere(req, tableName, conditions = {}, { maxRows = 50, ord
     }
 }
 
+function normalizeRow(row, tableName) {
+    if (!row) return row;
+    const unwrapped = unwrapRow(row);
+    if (!unwrapped || typeof unwrapped !== 'object') return unwrapped;
+
+    const copy = { ...unwrapped };
+
+    // Standardize case_id
+    if (!copy.case_id) {
+        copy.case_id = copy.CaseMasterID || copy.CaseId || copy.CASE_ID || copy.caseMasterID || copy.ROWID;
+    }
+
+    // Table specific schema mappings for Indian Police DataStore Schemas
+    if (tableName === 'Victim') {
+        copy.name = copy.name || copy.VictimName || copy.Name || `Victim #${copy.ROWID || copy.VictimMasterID || ''}`;
+        copy.age = copy.age || copy.AgeYear || copy.Age;
+        copy.gender = copy.gender || copy.GenderID || copy.Gender;
+    } else if (tableName === 'Accused' || tableName === 'Suspect' || tableName === 'ArrestSurrender') {
+        copy.name = copy.name || copy.AccusedName || copy.SuspectName || copy.Name || `Accused #${copy.ROWID || ''}`;
+        copy.risk_level = copy.risk_level || copy.RiskLevel || 'medium';
+        copy.status = copy.status || copy.Status || 'person_of_interest';
+    } else if (tableName === 'CaseMaster') {
+        copy.title = copy.title || copy.FIR_No || copy.FIRNo || copy.Case_Name || copy.CaseName || copy.Name || `FIR #${copy.ROWID}`;
+        copy.status = copy.status || copy.Status || copy.CaseStatus || 'Active';
+        copy.jurisdiction = copy.jurisdiction || copy.District || copy.Unit || copy.Jurisdiction || 'Sector 18 Precinct';
+    }
+
+    return copy;
+}
+
 async function getRowsByCase(req, tableName, caseId, { maxRows = 25, orderBy } = {}) {
     if (!caseId) return [];
-    return getRowsWhere(req, tableName, { case_id: caseId }, { maxRows, orderBy });
+
+    // 1. Try querying case_id
+    try {
+        const rows = await getRowsWhere(req, tableName, { case_id: caseId }, { maxRows, orderBy });
+        if (rows && rows.length > 0) return rows.map(r => normalizeRow(r, tableName));
+    } catch (e) {}
+
+    // 2. Try querying CaseMasterID (Used in State Police Datastore schema like Victim, Accused)
+    try {
+        const rows = await getRowsWhere(req, tableName, { CaseMasterID: caseId }, { maxRows, orderBy });
+        if (rows && rows.length > 0) return rows.map(r => normalizeRow(r, tableName));
+    } catch (e) {}
+
+    // 3. Try querying CaseId
+    try {
+        const rows = await getRowsWhere(req, tableName, { CaseId: caseId }, { maxRows, orderBy });
+        if (rows && rows.length > 0) return rows.map(r => normalizeRow(r, tableName));
+    } catch (e) {}
+
+    // 4. Fallback: retrieve paged rows and perform flexible client-side filter
+    try {
+        const allRows = await getRows(req, tableName, { maxRows: 100 });
+        const filtered = allRows.filter((r) => {
+            if (!r) return false;
+            const cid = String(r.case_id || r.CaseMasterID || r.CaseId || r.CASE_ID || r.caseMasterID || '');
+            return cid === String(caseId);
+        }).slice(0, maxRows);
+        return filtered.map(r => normalizeRow(r, tableName));
+    } catch (e) {
+        return [];
+    }
 }
 
 async function insertRow(req, tableName, data) {

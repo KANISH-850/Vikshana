@@ -144,5 +144,7 @@ class GLMClient {
     }
 }
 
-module.exports = new GLMClient();
+const client = new GLMClient();
+client.getFreshAccessToken = getFreshAccessToken;
 
+module.exports = client;

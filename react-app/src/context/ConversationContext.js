@@ -19,6 +19,7 @@ export const ConversationProvider = ({ caseId, children }) => {
     const streaming = useStreamingChat({
         conversationId: activeConversationId,
         officerId,
+        caseId,
         onUserMessage,
         onAssistantMessage
     });

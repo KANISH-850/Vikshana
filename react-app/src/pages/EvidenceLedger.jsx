@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Shield, CheckCircle, XCircle } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 import api from '../services/api';
 
 const EvidenceLedger = () => {
   const [loading, setLoading] = useState(true);
   const [evidences, setEvidences] = useState([]);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const fetchEvidence = async () => {
@@ -25,12 +27,12 @@ const EvidenceLedger = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', height: '100%' }}>
       <div>
-        <h1 style={{ margin: 0, fontSize: '28px', color: 'var(--text-primary)' }}>Evidence Ledger</h1>
-        <p style={{ margin: '8px 0 0 0', color: 'var(--text-secondary)' }}>Immutable record of AI claims and reasoning.</p>
+        <h1 style={{ margin: 0, fontSize: '28px', color: 'var(--text-primary)' }}>{t('evidence.title')}</h1>
+        <p style={{ margin: '8px 0 0 0', color: 'var(--text-secondary)' }}>{t('evidence.subtitle', 'Immutable record of AI claims and reasoning.')}</p>
       </div>
 
       {loading ? (
-        <div style={{ color: 'var(--text-secondary)' }}>Loading ledger...</div>
+        <div style={{ color: 'var(--text-secondary)' }}>{t('evidence.loadingEvidence')}</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {evidences.map(ev => (
@@ -45,8 +47,8 @@ const EvidenceLedger = () => {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
               <div>
                 <h4 style={{ color: 'var(--accent-success)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <CheckCircle size={16} /> Supporting Evidence
-                </h4>
+                <CheckCircle size={16} />{t('assistant.supportingEvidence', 'Supporting Evidence')}
+              </h4>
                 <ul style={{ color: 'var(--text-secondary)', paddingLeft: '20px', fontSize: '14px' }}>
                   {ev.supporting.map((item, i) => <li key={i}>{item}</li>)}
                 </ul>

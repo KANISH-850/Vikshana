@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import { motion } from 'framer-motion';
-import { Copy, ThumbsUp, ThumbsDown, RotateCcw, Check, Sparkles, Shield, AlertTriangle } from 'lucide-react';
+import { Copy, ThumbsUp, ThumbsDown, RotateCcw, Check, Sparkles, Shield, AlertTriangle, Volume2, VolumeX } from 'lucide-react';
 import MermaidBlock from './MermaidBlock';
 import EvidenceCard from './EvidenceCard';
 import FollowUpChips from './FollowUpChips';
@@ -65,6 +65,7 @@ function parseMessageContent(content, streaming) {
 const ChatMessageBubble = ({ message, onOpenEvidence, onFollowUp, onRegenerate, isLast, streaming, error }) => {
     const [copied, setCopied] = useState(false);
     const [feedback, setFeedback] = useState(null);
+    const [isSpeaking, setIsSpeaking] = useState(false);
     const isUser = message.role === 'user';
 
     const { thinking, body, isThinkingComplete } = useMemo(() => {
@@ -117,6 +118,62 @@ const ChatMessageBubble = ({ message, onOpenEvidence, onFollowUp, onRegenerate, 
         navigator.clipboard.writeText(message.content || '');
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
+    };
+
+    const handleReadAloud = () => {
+        if (!('speechSynthesis' in window)) {
+            alert('Text-to-Speech is not supported in this browser.');
+            return;
+        }
+        if (isSpeaking) {
+            window.speechSynthesis.cancel();
+            setIsSpeaking(false);
+            return;
+        }
+
+        // Clean & format text for natural, conversational speech
+        let speechText = (body || message.content || '')
+            .replace(/\[(Case|Victim|Suspect|Witness|CCTV|PhoneRecord|FinancialTransaction|TimelineEvent|Attachment)\s*#[\w-]+\]/g, '')
+            .replace(/```[\s\S]*?```/g, '')
+            .replace(/`([^`]+)`/g, '$1')
+            .replace(/[*#~_-]+/g, ' ')
+            .replace(/:\s*/g, ', ')
+            .replace(/\n+/g, '. ')
+            .trim();
+
+        if (!speechText) return;
+
+        const utterance = new SpeechSynthesisUtterance(speechText);
+        
+        // Find best natural female voice
+        const voices = window.speechSynthesis.getVoices();
+        const femaleVoice = voices.find((v) => {
+            const name = (v.name || '').toLowerCase();
+            return (
+                name.includes('female') ||
+                name.includes('zira') ||
+                name.includes('samantha') ||
+                name.includes('victoria') ||
+                name.includes('google uk english female') ||
+                name.includes('google us english') ||
+                name.includes('karen') ||
+                name.includes('fiona')
+            );
+        }) || voices.find((v) => v.lang && v.lang.startsWith('en'));
+
+        if (femaleVoice) {
+            utterance.voice = femaleVoice;
+        }
+
+        utterance.rate = 0.96;  // Paced, conversational speech
+        utterance.pitch = 1.15; // Clear, expressive female tone
+
+        utterance.onend = () => setIsSpeaking(false);
+        utterance.onerror = () => setIsSpeaking(false);
+
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utterance);
+        setIsSpeaking(true);
     };
 
     return (
@@ -212,6 +269,15 @@ const ChatMessageBubble = ({ message, onOpenEvidence, onFollowUp, onRegenerate, 
                                 <button type="button" className={styles.actionBtn} onClick={handleCopy} title="Copy response">
                                     {copied ? <Check size={13} color="#10B981" /> : <Copy size={13} />}
                                     <span>{copied ? 'Copied' : 'Copy'}</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    className={`${styles.actionBtn} ${isSpeaking ? styles.active : ''}`}
+                                    onClick={handleReadAloud}
+                                    title={isSpeaking ? 'Stop readout' : 'Read aloud (TTS)'}
+                                >
+                                    {isSpeaking ? <VolumeX size={13} color="#EF4444" /> : <Volume2 size={13} />}
+                                    <span>{isSpeaking ? 'Stop TTS' : 'Read Aloud'}</span>
                                 </button>
                                 <button
                                     type="button"

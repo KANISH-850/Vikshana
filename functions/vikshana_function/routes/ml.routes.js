@@ -25,4 +25,27 @@ router.get('/predict-hotspots', async (req, res) => {
     }
 });
 
+// POST /ml/translate - Translate an array of strings using Catalyst Zia NLP API
+// Request body: { texts: string[], sourceLanguage?: string, targetLanguage: string }
+// Response:     { success: true, data: { translations: string[] } }
+router.post('/translate', async (req, res) => {
+    try {
+        const { texts, sourceLanguage = 'en', targetLanguage } = req.body || {};
+
+        // Validate input
+        if (!texts || !Array.isArray(texts) || texts.length === 0) {
+            return res.status(400).json({ success: false, error: 'texts must be a non-empty array of strings' });
+        }
+        if (!targetLanguage) {
+            return res.status(400).json({ success: false, error: 'targetLanguage is required (e.g. "kn", "hi", "ta")' });
+        }
+
+        const translations = await QuickMLService.translateText(req, { texts, sourceLanguage, targetLanguage });
+        res.status(200).json({ success: true, data: { translations } });
+    } catch (error) {
+        console.error('Error in POST /ml/translate:', error.message);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 module.exports = router;

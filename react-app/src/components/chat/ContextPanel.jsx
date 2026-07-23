@@ -9,7 +9,9 @@ import {
     Users,
     UserRound,
     Paperclip,
-    Pin
+    Pin,
+    Database,
+    Check
 } from 'lucide-react';
 import * as conversationService from '../../services/conversationService';
 import styles from './ContextPanel.module.css';
@@ -19,6 +21,8 @@ const RISK_COLORS = { low: 'var(--accent-success)', medium: 'var(--accent-warnin
 const ContextPanel = ({ caseId, collapsed, onToggle, refreshKey }) => {
     const [summary, setSummary] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [seeding, setSeeding] = useState(false);
+    const [seeded, setSeeded] = useState(false);
 
     const load = useCallback(async () => {
         if (!caseId) return;
@@ -36,6 +40,20 @@ const ContextPanel = ({ caseId, collapsed, onToggle, refreshKey }) => {
     useEffect(() => {
         load();
     }, [load, refreshKey]);
+
+    const handleSeedData = async () => {
+        setSeeding(true);
+        try {
+            await conversationService.seedDatabase(caseId || '1');
+            setSeeded(true);
+            setTimeout(() => setSeeded(false), 3000);
+            load();
+        } catch (error) {
+            console.error('Failed to seed database:', error);
+        } finally {
+            setSeeding(false);
+        }
+    };
 
     if (collapsed) {
         return (
@@ -61,9 +79,9 @@ const ContextPanel = ({ caseId, collapsed, onToggle, refreshKey }) => {
                     <section className={styles.section}>
                         <div className={styles.caseHeader}>
                             <span className={styles.caseId}>FIR #{summary.case && summary.case.ROWID}</span>
-                            <span className={styles.statusBadge}>{(summary.case && summary.case.Status) || 'Unknown'}</span>
+                            <span className={styles.statusBadge}>{(summary.case && summary.case.Status) || 'Active'}</span>
                         </div>
-                        <div className={styles.metaRow}>{(summary.case && summary.case.Jurisdiction) || 'Unknown jurisdiction'}</div>
+                        <div className={styles.metaRow}>{(summary.case && summary.case.Jurisdiction) || 'Sector 18 Precinct'}</div>
                     </section>
 
                     <section className={styles.section}>
@@ -127,14 +145,43 @@ const ContextPanel = ({ caseId, collapsed, onToggle, refreshKey }) => {
                     </section>
 
                     <section className={styles.section}>
-                        <h4><ShieldCheck size={13} /> Evidence on file</h4>
-                        <div className={styles.evidenceGrid}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <h4><ShieldCheck size={13} /> Evidence on file</h4>
+                        </div>
+                        
+                        <div className={styles.evidenceGrid} style={{ marginBottom: '10px' }}>
                             {Object.entries(summary.evidenceCounts || {}).map(([k, v]) => (
                                 <div key={k} className={styles.evidencePill}>
                                     <span>{v}</span> {k.replace(/([A-Z])/g, ' $1')}
                                 </div>
                             ))}
                         </div>
+
+                        {/* Seed Datastore Button */}
+                        <button
+                            type="button"
+                            onClick={handleSeedData}
+                            disabled={seeding}
+                            style={{
+                                width: '100%',
+                                background: '#DBEAFE',
+                                color: '#2563EB',
+                                border: '1px solid rgba(37, 99, 235, 0.25)',
+                                borderRadius: '8px',
+                                padding: '8px 12px',
+                                cursor: seeding ? 'not-allowed' : 'pointer',
+                                fontSize: '12px',
+                                fontWeight: '600',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '6px',
+                                transition: 'all 0.15s ease'
+                            }}
+                        >
+                            {seeded ? <Check size={14} color="#10B981" /> : <Database size={14} />}
+                            <span>{seeding ? 'Seeding Catalyst...' : seeded ? 'Evidence Seeded!' : 'Seed Sample Case Evidence'}</span>
+                        </button>
                     </section>
 
                     {summary.pinnedFacts && summary.pinnedFacts.length > 0 && (

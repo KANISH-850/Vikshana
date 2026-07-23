@@ -1,12 +1,24 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import translations from '../translations/translations';
+import { clearTranslationCache } from '../services/translationService';
 
 const LanguageContext = createContext();
+
+/** All supported language codes and their display labels */
+export const SUPPORTED_LANGUAGES = [
+  { code: 'en', label: 'EN',     nativeLabel: 'English' },
+  { code: 'kn', label: 'ಕನ್ನಡ', nativeLabel: 'Kannada' },
+  { code: 'hi', label: 'हिन्दी', nativeLabel: 'Hindi'   },
+  { code: 'ta', label: 'தமிழ்', nativeLabel: 'Tamil'   },
+];
+
+const VALID_CODES = SUPPORTED_LANGUAGES.map(l => l.code);
 
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState(() => {
     try {
-      return localStorage.getItem('vikshana_lang') || 'en';
+      const stored = localStorage.getItem('vikshana_lang');
+      return VALID_CODES.includes(stored) ? stored : 'en';
     } catch {
       return 'en';
     }
@@ -22,29 +34,41 @@ export const LanguageProvider = ({ children }) => {
   }, [language]);
 
   const switchLanguage = useCallback((lang) => {
-    if (lang === 'en' || lang === 'kn') {
-      setLanguage(lang);
-    }
+    if (!VALID_CODES.includes(lang)) return;
+    // Clear the translation cache so stale entries from a previous language
+    // don't bleed into the new language selection.
+    clearTranslationCache();
+    setLanguage(lang);
   }, []);
 
   const toggleLanguage = useCallback(() => {
-    setLanguage(prev => (prev === 'en' ? 'kn' : 'en'));
+    setLanguage(prev => {
+      const next = prev === 'en' ? 'kn' : 'en';
+      clearTranslationCache();
+      return next;
+    });
   }, []);
 
   /**
    * Helper function to retrieve nested translation strings by path.
    * Example: t('nav.dashboard') -> "Dashboard" or "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್"
+   *
+   * For languages without a static translation dictionary (hi, ta), the
+   * static strings fall back to English while dynamic content goes through
+   * the Zia API via useTranslateDynamic.
    */
   const t = useCallback((path, fallback = '') => {
     if (!path) return fallback;
     const keys = path.split('.');
-    let result = translations[language];
+    // Prefer exact language; fall back to English
+    const langDict = translations[language] || translations['en'];
+    let result = langDict;
 
     for (const key of keys) {
       if (result && result[key] !== undefined) {
         result = result[key];
       } else {
-        // Fallback to English if key missing in Kannada
+        // Fallback to English if key missing in chosen language
         let enResult = translations.en;
         for (const k of keys) {
           if (enResult && enResult[k] !== undefined) enResult = enResult[k];
@@ -60,6 +84,8 @@ export const LanguageProvider = ({ children }) => {
   const value = {
     language,
     isKannada: language === 'kn',
+    isEnglish: language === 'en',
+    supportedLanguages: SUPPORTED_LANGUAGES,
     switchLanguage,
     toggleLanguage,
     t
@@ -81,3 +107,4 @@ export const useLanguage = () => {
 };
 
 export default LanguageContext;
+

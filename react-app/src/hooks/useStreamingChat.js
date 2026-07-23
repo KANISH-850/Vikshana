@@ -9,7 +9,7 @@ import { API_BASE_URL } from '../services/api';
  * completed GLM response into `delta` events, followed by `citations`,
  * `suggestions`, and `done`.
  */
-export function useStreamingChat({ conversationId, officerId, onUserMessage, onAssistantMessage }) {
+export function useStreamingChat({ conversationId, officerId, caseId, onUserMessage, onAssistantMessage }) {
     const [isStreaming, setIsStreaming] = useState(false);
     const [streamedText, setStreamedText] = useState('');
     const [citations, setCitations] = useState([]);
@@ -44,7 +44,7 @@ export function useStreamingChat({ conversationId, officerId, onUserMessage, onA
             const response = await fetch(`${API_BASE_URL}/conversations/${resolvedId}/messages`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content, officerId }),
+                body: JSON.stringify({ content, officerId, caseId }),
                 signal: controller.signal
             });
 
@@ -126,7 +126,7 @@ export function useStreamingChat({ conversationId, officerId, onUserMessage, onA
             setIsStreaming(false);
             abortRef.current = null;
         }
-    }, [conversationId, officerId, onUserMessage, onAssistantMessage]);
+    }, [conversationId, officerId, caseId, onUserMessage, onAssistantMessage]);
 
     const stopGeneration = useCallback(() => {
         if (abortRef.current) abortRef.current.abort();

@@ -5,20 +5,19 @@ class ConvoKraftService {
      * Synthesizes audio dictation or interrogation transcripts into structured case findings.
      */
     static async synthesizeDictation(req, { officerId, transcript, caseId }) {
-        const text = transcript || 'Witness statement recorded near Sector 18 vault entrance. Two suspects spotted fleeing in black SUV.';
+        const text = (transcript || '').trim();
         const timestamp = new Date().toISOString();
 
         return {
             caseId: caseId || '1',
             officerId: officerId || 'Officer K',
             originalTranscript: text,
-            synthesizedSummary: 'Eyewitness confirmed 2 suspects fleeing Sector 18 commercial vault in a black SUV heading toward Eastern Expressway.',
+            synthesizedSummary: text,
             extractedEntities: {
-                suspects: ['Suspect #1', 'Suspect #2'],
-                vehicles: ['Black SUV (MH-04-AB-1234)'],
-                locations: ['Sector 18 Commercial Vault', 'Eastern Expressway']
+                suspects: [],
+                vehicles: [],
+                locations: []
             },
-            timelineEntryCreated: true,
             processedAt: timestamp
         };
     }

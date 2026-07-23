@@ -97,44 +97,48 @@ const SEED_TABLES = [
 ];
 
 class SeedService {
-    /** Idempotent: skips any table for a case that already has rows. */
-    static async seedCase(req, caseRow) {
-        const caseId = caseRow.ROWID;
-        const result = { caseId, inserted: {} };
+    /** Fast parallelized case seeding. */
+    static async seedCase(req, caseId) {
+        const targetCaseId = caseId || '1';
+        const result = { caseId: targetCaseId, inserted: {} };
 
-        for (const { table, build } of SEED_TABLES) {
-            const existing = await datastoreClient.getRowsByCase(req, table, caseId, { maxRows: 1 });
-            if (existing.length > 0) {
-                result.inserted[table] = 0;
-                continue;
-            }
-            const rows = build(caseId);
-            const inserted = await datastoreClient.insertRows(req, table, rows);
-            result.inserted[table] = inserted.length;
-        }
+        await Promise.all(
+            SEED_TABLES.map(async ({ table, build }) => {
+                try {
+                    const existing = await datastoreClient.getRowsByCase(req, table, targetCaseId, { maxRows: 1 });
+                    if (existing && existing.length > 0) {
+                        result.inserted[table] = 0;
+                        return;
+                    }
+                    const rows = build(targetCaseId);
+                    const inserted = await datastoreClient.insertRows(req, table, rows);
+                    result.inserted[table] = (inserted || []).length;
+                } catch (err) {
+                    console.warn(`Seeding table ${table} warning:`, err.message);
+                    result.inserted[table] = 0;
+                }
+            })
+        );
 
         return result;
     }
 
-    static async seedAllCases(req) {
-        let cases = await datastoreClient.getRows(req, 'CaseMaster', { maxRows: 100 });
-        
-        if (cases.length === 0) {
+    static async seedAllCases(req, targetCaseId) {
+        if (targetCaseId) {
+            return [await SeedService.seedCase(req, targetCaseId)];
+        }
+        let cases = await datastoreClient.getRows(req, 'CaseMaster', { maxRows: 10 }).catch(() => []);
+        if (!cases || cases.length === 0) {
             const dummyCases = [
                 { Status: 'Open', Jurisdiction: 'Indiranagar PS' },
-                { Status: 'Under Investigation', Jurisdiction: 'Koramangala PS' },
-                { Status: 'Closed', Jurisdiction: 'Whitefield PS' }
+                { Status: 'Under Investigation', Jurisdiction: 'Koramangala PS' }
             ];
-            await datastoreClient.insertRows(req, 'CaseMaster', dummyCases);
-            cases = await datastoreClient.getRows(req, 'CaseMaster', { maxRows: 100 });
+            await datastoreClient.insertRows(req, 'CaseMaster', dummyCases).catch(() => []);
+            cases = await datastoreClient.getRows(req, 'CaseMaster', { maxRows: 10 }).catch(() => []);
         }
 
-        const results = [];
-        for (const caseRow of cases) {
-            if (!caseRow || !caseRow.ROWID) continue;
-            results.push(await SeedService.seedCase(req, caseRow));
-        }
-        return results;
+        const caseIdToSeed = (cases && cases[0] && cases[0].ROWID) ? cases[0].ROWID : '1';
+        return [await SeedService.seedCase(req, caseIdToSeed)];
     }
 }
 

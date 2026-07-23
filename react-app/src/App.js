@@ -4,6 +4,7 @@ import { AppProvider } from './context/AppContext';
 import { AuthProvider } from './context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import ProtectedRoute from './auth/ProtectedRoute';
+import AutoTranslator from './components/AutoTranslator';
 
 // Auth Pages
 import Login from './auth/Login';
@@ -41,6 +42,7 @@ function App() {
     <AuthProvider>
       <AppProvider>
         <LanguageProvider>
+          <AutoTranslator />
           <Router basename="/app">
           <Routes>
             {/* Public Auth Routes */}

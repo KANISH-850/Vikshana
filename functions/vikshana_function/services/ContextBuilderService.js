@@ -11,7 +11,18 @@ async function getCaseVictims(req, caseId) {
     const scoped = await datastoreClient.getRowsByCase(req, 'Victim', caseId, { maxRows: 10 });
     if (scoped.length > 0) return scoped;
     const all = await datastoreClient.getRows(req, 'Victim', { maxRows: 20 });
-    return all.filter((v) => String(v.case_id || v.CaseId || v.CASE_ID || '') === String(caseId));
+    return all.filter((v) => String(v.case_id || v.CaseMasterID || v.CaseId || v.CASE_ID || '') === String(caseId));
+}
+
+async function getCaseSuspects(req, caseId) {
+    let scoped = await datastoreClient.getRowsByCase(req, 'Suspect', caseId, { maxRows: 10 });
+    if (scoped.length === 0) {
+        scoped = await datastoreClient.getRowsByCase(req, 'Accused', caseId, { maxRows: 10 });
+    }
+    if (scoped.length === 0) {
+        scoped = await datastoreClient.getRowsByCase(req, 'ArrestSurrender', caseId, { maxRows: 10 });
+    }
+    return scoped;
 }
 
 class ContextBuilderService {
@@ -20,7 +31,7 @@ class ContextBuilderService {
         const [caseRow, victims, suspects, witnessRows, timeline, cctv, phoneRecords, financialTransactions, memory] = await Promise.all([
             datastoreClient.getRowById(req, 'CaseMaster', caseId),
             getCaseVictims(req, caseId),
-            datastoreClient.getRowsByCase(req, 'Suspect', caseId, { maxRows: 10 }),
+            getCaseSuspects(req, caseId),
             datastoreClient.getRowsByCase(req, 'Witness', caseId, { maxRows: 10 }),
             datastoreClient.getRowsByCase(req, 'TimelineEvent', caseId, { maxRows: 20, orderBy: 'event_time' }),
             datastoreClient.getRowsByCase(req, 'CCTVFootage', caseId, { maxRows: 10 }),

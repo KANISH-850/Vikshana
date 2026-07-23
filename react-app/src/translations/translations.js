@@ -1,27 +1,122 @@
 /**
  * translations.js
  * Comprehensive translation dictionary for English (en) and Kannada (kn).
- * Covers Navigation, Sidebar, Buttons, Forms, AI Assistant, Labels, Cards, Tables, Empty States, Loading & Errors.
+ * Covers Navigation, Sidebar, Buttons, Forms, AI Assistant, Labels, Cards,
+ * Tables, Empty States, Loading & Errors, Timeline, Dashboard, Evidence,
+ * Reports, Settings, and Decision Support.
+ *
+ * For Hindi (hi) and Tamil (ta), static keys fall back to English.
+ * Dynamic DB content (case titles, event descriptions) is translated
+ * via the Zia API using useTranslateDynamic hook.
  */
 
 const translations = {
   en: {
-    // Navigation & Sidebar
+    // ── Navigation & Sidebar ──────────────────────────────────────────────
     nav: {
       appName: "VIKSHANA",
       dashboard: "Dashboard",
       investigationWorkspace: "Investigation Workspace",
       crimeIntelligence: "Crime Intelligence",
+      decisionSupport: "Decision Support",
       relationshipExplorer: "Relationship Explorer",
       caseTimeline: "Case Timeline",
       evidenceLedger: "Evidence Ledger",
       reports: "Reports",
       settings: "Settings",
       searchPlaceholder: "Search everywhere (Cases, FIRs, Entities)...",
+      activeCase: "Active Case",
       logout: "Logout",
     },
 
-    // Sociological & AI Assistant Tabs & Section Titles
+    // ── Timeline ──────────────────────────────────────────────────────────
+    timeline: {
+      title: "Case Timeline",
+      subtitle: "Chronological reconstruction of verified facts, evidence pings, and incident events for Case #",
+      filterPlaceholder: "Filter timeline events...",
+      loadingText: "Loading case timeline...",
+      noResults: "No matching timeline events found for this query.",
+      evidenceVerification: "Evidence Verification",
+      unknownTimestamp: "Unknown Timestamp",
+    },
+
+    // ── Dashboard ─────────────────────────────────────────────────────────
+    dashboard: {
+      title: "Dashboard",
+      subtitle: "Investigative Command Overview",
+      activeCases: "Active Cases",
+      pendingReview: "Pending Review",
+      resolvedThisMonth: "Resolved This Month",
+      criticalAlerts: "Critical Alerts",
+      recentActivity: "Recent Activity",
+      quickActions: "Quick Actions",
+      openInvestigation: "Open Investigation",
+      viewEvidence: "View Evidence",
+      generateReport: "Generate Report",
+    },
+
+    // ── Evidence Ledger ───────────────────────────────────────────────────
+    evidence: {
+      title: "Evidence Ledger",
+      subtitle: "All verified evidence linked to the active case",
+      addEvidence: "Add Evidence",
+      searchPlaceholder: "Search evidence...",
+      filterAll: "All Types",
+      filterCctv: "CCTV",
+      filterDocument: "Document",
+      filterForensic: "Forensic",
+      filterWitness: "Witness",
+      noEvidence: "No evidence records found.",
+      loadingEvidence: "Loading evidence...",
+      evidenceId: "Evidence ID",
+      evidenceType: "Type",
+      description: "Description",
+      dateAdded: "Date Added",
+      status: "Status",
+      verified: "Verified",
+      pending: "Pending",
+      rejected: "Rejected",
+    },
+
+    // ── Reports ───────────────────────────────────────────────────────────
+    reports: {
+      title: "Reports",
+      subtitle: "Generate and manage case investigation reports",
+      generateReport: "Generate Report",
+      downloadPdf: "Download PDF",
+      reportType: "Report Type",
+      caseReport: "Case Summary Report",
+      evidenceReport: "Evidence Chain Report",
+      suspectReport: "Suspect Profile Report",
+      noReports: "No reports generated yet.",
+      generating: "Generating report...",
+      generated: "Report generated successfully",
+    },
+
+    // ── Settings ──────────────────────────────────────────────────────────
+    settings: {
+      title: "Settings",
+      subtitle: "Application preferences and configuration",
+      language: "Language",
+      languageSubtitle: "Select the display language for the interface",
+      theme: "Theme",
+      notifications: "Notifications",
+      account: "Account",
+      saveChanges: "Save Changes",
+      saved: "Changes saved",
+    },
+
+    // ── Decision Support ──────────────────────────────────────────────────
+    decisionSupport: {
+      title: "Decision Support",
+      subtitle: "AI-powered investigative insights and risk assessment",
+      riskScore: "Risk Score",
+      recommendation: "Recommendation",
+      confidenceScore: "Confidence Score",
+      analysisInProgress: "Analysis in progress...",
+    },
+
+    // ── Sociological & AI Assistant Tabs & Section Titles ─────────────────
     intelligence: {
       crimeIntelligenceTab: "Crime Intelligence",
       sociologicalInsightsTab: "Sociological Insights",
@@ -39,7 +134,7 @@ const translations = {
       retryAnalysis: "Retry Analysis",
     },
 
-    // AI Assistant UI
+    // ── AI Assistant UI ───────────────────────────────────────────────────
     assistant: {
       title: "AI Sociological Assistant",
       subtitle: "Powered by GLM · Explainable AI enabled",
@@ -70,7 +165,7 @@ const translations = {
       yourQuestionLabel: "Your Question",
     },
 
-    // Policy Recommendations
+    // ── Policy Recommendations ────────────────────────────────────────────
     policy: {
       title: "Policy Recommendations",
       criticalPriority: "Critical",
@@ -91,7 +186,7 @@ const translations = {
       totalRecs: "Total Recommendations",
     },
 
-    // Common UI Labels & Buttons
+    // ── Common UI Labels & Buttons ────────────────────────────────────────
     common: {
       loading: "Loading...",
       error: "Error",
@@ -107,23 +202,113 @@ const translations = {
     }
   },
 
+  // ════════════════════════════════════════════════════════════════════════
   kn: {
-    // Navigation & Sidebar
+    // ── Navigation & Sidebar ──────────────────────────────────────────────
     nav: {
       appName: "ವೀಕ್ಷಣ",
       dashboard: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
       investigationWorkspace: "ತನಿಖಾ ಕ್ಷೇತ್ರ",
       crimeIntelligence: "ಅಪರಾಧ ಬುದ್ಧಿಮತ್ತೆ",
+      decisionSupport: "ನಿರ್ಧಾರ ಬೆಂಬಲ",
       relationshipExplorer: "ಸಂಬಂಧಗಳ ಎಕ್ಸ್‌ಪ್ಲೋರರ್",
       caseTimeline: "ಪ್ರಕರಣದ ಕಾಲರೇಖೆ",
       evidenceLedger: "ಸಾಕ್ಷ್ಯಗಳ ವಹಿ",
       reports: "ವರದಿಗಳು",
       settings: "ಸಂಯೋಜನೆಗಳು",
       searchPlaceholder: "ಎಲ್ಲಾ ಕಡೆ ಹುಡುಕಿ (ಪ್ರಕರಣಗಳು, ಎಫ್‌ಐಆರ್)...",
+      activeCase: "ಸಕ್ರಿಯ ಪ್ರಕರಣ",
       logout: "ನಿರ್ಗಮಿಸಿ",
     },
 
-    // Sociological & AI Assistant Tabs & Section Titles
+    // ── Timeline ──────────────────────────────────────────────────────────
+    timeline: {
+      title: "ಪ್ರಕರಣದ ಕಾಲರೇಖೆ",
+      subtitle: "ಪ್ರಕರಣ #ಗಾಗಿ ದೃಢೀಕರಿಸಿದ ಸಂಗತಿಗಳು, ಸಾಕ್ಷ್ಯ ಪಿಂಗ್‌ಗಳು ಮತ್ತು ಘಟನೆಗಳ ಕಾಲಾನುಕ್ರಮ ಪುನರ್ನಿರ್ಮಾಣ",
+      filterPlaceholder: "ಕಾಲರೇಖೆ ಘಟನೆಗಳನ್ನು ಶೋಧಿಸಿ...",
+      loadingText: "ಪ್ರಕರಣದ ಕಾಲರೇಖೆ ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
+      noResults: "ಈ ಪ್ರಶ್ನೆಗೆ ಹೊಂದಿಕೆಯಾಗುವ ಯಾವುದೇ ಕಾಲರೇಖೆ ಘಟನೆಗಳು ಕಂಡುಬಂದಿಲ್ಲ.",
+      evidenceVerification: "ಸಾಕ್ಷ್ಯ ಪರಿಶೀಲನೆ",
+      unknownTimestamp: "ಅಜ್ಞಾತ ಸಮಯ",
+    },
+
+    // ── Dashboard ─────────────────────────────────────────────────────────
+    dashboard: {
+      title: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+      subtitle: "ತನಿಖಾ ಕಮಾಂಡ್ ಅವಲೋಕನ",
+      activeCases: "ಸಕ್ರಿಯ ಪ್ರಕರಣಗಳು",
+      pendingReview: "ಪರಿಶೀಲನೆ ಬಾಕಿ",
+      resolvedThisMonth: "ಈ ತಿಂಗಳು ಪರಿಹರಿಸಲಾಗಿದೆ",
+      criticalAlerts: "ತೀವ್ರ ಎಚ್ಚರಿಕೆಗಳು",
+      recentActivity: "ಇತ್ತೀಚಿನ ಚಟುವಟಿಕೆ",
+      quickActions: "ತ್ವರಿತ ಕ್ರಮಗಳು",
+      openInvestigation: "ತನಿಖೆ ತೆರೆಯಿರಿ",
+      viewEvidence: "ಸಾಕ್ಷ್ಯ ವೀಕ್ಷಿಸಿ",
+      generateReport: "ವರದಿ ರಚಿಸಿ",
+    },
+
+    // ── Evidence Ledger ───────────────────────────────────────────────────
+    evidence: {
+      title: "ಸಾಕ್ಷ್ಯಗಳ ವಹಿ",
+      subtitle: "ಸಕ್ರಿಯ ಪ್ರಕರಣಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಎಲ್ಲಾ ದೃಢೀಕರಿಸಿದ ಸಾಕ್ಷ್ಯಗಳು",
+      addEvidence: "ಸಾಕ್ಷ್ಯ ಸೇರಿಸಿ",
+      searchPlaceholder: "ಸಾಕ್ಷ್ಯ ಹುಡುಕಿ...",
+      filterAll: "ಎಲ್ಲಾ ವಿಧಗಳು",
+      filterCctv: "ಸಿಸಿಟಿವಿ",
+      filterDocument: "ದಾಖಲೆ",
+      filterForensic: "ನ್ಯಾಯವೈದ್ಯ",
+      filterWitness: "ಸಾಕ್ಷಿ",
+      noEvidence: "ಯಾವುದೇ ಸಾಕ್ಷ್ಯ ದಾಖಲೆಗಳು ಕಂಡುಬಂದಿಲ್ಲ.",
+      loadingEvidence: "ಸಾಕ್ಷ್ಯ ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
+      evidenceId: "ಸಾಕ್ಷ್ಯ ಐಡಿ",
+      evidenceType: "ವಿಧ",
+      description: "ವಿವರಣೆ",
+      dateAdded: "ಸೇರಿಸಿದ ದಿನಾಂಕ",
+      status: "ಸ್ಥಿತಿ",
+      verified: "ದೃಢೀಕರಿಸಲಾಗಿದೆ",
+      pending: "ಬಾಕಿ ಇದೆ",
+      rejected: "ತಿರಸ್ಕರಿಸಲಾಗಿದೆ",
+    },
+
+    // ── Reports ───────────────────────────────────────────────────────────
+    reports: {
+      title: "ವರದಿಗಳು",
+      subtitle: "ಪ್ರಕರಣ ತನಿಖಾ ವರದಿಗಳನ್ನು ರಚಿಸಿ ಮತ್ತು ನಿರ್ವಹಿಸಿ",
+      generateReport: "ವರದಿ ರಚಿಸಿ",
+      downloadPdf: "ಪಿಡಿಎಫ್ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ",
+      reportType: "ವರದಿ ವಿಧ",
+      caseReport: "ಪ್ರಕರಣ ಸಾರಾಂಶ ವರದಿ",
+      evidenceReport: "ಸಾಕ್ಷ್ಯ ಸರಪಳಿ ವರದಿ",
+      suspectReport: "ಅನುಮಾನಿತ ಪ್ರೊಫೈಲ್ ವರದಿ",
+      noReports: "ಇನ್ನೂ ಯಾವುದೇ ವರದಿಗಳು ರಚಿಸಲಾಗಿಲ್ಲ.",
+      generating: "ವರದಿ ರಚಿಸಲಾಗುತ್ತಿದೆ...",
+      generated: "ವರದಿ ಯಶಸ್ವಿಯಾಗಿ ರಚಿಸಲಾಗಿದೆ",
+    },
+
+    // ── Settings ──────────────────────────────────────────────────────────
+    settings: {
+      title: "ಸಂಯೋಜನೆಗಳು",
+      subtitle: "ಅಪ್ಲಿಕೇಶನ್ ಆದ್ಯತೆಗಳು ಮತ್ತು ಸಂರಚನೆ",
+      language: "ಭಾಷೆ",
+      languageSubtitle: "ಇಂಟರ್‌ಫೇಸ್‌ಗಾಗಿ ಪ್ರದರ್ಶನ ಭಾಷೆ ಆಯ್ಕೆ ಮಾಡಿ",
+      theme: "ಥೀಮ್",
+      notifications: "ಅಧಿಸೂಚನೆಗಳು",
+      account: "ಖಾತೆ",
+      saveChanges: "ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಿ",
+      saved: "ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಲಾಗಿದೆ",
+    },
+
+    // ── Decision Support ──────────────────────────────────────────────────
+    decisionSupport: {
+      title: "ನಿರ್ಧಾರ ಬೆಂಬಲ",
+      subtitle: "ಎಐ-ಚಾಲಿತ ತನಿಖಾ ಒಳನೋಟಗಳು ಮತ್ತು ಅಪಾಯ ಮೌಲ್ಯಮಾಪನ",
+      riskScore: "ಅಪಾಯ ಸ್ಕೋರ್",
+      recommendation: "ಶಿಫಾರಸು",
+      confidenceScore: "ವಿಶ್ವಾಸ ಸ್ಕೋರ್",
+      analysisInProgress: "ವಿಶ್ಲೇಷಣೆ ಪ್ರಗತಿಯಲ್ಲಿದೆ...",
+    },
+
+    // ── Sociological & AI Assistant ───────────────────────────────────────
     intelligence: {
       crimeIntelligenceTab: "ಅಪರಾಧ ಇಂಟೆಲಿಜೆನ್ಸ್",
       sociologicalInsightsTab: "ಸಾಮಾಜಿಕ ಒಳನೋಟಗಳು",
@@ -141,7 +326,7 @@ const translations = {
       retryAnalysis: "ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ",
     },
 
-    // AI Assistant UI
+    // ── AI Assistant UI ───────────────────────────────────────────────────
     assistant: {
       title: "ಎಐ ಸಾಮಾಜಿಕ ಸಹಾಯಕ",
       subtitle: "ಜಿಎಲ್‌ಎಮ್ ಆಧಾರಿತ · ವಿವರಣಾತ್ಮಕ ಎಐ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ",
@@ -172,7 +357,7 @@ const translations = {
       yourQuestionLabel: "ನಿಮ್ಮ ಪ್ರಶ್ನೆ",
     },
 
-    // Policy Recommendations
+    // ── Policy Recommendations ────────────────────────────────────────────
     policy: {
       title: "ನೀತಿ ಶಿಫಾರಸುಗಳು",
       criticalPriority: "ಅತ್ಯಂತ ತುರ್ತು",
@@ -193,7 +378,7 @@ const translations = {
       totalRecs: "ಒಟ್ಟು ಶಿಫಾರಸುಗಳು",
     },
 
-    // Common UI Labels & Buttons
+    // ── Common UI Labels & Buttons ────────────────────────────────────────
     common: {
       loading: "ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
       error: "ದೋಷ",
