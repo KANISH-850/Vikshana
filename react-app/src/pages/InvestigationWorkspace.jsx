@@ -11,11 +11,16 @@ import { resolveSlashCommand, SLASH_COMMANDS } from '../utils/slashCommands';
 import * as conversationService from '../services/conversationService';
 import { exportAsMarkdown } from '../utils/exportConversation';
 import DecisionSupportPanel from '../components/investigation/DecisionSupportPanel';
+import FIRSummaryPanel from '../components/investigation/FIRSummaryPanel';
+import QuickActionsBar from '../components/investigation/QuickActionsBar';
+import CaseSelector from '../components/investigation/CaseSelector';
+import { useAppContext } from '../context/AppContext';
 import styles from './InvestigationWorkspace.module.css';
 
 const HELP_TEXT = `**Available commands**\n\n${SLASH_COMMANDS.map((c) => `- \`${c.command}\` — ${c.description}`).join('\n')}`;
 
 const InvestigationChat = ({ caseId }) => {
+    const { currentCase } = useAppContext();
     const {
         conversations,
         activeConversationId,
@@ -170,6 +175,10 @@ const InvestigationChat = ({ caseId }) => {
                         onToggleBookmark={toggleBookmark}
                     />
                 </div>
+                <div style={{ padding: '16px 0 0 0' }} data-vik-no-print>
+                    <FIRSummaryPanel bundle={currentCase} />
+                </div>
+
                 <div className={styles.messages}>
                     <ChatMessageList
                         messages={messages}
@@ -185,6 +194,14 @@ const InvestigationChat = ({ caseId }) => {
                 {uploading && <div className={styles.uploadBanner} data-vik-no-print>Uploading &amp; analyzing files...</div>}
 
                 <div data-vik-no-print>
+                    <QuickActionsBar onAction={(qa) => {
+                        if (qa.command) {
+                            const resolved = resolveSlashCommand(qa.command);
+                            if (resolved) executeResolved(resolved);
+                        } else if (qa.prompt) {
+                            handleSend(qa.prompt);
+                        }
+                    }} />
                     <ChatInput
                         onSend={handleRawSend}
                         onRunQuickAction={runQuickAction}
@@ -215,9 +232,16 @@ const InvestigationChat = ({ caseId }) => {
     );
 };
 
+
 const InvestigationWorkspace = () => {
     const { caseId } = useParams();
-    const resolvedCaseId = caseId || '1';
+    const { activeCaseId } = useAppContext();
+    const resolvedCaseId = caseId || activeCaseId || null;
+
+    // If no case is selected, show the Case Selector screen
+    if (!resolvedCaseId) {
+        return <CaseSelector />;
+    }
 
     return (
         <ConversationProvider caseId={resolvedCaseId}>

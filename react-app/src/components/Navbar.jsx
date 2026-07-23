@@ -27,6 +27,7 @@ const Navbar = () => {
     return unsub;
   }, []);
 
+<<<<<<< Updated upstream
   const displayName = user?.name || officer.name;
   const displayRole = user?.email || officer.role;
   
@@ -60,6 +61,19 @@ const Navbar = () => {
     const selectedId = e.target.value;
     if (selectedId) {
       navigate(`/investigate/${selectedId}`);
+=======
+  const displayName = user?.name || officer?.name || 'Unknown User';
+  const displayRole = user?.role || officer?.role || 'Viewer';
+
+  const getRoleColor = (role) => {
+    switch(role) {
+      case 'Administrator': return '#ef4444'; // Red
+      case 'Investigator': return '#3b82f6'; // Blue
+      case 'Analyst': return '#a855f7'; // Purple
+      case 'Supervisor': return '#f97316'; // Orange
+      case 'Policymaker': return '#10b981'; // Green
+      default: return '#64748b'; // Gray
+>>>>>>> Stashed changes
     }
   };
 
@@ -173,7 +187,18 @@ const Navbar = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', borderLeft: '1px solid var(--glass-border)', paddingLeft: '20px' }}>
           <div style={{ textAlign: 'right' }}>
             <div style={{ fontWeight: '600', fontSize: '14px' }}>{displayName}</div>
-            <div style={{ color: 'var(--text-muted)', fontSize: '12px' }}>{displayRole}</div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px', marginTop: '2px' }}>
+              <span style={{ 
+                background: getRoleColor(displayRole), 
+                color: 'white', 
+                fontSize: '10px', 
+                padding: '2px 6px', 
+                borderRadius: '4px', 
+                fontWeight: 'bold' 
+              }}>
+                {displayRole}
+              </span>
+            </div>
           </div>
           <div style={{ 
             width: '40px', height: '40px', borderRadius: '50%', background: 'var(--accent-primary)', 

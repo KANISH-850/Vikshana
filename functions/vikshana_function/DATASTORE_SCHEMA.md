@@ -18,6 +18,46 @@ relate to `CaseMaster` in the existing code.
 Every table automatically gets `ROWID`, `CREATORID`, `CREATEDTIME`,
 `MODIFIEDTIME` from Catalyst — not listed below.
 
+## UserMaster
+| Column | Type |
+|---|---|
+| name | Text |
+| email | Text |
+| password_hash | Text |
+| role | Text |
+| department | Text |
+| status | Text |
+
+## AuditLog
+| Column | Type |
+|---|---|
+| log_id | Text (or Auto-increment) |
+| user_id | Text |
+| user_name | Text |
+| role | Text |
+| action | Text |
+| resource | Text |
+| case_id | Text |
+| status | Text |
+| ip_address | Text |
+| browser | Text |
+| timestamp | DateTime |
+
+## AIInteractionLog
+| Column | Type |
+|---|---|
+| log_id | Text (or Auto-increment) |
+| user_id | Text |
+| user_name | Text |
+| role | Text |
+| case_id | Text |
+| prompt | Big Text |
+| response_id | Text |
+| model | Text |
+| confidence | Text |
+| evidence_ids | Text (JSON array of strings) |
+| generated_time | DateTime |
+
 ## Conversation
 | Column | Type |
 |---|---|
@@ -133,3 +173,170 @@ missing). No manual Console step or `catalyst.json` change is needed for
 this; if folder creation or upload ever fails for any reason, the service
 degrades gracefully and still stores the extracted text, just without a
 downloadable original file.
+
+---
+
+## FIRMaster
+| Column | Type |
+|---|---|
+| case_id | Text |
+| original_text | Big Text |
+| processed_date | DateTime |
+| status | Text (`processed` \| `failed`) |
+
+## ExtractedEntity
+| Column | Type |
+|---|---|
+| case_id | Text |
+| entity_type | Text (`Person`, `Vehicle`, `Weapon`, `Location`, `Phone Number`, `Email`, `Bank Account`, `Organization`, `Court`, `Police Station`, `Case Number`, `Evidence ID`, `Passport`, `Aadhaar`, `License Plate`) |
+| entity_value | Text |
+| extracted_from | Big Text |
+| confidence | Number |
+| reasoning | Big Text |
+| is_alias_of | Text (Reference to another ExtractedEntity ROWID) |
+
+## EntityRelationship
+| Column | Type |
+|---|---|
+| case_id | Text |
+| source_entity_id | Text |
+| target_entity_id | Text |
+| relationship_type | Text |
+| confidence | Number |
+
+## EntityAlias
+| Column | Type |
+|---|---|
+| primary_entity_id | Text |
+| alias_entity_id | Text |
+| reason | Big Text |
+
+## NarrativeSummary
+| Column | Type |
+|---|---|
+| case_id | Text |
+| summary_text | Big Text |
+| crime_type | Text |
+| ipc_sections | Text |
+| location | Text |
+| date | Text |
+| time | Text |
+
+## InvestigationLead
+| Column | Type |
+|---|---|
+| case_id | Text |
+| lead_type | Text (`Most suspicious entity`, `Unknown entity`, `Missing witness`, `Missing evidence`, `Conflicting statement`, `Potential accomplice`) |
+| reasoning | Big Text |
+| evidence | Big Text |
+| priority | Text (`High`, `Medium`, `Low`) |
+| confidence | Number |
+
+## Evidence
+| Column | Type |
+|---|---|
+| case_id | Text |
+| type | Text (`Physical`, `Digital`, `CCTV`, `Mobile`, `Financial`, `Biological`, `Weapon`, `Vehicle`, `Document`, `Other`) |
+| title | Text |
+| description | Big Text |
+| quality | Text (`High`, `Medium`, `Low`) |
+| completeness | Number |
+| priority | Text (`Critical`, `High`, `Medium`, `Low`) |
+| collection_date | DateTime |
+| verification_status | Text (`Verified`, `Pending`, `Disputed`) |
+| assigned_officer | Text |
+
+## EvidenceAttachment
+| Column | Type |
+|---|---|
+| evidence_id | Text |
+| file_store_key | Text |
+| filename | Text |
+| mime_type | Text |
+
+## ChainOfCustody
+| Column | Type |
+|---|---|
+| evidence_id | Text |
+| transfer_date | DateTime |
+| from_person | Text |
+| to_person | Text |
+| reason | Text |
+| location | Text |
+
+## ForensicReport
+| Column | Type |
+|---|---|
+| evidence_id | Text |
+| report_date | DateTime |
+| lab_name | Text |
+| examiner | Text |
+| findings | Big Text |
+| conclusion | Big Text |
+
+## Weapon
+| Column | Type |
+|---|---|
+| case_id | Text |
+| evidence_id | Text |
+| type | Text |
+| make | Text |
+| serial_number | Text |
+| caliber | Text |
+
+## Vehicle
+| Column | Type |
+|---|---|
+| case_id | Text |
+| evidence_id | Text |
+| make | Text |
+| model | Text |
+| license_plate | Text |
+| color | Text |
+| vin | Text |
+
+## Fingerprint
+| Column | Type |
+|---|---|
+| case_id | Text |
+| evidence_id | Text |
+| match_status | Text |
+| matched_person_id | Text |
+| classification | Text |
+
+## DNAProfile
+| Column | Type |
+|---|---|
+| case_id | Text |
+| evidence_id | Text |
+| match_status | Text |
+| matched_person_id | Text |
+| lab_ref | Text |
+
+## Recommendation
+| Column | Type |
+|---|---|
+| case_id | Text |
+| action | Text |
+| priority | Text (`Critical`, `High`, `Medium`, `Low`) |
+| reason | Big Text |
+| expected_impact | Big Text |
+| status | Text (`Pending`, `In Progress`, `Completed`, `Dismissed`) |
+
+## AIReasoning
+| Column | Type |
+|---|---|
+| recommendation_id | Text |
+| confidence | Number |
+| reasoning | Big Text |
+| evidence_used | Big Text |
+| timeline_ref | Text |
+
+## EvidenceCorrelation
+| Column | Type |
+|---|---|
+| source_evidence_id | Text |
+| target_evidence_id | Text |
+| correlation_score | Number |
+| reason | Big Text |
+| relationship_type | Text |

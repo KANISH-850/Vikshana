@@ -5,6 +5,8 @@
  */
 
 const glmClient = require('../services/glmClient');
+const AuditService = require('../services/AuditService');
+const AILogService = require('../services/AILogService');
 
 const OFFENDERS_DB = [
     {
@@ -208,6 +210,7 @@ class OffenderProfilingController {
         try {
             const { id } = req.params;
             const offender = OFFENDERS_DB.find(o => o.id === id || o.name.toLowerCase().includes(id.toLowerCase())) || OFFENDERS_DB[0];
+            AuditService.logEvent(req, req.user, 'Viewed Offender', `OffenderProfile:${offender.id}`, '', 'SUCCESS');
             res.status(200).json({ success: true, data: offender });
         } catch (error) {
             res.status(500).json({ success: false, error: error.message });
@@ -263,6 +266,8 @@ class OffenderProfilingController {
                 ],
                 supportingRecords: offender.criminalHistoryDetails?.firHistory?.map(c => `${c.firId} (${c.section})`) || []
             };
+
+            AILogService.logInteraction(req, req.user, offenderId, question, 'crm-di-glm47b', response.confidence, []);
 
             res.status(200).json({ success: true, data: response });
         } catch (error) {

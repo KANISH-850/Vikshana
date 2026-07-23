@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-    Compass, FileText, User, Shield, Users,
-    Sparkles, Loader2, Activity, Download, BrainCircuit, Crosshair,
-    Clock, Layers, MapPin, Network, AlertTriangle, AlertCircle,
-    CheckCircle2, ArrowRight, ShieldAlert, Send
+    Compass, FileText,
+    Sparkles, Loader2, Download, Crosshair,
+    Clock, Layers, Network, AlertTriangle,
+    CheckCircle2, ArrowRight
 } from 'lucide-react';
 import api from '../services/api';
-import { useLanguage } from '../context/LanguageContext';
 import { exportDecisionSupportCourtPDF } from '../utils/pdfExport';
+import { useAppContext } from '../context/AppContext';
 
 const InvestigatorDecisionSupport = () => {
-    const { t } = useLanguage();
-    const [caseId, setCaseId] = useState('CASE-2026-8841');
+    const { activeCaseId } = useAppContext();
+    const caseId = activeCaseId;
     const [caseData, setCaseData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [activeSection, setActiveSection] = useState('overview');
@@ -25,7 +25,7 @@ const InvestigatorDecisionSupport = () => {
     // AI Investigation Assistant State
     const [aiQuery, setAiQuery] = useState('');
     const [aiResponse, setAiResponse] = useState(null);
-    const [aiLoading, setAiLoading] = useState(false);
+    const [aiLoading, setAiLoading] = useState(false); // eslint-disable-line no-unused-vars
 
     useEffect(() => {
         setLoading(true);
@@ -46,7 +46,10 @@ const InvestigatorDecisionSupport = () => {
         setAiLoading(true);
         api.post('/decision/query-assistant', { prompt: promptToUse, caseId })
             .then(res => {
-                if (res.data?.success) setAiResponse(res.data.data);
+                if (res.data?.success) {
+                    setAiResponse(res.data.data);
+                    api.post('/audit', { action: 'Generated AI Report', resource: `Decision Support AI: ${promptToUse}` }).catch(() => {});
+                }
                 setAiLoading(false);
             })
             .catch(err => {
@@ -58,6 +61,7 @@ const InvestigatorDecisionSupport = () => {
     const handleExportCourtPDF = useCallback(() => {
         if (!caseData) return;
         exportDecisionSupportCourtPDF(caseData, userRole);
+        api.post('/audit', { action: 'Exported Report', resource: `Court Docket PDF: ${caseData.overview?.caseId}` }).catch(() => {});
     }, [caseData, userRole]);
 
     if (loading) {

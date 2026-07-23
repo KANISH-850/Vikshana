@@ -4,6 +4,7 @@
  */
 
 const glmClient = require('../services/glmClient');
+const AILogService = require('../services/AILogService');
 
 const DECISION_CASES_DB = {
     'CASE-2026-8841': {
@@ -176,7 +177,11 @@ class DecisionSupportController {
         try {
             const { caseId } = req.body || {};
             const data = DECISION_CASES_DB[caseId] || DECISION_CASES_DB['CASE-2026-8841'];
-            res.status(200).json({ success: true, data: data.aiExecutiveSummary });
+            
+            const aiData = data.aiExecutiveSummary;
+            AILogService.logInteraction(req, req.user, caseId, 'Generate Executive Summary', 'crm-di-glm47b', aiData.confidence, aiData.evidenceReferences);
+
+            res.status(200).json({ success: true, data: aiData });
         } catch (error) {
             res.status(500).json({ success: false, error: error.message });
         }
@@ -196,14 +201,18 @@ class DecisionSupportController {
                 responseText = `CASE BRIEFING (${data.overview.caseId}):\nPrimary Suspect: Vikram Sharma (OFF-101).\nEvidence Secured: 9mm Casing (EVD-9901).\nPriority Score: 89/100 (TIER 1 CRITICAL).`;
             }
 
+            const responseData = {
+                answer: responseText,
+                confidence: 'HIGH (93%)',
+                evidenceReferences: ['EVD-9901', 'EVD-9902', 'ANPR-8821'],
+                dataSources: ['Catalyst Data Store', 'FIR Ledger', 'Ballistic Forensics']
+            };
+
+            AILogService.logInteraction(req, req.user, caseId, prompt, 'crm-di-glm47b', responseData.confidence, responseData.evidenceReferences);
+
             res.status(200).json({
                 success: true,
-                data: {
-                    answer: responseText,
-                    confidence: 'HIGH (93%)',
-                    evidenceReferences: ['EVD-9901', 'EVD-9902', 'ANPR-8821'],
-                    dataSources: ['Catalyst Data Store', 'FIR Ledger', 'Ballistic Forensics']
-                }
+                data: responseData
             });
         } catch (error) {
             res.status(500).json({ success: false, error: error.message });

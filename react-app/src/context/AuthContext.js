@@ -34,9 +34,8 @@ export const AuthProvider = ({ children }) => {
     restoreSession();
   }, []);
 
-  // Background REST Login (NO REDIRECTS)
-  const login = async (email, password, rememberMe = true) => {
-    try {
+    // Background REST Login (NO REDIRECTS)
+    const login = async (email, password, rememberMe = true) => {
       const res = await api.post('/auth/login', { email, password, rememberMe });
       if (res.data?.success) {
         const { token, user: userProfile } = res.data;
@@ -47,27 +46,10 @@ export const AuthProvider = ({ children }) => {
       } else {
         throw new Error(res.data?.message || 'Login failed.');
       }
-    } catch (error) {
-      // Fallback local session generation so login UI never fails
-      const fallbackUser = {
-        id: 'CATALYST_USR_001',
-        name: email.split('@')[0].toUpperCase(),
-        email: email,
-        role: 'Officer',
-        provider: 'Email',
-        district: 'Central',
-        status: 'ACTIVE'
-      };
-      localStorage.setItem('vikshana_auth_token', 'demo-session-token');
-      localStorage.setItem('vikshana_user', JSON.stringify(fallbackUser));
-      setUser(fallbackUser);
-      return fallbackUser;
-    }
-  };
+    };
 
-  // Background In-App Signup (NO REDIRECTS)
-  const signup = async (name, email, password, confirmPassword) => {
-    try {
+    // Background In-App Signup (NO REDIRECTS)
+    const signup = async (name, email, password, confirmPassword) => {
       const res = await api.post('/auth/signup', { name, email, password, confirmPassword });
       if (res.data?.success) {
         const { token, user: userProfile } = res.data;
@@ -78,26 +60,10 @@ export const AuthProvider = ({ children }) => {
       } else {
         throw new Error(res.data?.message || 'Signup failed.');
       }
-    } catch (error) {
-      const newUser = {
-        id: `CATALYST_USR_${Date.now()}`,
-        name,
-        email,
-        role: 'Officer',
-        provider: 'Email',
-        district: 'Central',
-        status: 'ACTIVE'
-      };
-      localStorage.setItem('vikshana_auth_token', 'demo-signup-token');
-      localStorage.setItem('vikshana_user', JSON.stringify(newUser));
-      setUser(newUser);
-      return newUser;
-    }
-  };
+    };
 
-  // Google Popup Auth (NO PAGE REDIRECTS)
-  const loginWithGoogle = async () => {
-    try {
+    // Google Popup Auth (NO PAGE REDIRECTS)
+    const loginWithGoogle = async () => {
       const res = await api.post('/auth/google', {
         email: 'kanishkgins@gmail.com',
         name: 'Kanishk (Google Auth)'
@@ -108,25 +74,10 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('vikshana_user', JSON.stringify(userProfile));
         setUser(userProfile);
         return userProfile;
+      } else {
+        throw new Error(res.data?.message || 'Google Auth failed.');
       }
-    } catch (error) {
-      console.warn('[AuthContext] Google background auth fallback');
-    }
-
-    const googleUser = {
-      id: 'GOOGLE_USER_8841',
-      name: 'Kanishk (Google Auth)',
-      email: 'kanishkgins@gmail.com',
-      role: 'Officer',
-      provider: 'Google',
-      district: 'Central',
-      status: 'ACTIVE'
     };
-    localStorage.setItem('vikshana_auth_token', 'google-popup-token');
-    localStorage.setItem('vikshana_user', JSON.stringify(googleUser));
-    setUser(googleUser);
-    return googleUser;
-  };
 
   // Forgot Password (NO REDIRECTS)
   const forgotPassword = async (email) => {

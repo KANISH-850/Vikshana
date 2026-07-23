@@ -9,4 +9,7 @@ router.post('/forgot-password', AuthController.forgotPassword);
 router.get('/session', AuthController.getSession);
 router.post('/logout', AuthController.logout);
 
+const { authorizeRole } = require('../middleware/authorize.middleware');
+router.put('/role', authorizeRole(['Administrator']), AuthController.updateRole);
+
 module.exports = router;

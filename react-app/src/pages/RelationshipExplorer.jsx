@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import GraphView from '../components/GraphView';
 import { Network, RefreshCw } from 'lucide-react';
 import api from '../services/api';
+import { useAppContext } from '../context/AppContext';
 
 const DEFAULT_NODES = [
   { id: '1', label: 'Vikram Sharma (Suspect)', type: 'person', status: 'Prime Accused', risk: 'High' },
@@ -23,11 +24,12 @@ const DEFAULT_EDGES = [
 const RelationshipExplorer = () => {
   const [loading, setLoading] = useState(false);
   const [graphData, setGraphData] = useState({ nodes: DEFAULT_NODES, edges: DEFAULT_EDGES });
+  const { activeCaseId } = useAppContext();
 
-  const fetchNetwork = async () => {
+  const fetchNetwork = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await api.get('/relationships');
+      const response = await api.get('/relationships', { params: { caseId: activeCaseId } });
       if (response.data && response.data.success && response.data.data && response.data.data.nodes?.length > 0) {
         setGraphData(response.data.data);
       } else {
@@ -39,11 +41,11 @@ const RelationshipExplorer = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeCaseId]);
 
   useEffect(() => {
     fetchNetwork();
-  }, []);
+  }, [fetchNetwork]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', height: '100%' }}>

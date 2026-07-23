@@ -1,6 +1,8 @@
 const express = require('express');
 require('dotenv').config({ path: __dirname + '/.env' });
 const cors = require('cors');
+const { authenticateToken, authorizeRole } = require('./middleware/authorize.middleware');
+const { fieldFilter } = require('./middleware/fieldFilter.middleware');
 
 // Import routes
 const authRoutes = require('./routes/auth.routes');
@@ -20,31 +22,47 @@ const sociologicalRoutes = require('./routes/sociological.routes');
 const offenderRoutes = require('./routes/offender.routes');
 const decisionRoutes = require('./routes/decision.routes');
 const forecastingRoutes = require('./routes/forecasting.routes');
+const auditRoutes = require('./routes/audit.routes');
+const textToSqlRoutes = require('./routes/textToSql.routes');
+const firIntelligenceRoutes = require('./routes/firIntelligence.routes');
+const evidenceIntelligenceRoutes = require('./routes/evidenceIntelligence.routes');
 
 const app = express();
 
-// Middleware
+// Global Middleware
 app.use(cors());
 app.use(express.json());
+app.use(authenticateToken);
+app.use(fieldFilter);
 
-// Routes
+// Public Routes
 app.use('/auth', authRoutes);
-app.use('/dashboard', dashboardRoutes);
-app.use('/investigate', investigateRoutes);
-app.use('/relationships', relationshipRoutes);
-app.use('/evidence', evidenceRoutes);
-app.use('/reports', reportRoutes);
 app.use('/dev', devRoutes);
-app.use('/conversations', conversationRoutes);
-app.use('/cases', caseRoutes);
-app.use('/signals', signalRoutes);
-app.use('/jobs', jobRoutes);
-app.use('/ml', mlRoutes);
-app.use('/convokraft', convokraftRoutes);
-app.use('/sociological', sociologicalRoutes);
-app.use('/offender', offenderRoutes);
-app.use('/decision', decisionRoutes);
-app.use('/forecasting', forecastingRoutes);
+app.use('/audit', authorizeRole('Administrator', 'Supervisor'), auditRoutes);
+
+// Role Protected API Routes
+app.use('/dashboard', authorizeRole('Administrator', 'Investigator', 'Analyst', 'Supervisor', 'Policymaker'), dashboardRoutes);
+app.use('/investigate', authorizeRole('Administrator', 'Investigator', 'Supervisor'), investigateRoutes);
+app.use('/conversations', authorizeRole('Administrator', 'Investigator', 'Supervisor'), conversationRoutes);
+app.use('/cases', authorizeRole('Administrator', 'Investigator', 'Supervisor'), caseRoutes);
+app.use('/decision', authorizeRole('Administrator', 'Investigator', 'Supervisor'), decisionRoutes);
+app.use('/offender', authorizeRole('Administrator', 'Investigator', 'Supervisor'), offenderRoutes);
+app.use('/evidence', authorizeRole('Administrator', 'Investigator', 'Supervisor'), evidenceRoutes);
+
+app.use('/relationships', authorizeRole('Administrator', 'Investigator', 'Analyst', 'Supervisor'), relationshipRoutes);
+app.use('/sociological', authorizeRole('Administrator', 'Analyst', 'Supervisor', 'Policymaker'), sociologicalRoutes);
+app.use('/forecasting', authorizeRole('Administrator', 'Analyst', 'Supervisor', 'Policymaker'), forecastingRoutes);
+app.use('/ml', authorizeRole('Administrator', 'Investigator', 'Analyst', 'Supervisor'), mlRoutes);
+
+app.use('/reports', authorizeRole('Administrator', 'Investigator', 'Analyst', 'Supervisor', 'Policymaker'), reportRoutes);
+app.use('/signals', authorizeRole('Administrator', 'Investigator', 'Analyst', 'Supervisor', 'Policymaker'), signalRoutes);
+app.use('/jobs', authorizeRole('Administrator', 'Investigator', 'Supervisor'), jobRoutes);
+app.use('/convokraft', authorizeRole('Administrator', 'Investigator', 'Supervisor'), convokraftRoutes);
+app.use('/text-to-sql', authorizeRole('Administrator', 'Investigator', 'Supervisor', 'Analyst', 'Policymaker'), textToSqlRoutes);
+app.use('/fir-intelligence', authorizeRole('Administrator', 'Investigator', 'Supervisor', 'Analyst', 'Policymaker'), firIntelligenceRoutes);
+app.use('/evidence-intelligence', authorizeRole('Administrator', 'Investigator', 'Supervisor', 'Analyst', 'Policymaker'), evidenceIntelligenceRoutes);
+
+
 
 // Fallback for missing routes
 app.use((req, res) => {

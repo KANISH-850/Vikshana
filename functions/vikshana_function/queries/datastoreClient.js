@@ -2,7 +2,8 @@ const catalyst = require('zcatalyst-sdk-node');
 const fs = require('fs');
 const path = require('path');
 
-const LOCAL_DB_PATH = path.join(__dirname, '..', 'local_datastore.json');
+const os = require('os');
+const LOCAL_DB_PATH = path.join(os.tmpdir(), 'vikshana_local_datastore.json');
 
 function loadLocalDb() {
     try {
@@ -72,7 +73,7 @@ async function query(req, sql) {
         return rows || [];
     } catch (error) {
         console.error('[datastoreClient] query notice:', error.message);
-        return [];
+        throw error; // Throw so getRowsWhere can fallback to local_datastore.json
     }
 }
 

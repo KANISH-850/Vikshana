@@ -179,7 +179,10 @@ const OffenderProfiling = () => {
         setAiLoading(true);
         api.post('/offender/ai-insights', { offenderId: selectedId, question: questionToAsk })
             .then(res => {
-                if (res.data?.success) setAiInsight(res.data.data);
+                if (res.data?.success) {
+                    setAiInsight(res.data.data);
+                    api.post('/audit', { action: 'Generated AI Report', resource: `Offender AI Insight: ${questionToAsk}` }).catch(() => {});
+                }
                 setAiLoading(false);
             })
             .catch(() => setAiLoading(false));
@@ -188,6 +191,7 @@ const OffenderProfiling = () => {
     const handleExportPDF = useCallback(() => {
         const activeProfile = profile || DEFAULT_OFFENDER_PROFILE;
         exportOffenderProfilePDF(activeProfile);
+        api.post('/audit', { action: 'Exported Report', resource: `Offender Profile PDF: ${activeProfile.id}` }).catch(() => {});
     }, [profile]);
 
     if (loading) {

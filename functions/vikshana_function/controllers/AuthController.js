@@ -9,7 +9,9 @@ const JWT_SECRET = process.env.JWT_SECRET || 'vikshana-catalyst-secret-key-2026'
 
 function signToken(payload) {
     const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
-    const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
+    const now = Math.floor(Date.now() / 1000);
+    const updatedPayload = { ...payload, iat: now, exp: now + (8 * 60 * 60) };
+    const body = Buffer.from(JSON.stringify(updatedPayload)).toString('base64url');
     const sig = crypto.createHmac('sha256', JWT_SECRET).update(`${header}.${body}`).digest('base64url');
     return `${header}.${body}.${sig}`;
 }
@@ -26,33 +28,18 @@ function verifyToken(token) {
     }
 }
 
-// Persistent Catalyst User Repository
-const USER_DATABASE = [
-    {
-        id: 'CATALYST_USR_001',
-        name: 'Insp. R. Singh',
-        email: 'officer@vikshana.gov',
-        role: 'Officer',
-        provider: 'Email',
-        district: 'Peri-Urban',
-        createdDate: '2026-01-15T08:00:00Z',
-        lastLogin: new Date().toISOString(),
-        profilePicture: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
-        status: 'ACTIVE'
-    },
-    {
-        id: 'CATALYST_USR_002',
-        name: 'Kanishk (Google Auth)',
-        email: 'kanishkgins@gmail.com',
-        role: 'Officer',
-        provider: 'Google',
-        district: 'Central',
-        createdDate: '2026-02-01T10:30:00Z',
-        lastLogin: new Date().toISOString(),
-        profilePicture: 'https://lh3.googleusercontent.com/a/default-user',
-        status: 'ACTIVE'
-    }
-];
+const datastoreClient = require('../queries/datastoreClient');
+const AuditService = require('../services/AuditService');
+
+// Helper to check password hash
+function verifyPassword(inputPassword, hashedPassword) {
+    const inputHash = crypto.createHash('sha256').update(inputPassword).digest('hex');
+    return inputHash === hashedPassword;
+}
+
+function hashPassword(password) {
+    return crypto.createHash('sha256').update(password).digest('hex');
+}
 
 class AuthController {
     static async login(req, res) {
@@ -63,38 +50,41 @@ class AuthController {
                 return res.status(400).json({ success: false, message: 'Email and password are required.' });
             }
 
-            // Find or initialize user
-            let user = USER_DATABASE.find(u => u.email.toLowerCase() === email.toLowerCase());
+            // Find user from datastore
+            const users = await datastoreClient.getRowsWhere(req, 'UserMaster', { email: email.toLowerCase() }, { maxRows: 1 });
+            let user = users.length > 0 ? users[0] : null;
 
             if (!user) {
-                // Auto-create user for demo if valid credentials provided
-                user = {
-                    id: `CATALYST_USR_${Date.now()}`,
-                    name: email.split('@')[0].toUpperCase(),
-                    email: email.toLowerCase(),
-                    role: 'Officer',
-                    provider: 'Email',
-                    district: 'Central',
-                    createdDate: new Date().toISOString(),
-                    lastLogin: new Date().toISOString(),
-                    profilePicture: '',
-                    status: 'ACTIVE'
-                };
-                USER_DATABASE.push(user);
-            } else {
-                user.lastLogin = new Date().toISOString();
+                AuditService.logEvent(req, { email }, 'Failed Login', 'Authentication', '', 'FAILED');
+                return res.status(401).json({ success: false, message: 'Invalid credentials.' });
+            }
+
+            if (!verifyPassword(password, user.password_hash)) {
+                AuditService.logEvent(req, { id: user.ROWID, email: user.email, name: user.name, role: user.role }, 'Failed Login', 'Authentication', '', 'FAILED');
+                return res.status(401).json({ success: false, message: 'Invalid credentials.' });
             }
 
             // Generate JWT session token
-            const token = signToken({ id: user.id, email: user.email, role: user.role });
+            const tokenPayload = { id: user.ROWID, email: user.email, role: user.role, department: user.department, name: user.name };
+            const token = signToken(tokenPayload);
+
+            AuditService.logEvent(req, tokenPayload, 'Login', 'Authentication', '', 'SUCCESS');
 
             return res.status(200).json({
                 success: true,
                 message: 'Authenticated successfully in background',
                 token,
-                user
+                user: {
+                    id: user.ROWID,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role,
+                    department: user.department,
+                    status: user.status
+                }
             });
         } catch (error) {
+            console.error('Login error:', error);
             return res.status(500).json({ success: false, message: error.message });
         }
     }
@@ -115,34 +105,41 @@ class AuthController {
                 return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long.' });
             }
 
-            const existing = USER_DATABASE.find(u => u.email.toLowerCase() === email.toLowerCase());
-            if (existing) {
+            const existing = await datastoreClient.getRowsWhere(req, 'UserMaster', { email: email.toLowerCase() }, { maxRows: 1 });
+            if (existing && existing.length > 0) {
                 return res.status(400).json({ success: false, message: 'An account with this email already exists.' });
             }
 
             const newUser = {
-                id: `CATALYST_USR_${Date.now()}`,
                 name,
                 email: email.toLowerCase(),
-                role: 'Officer',
-                provider: 'Email',
-                district: 'Central',
-                createdDate: new Date().toISOString(),
-                lastLogin: new Date().toISOString(),
-                profilePicture: '',
+                password_hash: hashPassword(password),
+                role: 'Viewer', // Default role for open signups
+                department: 'Unassigned',
                 status: 'ACTIVE'
             };
-            USER_DATABASE.push(newUser);
 
-            const token = signToken({ id: newUser.id, email: newUser.email, role: newUser.role });
+            const insertedRow = await datastoreClient.insertRow(req, 'UserMaster', newUser);
+
+            const userToReturn = {
+                id: insertedRow.ROWID,
+                name: insertedRow.name,
+                email: insertedRow.email,
+                role: insertedRow.role,
+                department: insertedRow.department,
+                status: insertedRow.status
+            };
+
+            const token = signToken({ id: userToReturn.id, email: userToReturn.email, role: userToReturn.role, department: userToReturn.department, name: userToReturn.name });
 
             return res.status(201).json({
                 success: true,
                 message: 'Account created successfully',
                 token,
-                user: newUser
+                user: userToReturn
             });
         } catch (error) {
+            console.error('Signup error:', error);
             return res.status(500).json({ success: false, message: error.message });
         }
     }
@@ -153,36 +150,41 @@ class AuthController {
             const googleEmail = email || 'kanishkgins@gmail.com';
             const googleName = name || 'Kanishk (Google Auth)';
 
-            let user = USER_DATABASE.find(u => u.email.toLowerCase() === googleEmail.toLowerCase());
+            let users = await datastoreClient.getRowsWhere(req, 'UserMaster', { email: googleEmail.toLowerCase() }, { maxRows: 1 });
+            let user = users.length > 0 ? users[0] : null;
 
             if (!user) {
-                user = {
-                    id: `CATALYST_USR_${Date.now()}`,
+                const newUser = {
                     name: googleName,
-                    email: googleEmail,
-                    role: 'Officer',
-                    provider: 'Google',
-                    district: 'Central',
-                    createdDate: new Date().toISOString(),
-                    lastLogin: new Date().toISOString(),
-                    profilePicture: picture || 'https://lh3.googleusercontent.com/a/default-user',
+                    email: googleEmail.toLowerCase(),
+                    password_hash: hashPassword(Date.now().toString()), // random password since they login with google
+                    role: 'Viewer', // default role
+                    department: 'Unassigned',
                     status: 'ACTIVE'
                 };
-                USER_DATABASE.push(user);
-            } else {
-                user.lastLogin = new Date().toISOString();
-                if (picture) user.profilePicture = picture;
+                const inserted = await datastoreClient.insertRow(req, 'UserMaster', newUser);
+                user = inserted;
             }
 
-            const token = signToken({ id: user.id, email: user.email, role: user.role });
+            const userToReturn = {
+                id: user.ROWID,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                department: user.department,
+                status: user.status
+            };
+
+            const token = signToken({ id: userToReturn.id, email: userToReturn.email, role: userToReturn.role, department: userToReturn.department, name: userToReturn.name });
 
             return res.status(200).json({
                 success: true,
                 message: 'Google Popup Authentication successful',
                 token,
-                user
+                user: userToReturn
             });
         } catch (error) {
+            console.error('Google Auth error:', error);
             return res.status(500).json({ success: false, message: error.message });
         }
     }
@@ -206,23 +208,73 @@ class AuthController {
             const authHeader = req.headers.authorization;
             let token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
 
+            if (!token) {
+                return res.status(401).json({ success: false, message: 'No token provided' });
+            }
+
             const decoded = verifyToken(token);
-            const user = (decoded && USER_DATABASE.find(u => u.id === decoded.id)) || USER_DATABASE[0];
+            if (!decoded) {
+                return res.status(401).json({ success: false, message: 'Invalid token' });
+            }
+            
+            let user = null;
+            if (decoded.id) {
+                user = await datastoreClient.getRowById(req, 'UserMaster', decoded.id);
+            }
+            
+            if (!user) {
+                const users = await datastoreClient.getRowsWhere(req, 'UserMaster', { email: decoded.email }, { maxRows: 1 });
+                user = users.length > 0 ? users[0] : null;
+            }
+
+            if (!user) {
+                return res.status(404).json({ success: false, message: 'User not found' });
+            }
 
             return res.status(200).json({
                 success: true,
-                user
+                user: {
+                    id: user.ROWID,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role,
+                    department: user.department,
+                    status: user.status
+                }
             });
         } catch (error) {
-            return res.status(200).json({
-                success: true,
-                user: USER_DATABASE[0]
-            });
+            return res.status(500).json({ success: false, message: error.message });
         }
     }
 
     static async logout(req, res) {
+        if (req.user) {
+            AuditService.logEvent(req, req.user, 'Logout', 'Authentication', '', 'SUCCESS');
+        }
         return res.status(200).json({ success: true, message: 'Logged out successfully.' });
+    }
+
+    static async updateRole(req, res) {
+        try {
+            const { targetUserId, newRole } = req.body || {};
+            if (!targetUserId || !newRole) {
+                return res.status(400).json({ success: false, message: 'targetUserId and newRole are required' });
+            }
+
+            const targetUser = await datastoreClient.getRowById(req, 'UserMaster', targetUserId);
+            if (!targetUser) {
+                return res.status(404).json({ success: false, message: 'User not found' });
+            }
+
+            await datastoreClient.updateRow(req, 'UserMaster', { ROWID: targetUserId, role: newRole });
+            
+            AuditService.logEvent(req, req.user, 'Role Change', `UserMaster:${targetUserId} changed to ${newRole}`, '', 'SUCCESS');
+
+            return res.status(200).json({ success: true, message: 'Role updated successfully' });
+        } catch (error) {
+            console.error('Update Role error:', error);
+            return res.status(500).json({ success: false, message: error.message });
+        }
     }
 }
 

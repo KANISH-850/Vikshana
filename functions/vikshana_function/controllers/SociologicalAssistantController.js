@@ -1,5 +1,6 @@
 const glmClient = require('../services/glmClient');
 const SuggestionService = require('../services/SuggestionService');
+const AILogService = require('../services/AILogService');
 
 // ── GLM availability guard ────────────────────────────────────────────────────
 // If GLM_ENDPOINT is not configured (e.g. local dev without .env), fall back to
@@ -200,6 +201,9 @@ class SociologicalAssistantController {
                 'How does education disparity affect crime rates?',
                 'What policy interventions are most effective?',
             ]);
+
+            const evIds = structuredData.evidenceReferences?.map(e => e.refId) || [];
+            AILogService.logInteraction(req, req.user, 'SOCIOLOGICAL_QUERY', question, structuredData.modelId, structuredData.confidence, evIds);
 
             res.status(200).json({
                 success: true,

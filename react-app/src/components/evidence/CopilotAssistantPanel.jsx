@@ -1,0 +1,121 @@
+import React, { useState } from 'react';
+import { Bot, Send, Loader2, User } from 'lucide-react';
+import api from '../../services/api';
+
+const CopilotAssistantPanel = ({ caseId }) => {
+  const [messages, setMessages] = useState([
+    { role: 'assistant', content: 'Hello! I am your AI Copilot for this investigation. Ask me to find gaps, summarize evidence, or compare suspects.' }
+  ]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSend = async () => {
+    if (!input.trim() || isLoading) return;
+    
+    const userMsg = input.trim();
+    setInput('');
+    setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+    setIsLoading(true);
+
+    try {
+      const res = await api.post('/evidence-intelligence/copilot', { caseId, prompt: userMsg });
+      if (res.data.success) {
+        setMessages(prev => [...prev, { 
+          role: 'assistant', 
+          content: res.data.data.answer,
+          evidenceUsed: res.data.data.evidence_used,
+          confidence: res.data.data.confidence,
+          reasoning: res.data.data.reasoning
+        }]);
+      } else {
+        throw new Error(res.data.error || 'Failed to get response');
+      }
+    } catch (err) {
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Error communicating with AI Copilot.', isError: true }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', height: '600px' }}>
+      <div style={{ padding: '16px', borderBottom: '1px solid var(--glass-border)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <Bot size={20} color="var(--accent-primary)" />
+        <h3 style={{ margin: 0, fontSize: '16px', color: 'var(--text-primary)' }}>Investigation Copilot</h3>
+      </div>
+      
+      <div style={{ flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {messages.map((msg, i) => (
+          <div key={i} style={{ display: 'flex', gap: '12px', flexDirection: msg.role === 'user' ? 'row-reverse' : 'row' }}>
+            <div style={{ 
+              width: '32px', height: '32px', borderRadius: '50%', 
+              background: msg.role === 'user' ? 'rgba(255,255,255,0.1)' : 'var(--accent-primary)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+            }}>
+              {msg.role === 'user' ? <User size={16} /> : <Bot size={16} color="white" />}
+            </div>
+            <div style={{ 
+              background: msg.role === 'user' ? 'rgba(255,255,255,0.05)' : 'rgba(59,130,246,0.1)', 
+              border: msg.role === 'assistant' && !msg.isError ? '1px solid rgba(59,130,246,0.3)' : '1px solid transparent',
+              padding: '12px 16px', borderRadius: '8px', maxWidth: '85%',
+              color: msg.isError ? '#ef4444' : 'var(--text-primary)',
+              fontSize: '14px', lineHeight: '1.5'
+            }}>
+              {msg.content}
+              
+              {msg.reasoning && (
+                <div style={{ marginTop: '12px', padding: '8px', background: 'rgba(0,0,0,0.2)', borderRadius: '4px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                  <strong>AI Reasoning:</strong> {msg.reasoning}
+                </div>
+              )}
+              
+              {msg.evidenceUsed && msg.evidenceUsed.length > 0 && (
+                <div style={{ marginTop: '8px', fontSize: '11px', color: 'var(--accent-primary)' }}>
+                  <strong>Citations:</strong> {msg.evidenceUsed.join(', ')}
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+        {isLoading && (
+          <div style={{ display: 'flex', gap: '12px' }}>
+             <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--accent-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Bot size={16} color="white" />
+            </div>
+            <div style={{ background: 'rgba(59,130,246,0.1)', padding: '12px 16px', borderRadius: '8px', display: 'flex', alignItems: 'center' }}>
+              <Loader2 size={16} className="spin" color="var(--accent-primary)" />
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div style={{ padding: '16px', borderTop: '1px solid var(--glass-border)', display: 'flex', gap: '8px' }}>
+        <input 
+          type="text" 
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+          placeholder="Ask Copilot..."
+          disabled={isLoading}
+          style={{ 
+            flex: 1, background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', 
+            padding: '10px 16px', borderRadius: '20px', color: 'var(--text-primary)', outline: 'none' 
+          }}
+        />
+        <button 
+          onClick={handleSend}
+          disabled={!input.trim() || isLoading}
+          style={{ 
+            background: 'var(--accent-primary)', border: 'none', width: '40px', height: '40px', 
+            borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: (!input.trim() || isLoading) ? 'not-allowed' : 'pointer', opacity: (!input.trim() || isLoading) ? 0.5 : 1
+          }}
+        >
+          <Send size={16} color="white" />
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default CopilotAssistantPanel;

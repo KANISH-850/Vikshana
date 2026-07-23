@@ -22,11 +22,19 @@ export const AppProvider = ({ children }) => {
     }, [user]);
 
     const [selectedCase, setSelectedCase] = useState(null);
+    const [currentCase, setCurrentCase] = useState(null);
+
+    const activeCaseId = currentCase?.caseId || selectedCase?.id || selectedCase?.caseId || 'CASE-2026-001';
 
     const toggleTheme = () => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
 
     return (
-        <AppContext.Provider value={{ theme, toggleTheme, officer, setOfficer, selectedCase, setSelectedCase }}>
+        <AppContext.Provider value={{ 
+            theme, toggleTheme, officer, setOfficer, 
+            selectedCase, setSelectedCase, 
+            currentCase, setCurrentCase,
+            activeCaseId 
+        }}>
             <div className={`app-container ${theme}-theme`}>
                 {children}
             </div>

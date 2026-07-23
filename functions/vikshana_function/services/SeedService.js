@@ -1,4 +1,9 @@
 const datastoreClient = require('../queries/datastoreClient');
+const crypto = require('crypto');
+
+function hashPassword(password) {
+    return crypto.createHash('sha256').update(password).digest('hex');
+}
 
 const WITNESS_NAMES = ['Ramesh Iyer', 'Lakshmi Devi', 'Arjun Nair', 'Fatima Sheikh', 'Vikram Rao', 'Meena Pillai'];
 const SUSPECT_NAMES = ['Suresh Kumar', 'Anil Sharma', 'Deepak Verma', 'Farhan Ali', 'Rajesh Gowda'];
@@ -123,12 +128,44 @@ class SeedService {
         return result;
     }
 
+<<<<<<< Updated upstream
     static async seedAllCases(req, targetCaseId) {
         if (targetCaseId) {
             return [await SeedService.seedCase(req, targetCaseId)];
         }
         let cases = await datastoreClient.getRows(req, 'CaseMaster', { maxRows: 10 }).catch(() => []);
         if (!cases || cases.length === 0) {
+=======
+    static async seedUsers(req) {
+        const demoUsers = [
+            { name: 'Administrator', email: 'admin@vikshana.ai', role: 'Administrator', department: 'HQ', password_hash: hashPassword('password123'), status: 'ACTIVE' },
+            { name: 'Investigator', email: 'investigator@vikshana.ai', role: 'Investigator', department: 'Field Ops', password_hash: hashPassword('password123'), status: 'ACTIVE' },
+            { name: 'Analyst', email: 'analyst@vikshana.ai', role: 'Analyst', department: 'Intelligence', password_hash: hashPassword('password123'), status: 'ACTIVE' },
+            { name: 'Supervisor', email: 'supervisor@vikshana.ai', role: 'Supervisor', department: 'HQ Ops', password_hash: hashPassword('password123'), status: 'ACTIVE' },
+            { name: 'Policymaker', email: 'policymaker@vikshana.ai', role: 'Policymaker', department: 'Government', password_hash: hashPassword('password123'), status: 'ACTIVE' }
+        ];
+
+        const results = { inserted: 0, existing: 0 };
+        for (const user of demoUsers) {
+            const existing = await datastoreClient.getRowsWhere(req, 'UserMaster', { email: user.email }, { maxRows: 1 });
+            if (existing && existing.length > 0) {
+                results.existing++;
+            } else {
+                await datastoreClient.insertRow(req, 'UserMaster', user);
+                results.inserted++;
+            }
+        }
+        return results;
+    }
+
+    static async seedAllCases(req) {
+        // Seed users first
+        const userResults = await SeedService.seedUsers(req);
+
+        let cases = await datastoreClient.getRows(req, 'CaseMaster', { maxRows: 100 });
+        
+        if (cases.length === 0) {
+>>>>>>> Stashed changes
             const dummyCases = [
                 { Status: 'Open', Jurisdiction: 'Indiranagar PS' },
                 { Status: 'Under Investigation', Jurisdiction: 'Koramangala PS' }
@@ -137,8 +174,17 @@ class SeedService {
             cases = await datastoreClient.getRows(req, 'CaseMaster', { maxRows: 10 }).catch(() => []);
         }
 
+<<<<<<< Updated upstream
         const caseIdToSeed = (cases && cases[0] && cases[0].ROWID) ? cases[0].ROWID : '1';
         return [await SeedService.seedCase(req, caseIdToSeed)];
+=======
+        const results = [];
+        for (const caseRow of cases) {
+            if (!caseRow || !caseRow.ROWID) continue;
+            results.push(await SeedService.seedCase(req, caseRow));
+        }
+        return { userSeeding: userResults, caseSeeding: results };
+>>>>>>> Stashed changes
     }
 }
 

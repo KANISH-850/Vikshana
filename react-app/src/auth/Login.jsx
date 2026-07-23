@@ -179,6 +179,35 @@ const Login = () => {
 
         <div style={styles.divider}>
           <span style={styles.dividerLine}></span>
+          <span style={styles.dividerText}>Demo Accounts</span>
+          <span style={styles.dividerLine}></span>
+        </div>
+
+        <div style={styles.demoAccountsContainer}>
+          {[
+            { label: 'Administrator', email: 'admin@vikshana.ai', role: 'Administrator' },
+            { label: 'Investigator', email: 'investigator@vikshana.ai', role: 'Investigator' },
+            { label: 'Analyst', email: 'analyst@vikshana.ai', role: 'Analyst' },
+            { label: 'Supervisor', email: 'supervisor@vikshana.ai', role: 'Supervisor' },
+            { label: 'Policymaker', email: 'policymaker@vikshana.ai', role: 'Policymaker' }
+          ].map((demo) => (
+            <button
+              key={demo.email}
+              type="button"
+              onClick={() => {
+                setEmail(demo.email);
+                setPassword('password123');
+              }}
+              style={styles.demoAccountButton}
+            >
+              <div style={styles.demoAccountLabel}>{demo.label}</div>
+              <div style={styles.demoAccountRole}>{demo.role}</div>
+            </button>
+          ))}
+        </div>
+
+        <div style={styles.divider}>
+          <span style={styles.dividerLine}></span>
           <span style={styles.dividerText}>or continue with</span>
           <span style={styles.dividerLine}></span>
         </div>
@@ -508,6 +537,32 @@ const styles = {
     padding: '0 12px',
     fontSize: '13px',
     color: '#64748b',
+  },
+  demoAccountsContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+    marginBottom: '16px',
+  },
+  demoAccountButton: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '10px 16px',
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    color: '#cbd5e1',
+  },
+  demoAccountLabel: {
+    fontSize: '14px',
+    fontWeight: '600',
+  },
+  demoAccountRole: {
+    fontSize: '12px',
+    color: '#94a3b8',
   },
   googleButton: {
     width: '100%',
