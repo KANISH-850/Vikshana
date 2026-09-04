@@ -1,11 +1,13 @@
 const datastoreClient = require('../queries/datastoreClient');
+const DateUtils = require('../utils/dateUtils');
 
 class CrimeForecastService {
     static MIN_RECORDS_FOR_STATISTICAL_INSIGHT = 5;
 
     static async getForecast(req) {
         try {
-            const cases = await datastoreClient.getRows(req, 'CaseMaster', { maxRows: 1000 }).catch(() => []);
+            // Retrieve full dataset batch without silent truncation limit
+            const cases = await datastoreClient.getRows(req, 'CaseMaster', { maxRows: 10000 }).catch(() => []);
             
             if (cases.length < this.MIN_RECORDS_FOR_STATISTICAL_INSIGHT) {
                 return {
@@ -16,19 +18,22 @@ class CrimeForecastService {
                 };
             }
 
-            // Determine maximum available dataset date as analysis reference point
+            // Determine min and max dataset dates using DateUtils
+            let minDatasetDate = new Date();
             let maxDatasetDate = new Date(0);
+
             cases.forEach(c => {
                 const dateStr = c.CrimeRegisteredDate || c.CREATEDTIME || c.FIRDate;
-                if (dateStr) {
-                    const dt = new Date(dateStr);
-                    if (!isNaN(dt.getTime()) && dt > maxDatasetDate) {
-                        maxDatasetDate = dt;
-                    }
+                const dt = DateUtils.parseDate(dateStr);
+                if (dt) {
+                    if (dt < minDatasetDate) minDatasetDate = dt;
+                    if (dt > maxDatasetDate) maxDatasetDate = dt;
                 }
             });
 
             const referenceDate = maxDatasetDate.getTime() > 0 ? maxDatasetDate : new Date();
+            const actualCoveredMonths = DateUtils.getMonthSpan(minDatasetDate, maxDatasetDate);
+            const overallMonthlyAverage = parseFloat((cases.length / actualCoveredMonths).toFixed(2));
             const last30Days = new Date(referenceDate.getTime() - 30 * 24 * 60 * 60 * 1000);
             const prev30Days = new Date(last30Days.getTime() - 30 * 24 * 60 * 60 * 1000);
 
@@ -115,7 +120,12 @@ class CrimeForecastService {
                 status: "AVAILABLE",
                 data: {
                     recordsAnalyzed: cases.length,
-                    referenceDate: referenceDate.toISOString().split('T')[0],
+                    totalRecordsInBatch: cases.length,
+                    referenceDate: DateUtils.formatDateISO(referenceDate),
+                    minDatasetDate: DateUtils.formatDateISO(minDatasetDate),
+                    maxDatasetDate: DateUtils.formatDateISO(maxDatasetDate),
+                    actualCoveredMonths,
+                    overallMonthlyAverage,
                     historicalPeriod: sortedPeriods.length > 0 ? `${sortedPeriods[0]} to ${sortedPeriods[sortedPeriods.length - 1]}` : "All Time",
                     baseline: parseFloat(baseline.toFixed(1)),
                     recentAverage: parseFloat(recentAverage.toFixed(1)),
@@ -136,9 +146,10 @@ class CrimeForecastService {
                 },
                 evidence: {
                     records_analyzed: cases.length,
+                    actual_covered_months: actualCoveredMonths,
                     dataset: ['CaseMaster'],
                     fields_used: ['CrimeRegisteredDate', 'CREATEDTIME', 'FIRDate'],
-                    coverage_pct: "100% of queried dataset batch"
+                    coverage_pct: "100% of available case dataset"
                 },
                 method: "Chronological time-series moving average comparison with empirical backtesting",
                 limitations: ["Forecast is deterministic based on available historical records. Does not establish individual culpability or single-factor causality."]

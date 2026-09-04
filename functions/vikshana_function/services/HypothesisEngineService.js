@@ -1,21 +1,24 @@
-/**
- * HypothesisEngineService.js
- * Evaluates hypotheses based on structured evidence.
- */
 const datastoreClient = require('../queries/datastoreClient');
 const EvidenceCorroborationService = require('./EvidenceCorroborationService');
+const scoringConfig = require('../config/scoringConfig');
+const caseEvidenceProfileConfig = require('../config/caseEvidenceProfileConfig');
 
 class HypothesisEngineService {
     static async evaluateHypothesis(req, caseId, hypothesis) {
         if (!caseId) throw new Error("CaseMasterID is required for isolation.");
         
-        // Ensure evidence is retrieved only for this CaseMasterID
+        // Retrieve case master details to determine case type
+        const caseRow = await datastoreClient.getRows(req, 'CaseMaster', { where: { ROWID: caseId } }).then(rows => rows[0]).catch(() => null);
+        const caseType = caseRow ? (caseRow.CrimeGroup_Name || caseRow.FIRType || 'Generic') : 'Generic';
+
+        // Retrieve evidence only for this CaseMasterID
         const evidenceRows = await datastoreClient.getRows(req, 'Evidence', { where: { CaseMasterID: caseId } });
         
         let supportingEvidence = [];
         let contradictingEvidence = [];
         let missingEvidence = [];
         
+        const weights = scoringConfig.hypothesisScoring.weights;
         let verifiedCount = 0;
         let corroborationBonus = 0;
         let contradictionPenalty = 0;
@@ -32,36 +35,40 @@ class HypothesisEngineService {
                 if (ev.Verified) verifiedCount++;
             } else if (ev.Description && ev.Description.toLowerCase().includes('conflict')) {
                 contradictingEvidence.push(ev);
-                contradictionPenalty += 15;
+                contradictionPenalty += weights.contradictionPenalty;
             }
         }
         
         // Corroboration Engine integration
         const corroborationStatus = await EvidenceCorroborationService.analyzeCorroboration(supportingEvidence);
         if (corroborationStatus === 'MULTI_SOURCE_CORROBORATED') {
-            corroborationBonus = 20;
+            corroborationBonus = weights.corroborationBonus;
         }
 
-        // Potential Evidence Gap Analysis (derive missing categories based on standard forensic requirement types)
-        const expectedTypes = ['physical', 'digital', 'witness', 'documentary'];
+        // Case-Type Aware Potential Evidence Profile Gap Analysis
+        const expectedTypes = caseEvidenceProfileConfig.getExpectedCategories(caseType);
         expectedTypes.forEach(type => {
             if (!availableTypes.has(type)) {
                 missingEvidence.push({
-                    gap: `Potential ${type.toUpperCase()} evidence coverage gap`,
-                    reason: `No verified ${type} evidence records present in current case file.`
+                    gap: `Potential ${type.toUpperCase()} Evidence Category Not Represented in Available Data`,
+                    caseType,
+                    reason: `No verified ${type} evidence records present in current ${caseType} case file.`
                 });
-                gapPenalty += 5;
+                gapPenalty += weights.evidenceGapPenalty;
             }
         });
 
-        // Explainable Rule-Based Evidence Support Score Calculation (Base 50)
-        let score = 50 + (supportingEvidence.length * 10) + (verifiedCount * 5) + corroborationBonus - contradictionPenalty - gapPenalty;
-        score = Math.max(0, Math.min(100, score));
+        // Explainable Rule-Based Evidence Support Score Calculation starting from Base 0
+        const supportingFactor = supportingEvidence.length * weights.supportingItem;
+        const verifiedFactor = verifiedCount * weights.verifiedItem;
+        
+        let score = scoringConfig.hypothesisScoring.baseScore + supportingFactor + verifiedFactor + corroborationBonus - contradictionPenalty - gapPenalty;
+        score = Math.max(scoringConfig.hypothesisScoring.minScore, Math.min(scoringConfig.hypothesisScoring.maxScore, score));
 
         let status = 'INCONCLUSIVE';
-        if (score >= 75) status = 'SUPPORTED';
-        else if (score >= 60) status = 'PARTIALLY_SUPPORTED';
-        else if (score < 40) status = 'CONTRADICTED';
+        if (score >= 70) status = 'SUPPORTED';
+        else if (score >= 45) status = 'PARTIALLY_SUPPORTED';
+        else if (score < 30) status = 'CONTRADICTED';
 
         const updatedHypothesis = {
             ...hypothesis,
@@ -69,9 +76,9 @@ class HypothesisEngineService {
             Status: status,
             UpdatedAt: new Date().toISOString(),
             scoreBreakdown: {
-                baseScore: 50,
-                supportingFactor: supportingEvidence.length * 10,
-                verifiedFactor: verifiedCount * 5,
+                baseScore: scoringConfig.hypothesisScoring.baseScore,
+                supportingFactor,
+                verifiedFactor,
                 corroborationBonus,
                 contradictionPenalty: -contradictionPenalty,
                 gapPenalty: -gapPenalty,
@@ -81,12 +88,13 @@ class HypothesisEngineService {
 
         return {
             hypothesis: updatedHypothesis,
+            caseType,
             supportingEvidence,
             contradictingEvidence,
             potentialEvidenceGaps: missingEvidence,
             missingEvidence, // Preserved for API backwards compatibility
             corroborationStatus,
-            methodology: "Explainable Rule-Based Evidence Support Score. Measures data and evidence coverage, not legal guilt."
+            methodology: "Explainable Rule-Based Evidence Support Score starting from Base 0. Measures data coverage, not legal guilt."
         };
     }
 

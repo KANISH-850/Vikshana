@@ -25,9 +25,20 @@ class SocialRiskCorrelationService {
                 crimeByDistrict[matchedKey] = (crimeByDistrict[matchedKey] || 0) + 1;
             });
 
-            // 3. Align datasets
+            // 3. Align datasets using actual crime records (NO RANDOM GENERATION)
+            let matchedRegionCount = 0;
+            const missingRegions = [];
+
             const alignedPairs = socioDistricts.map(d => {
-                const crimeCount = crimeByDistrict[d.district] || Math.floor(Math.random() * 50) + 10;
+                const hasMatch = crimeByDistrict.hasOwnProperty(d.district);
+                const crimeCount = crimeByDistrict[d.district] || 0;
+                
+                if (hasMatch) {
+                    matchedRegionCount++;
+                } else {
+                    missingRegions.push(d.district);
+                }
+
                 const crimeRatePer100k = (crimeCount / Math.max(1, d.totalPopulation)) * 100000;
                 return {
                     district: d.district,
@@ -36,9 +47,15 @@ class SocialRiskCorrelationService {
                     unemploymentRate: d.unemploymentRatePct,
                     urbanizationRate: d.urbanPopPct,
                     crimeCount,
-                    crimeRatePer100k
+                    crimeRatePer100k,
+                    hasActualCrimeRecords: hasMatch
                 };
             });
+
+            const totalRegionsAvailable = socioDistricts.length;
+            const coveragePercentage = totalRegionsAvailable > 0 
+                ? parseFloat(((matchedRegionCount / totalRegionsAvailable) * 100).toFixed(1)) 
+                : 0;
 
             // 4. Calculate Correlations (Pearson & Spearman)
             const popDensityCorr = this.calculatePearsonCorrelation(
@@ -160,6 +177,13 @@ class SocialRiskCorrelationService {
             return {
                 status: 'SUCCESS',
                 causationDisclaimer: this.CAUSATION_DISCLAIMER,
+                coverageMetadata: {
+                    recordsAnalyzed: cases.length,
+                    regionsAnalyzed: socioDistricts.length,
+                    matchedRegionsCount: matchedRegionCount,
+                    coveragePercentage: coveragePercentage,
+                    missingRegions: missingRegions
+                },
                 correlations: correlationResults,
                 districtRiskIndices,
                 socialRiskFactors: riskFactors,

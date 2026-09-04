@@ -110,19 +110,30 @@ class SeasonalEventIntelligenceService {
             const peakDay = [...dailyPatterns].sort((a, b) => b.crimeCount - a.crimeCount)[0] || dailyPatterns[0];
             const lowestDay = [...dailyPatterns].sort((a, b) => a.crimeCount - b.crimeCount)[0] || dailyPatterns[0];
 
-            // Event Intelligence Analysis — Uses Actual Case Date Filtering against Configurable Event Windows
+            // Event Intelligence Analysis — Uses Actual Case Date Filtering against Year-Specific Event Windows
             const dailyHistoricalAvg = parseFloat((totalCases / 365).toFixed(2));
-            const configuredEvents = EventCalendarService.getEventsForYear(2026);
+            const availableYears = [2024, 2025, 2026];
+            let allConfiguredEvents = [];
+            const yearCalendarStatus = [];
 
-            const eventAnalysis = configuredEvents.map(event => {
+            availableYears.forEach(yr => {
+                const res = EventCalendarService.getEventsForYear(yr);
+                yearCalendarStatus.push({ year: yr, status: res.status });
+                if (res.status === 'AVAILABLE') {
+                    allConfiguredEvents = allConfiguredEvents.concat(res.events);
+                }
+            });
+
+            const eventAnalysis = allConfiguredEvents.map(event => {
                 const windowBaseline = dailyHistoricalAvg * event.windowDays;
                 
-                // Actual incident count within exact event date window (month & day match across years)
+                // Actual incident count matching exact Year, Month, and Day window
                 let actualObservedCount = 0;
                 caseDates.forEach(cd => {
+                    const y = cd.date.getFullYear();
                     const m = cd.date.getMonth() + 1;
                     const d = cd.date.getDate();
-                    if (m === event.month && d >= event.day && d < (event.day + event.windowDays)) {
+                    if (y === event.year && m === event.month && d >= event.day && d < (event.day + event.windowDays)) {
                         actualObservedCount++;
                     }
                 });
@@ -135,22 +146,23 @@ class SeasonalEventIntelligenceService {
 
                 return {
                     event: event.name,
+                    year: event.year,
                     category: event.category,
-                    eventWindow: `${event.windowDays} days (Month ${event.month})`,
+                    eventWindow: `${event.windowDays} days (Year ${event.year}, Month ${event.month})`,
                     historicalBaseline: parseFloat(windowBaseline.toFixed(1)),
                     observedCrimeCount: actualObservedCount,
                     percentageChange: deviationPct,
                     anomalyScore: anomalyScore,
                     confidence: cases.length > 50 ? 'High' : 'Medium',
                     evidence: [
-                        `Actual filtered incident count of ${actualObservedCount} recorded during ${event.name} date window.`,
+                        `Filtered incident count of ${actualObservedCount} recorded during ${event.name} (${event.year}) date window.`,
                         `Historical baseline for ${event.windowDays}-day period is ${windowBaseline.toFixed(1)}.`,
                         `Statistical deviation observed: ${deviationPct >= 0 ? '+' : ''}${deviationPct}%.`
                     ],
                     disclaimer: "Observed variation during an event period does not establish that the event caused the change.",
                     neutralInsight: deviationPct > 10 
-                        ? `Reported incidents during the ${event.name} window coincided with a ${deviationPct}% increase above baseline.`
-                        : `Incident levels observed during ${event.name} remained consistent with baseline patterns.`
+                        ? `Reported incidents during the ${event.name} (${event.year}) window coincided with a ${deviationPct}% increase above baseline.`
+                        : `Incident levels observed during ${event.name} (${event.year}) remained consistent with baseline patterns.`
                 };
             });
 
