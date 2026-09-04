@@ -171,3 +171,6 @@ The platform has been enhanced with five modular intelligence capabilities:
 Documentation:
 - [`docs/DATA_PROVENANCE.md`](file:///c:/Users/Abarna/OneDrive/Pictures/vikshana/docs/DATA_PROVENANCE.md): Dataset transparency and data governance policies.
 - [`docs/ADVANCED_INTELLIGENCE.md`](file:///c:/Users/Abarna/OneDrive/Pictures/vikshana/docs/ADVANCED_INTELLIGENCE.md): System architecture and service specifications.
+- [`docs/ANALYTICS_METHODOLOGY.md`](file:///c:/Users/Abarna/OneDrive/Pictures/vikshana/docs/ANALYTICS_METHODOLOGY.md): Mathematical formulas, statistical algorithms, and scoring models.
+- [`docs/DEMO_MODE.md`](file:///c:/Users/Abarna/OneDrive/Pictures/vikshana/docs/DEMO_MODE.md): Environment configuration, security boundaries, and synthetic dataset isolation.
+

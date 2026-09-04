@@ -30,6 +30,14 @@ router.get('/trends', IntelligenceController.getTrends);
 router.get('/hotspots', IntelligenceController.getHotspots);
 router.get('/emerging', IntelligenceController.getEmerging);
 router.get('/offenders', IntelligenceController.getOffenders);
-router.get('/gaps', IntelligenceController.getGaps);
+router.get('/data-quality', async (req, res) => {
+    try {
+        const DataQualityService = require('../services/DataQualityService');
+        const report = await DataQualityService.getDataQualityReport(req);
+        res.json({ success: true, data: report });
+    } catch (e) {
+        res.status(500).json({ success: false, error: e.message });
+    }
+});
 
 module.exports = router;

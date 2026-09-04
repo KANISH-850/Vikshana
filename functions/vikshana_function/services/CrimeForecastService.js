@@ -16,34 +16,64 @@ class CrimeForecastService {
                 };
             }
 
-            // Simple deterministic trend calculation (last 30 days vs previous 30 days)
-            const now = new Date();
-            const last30Days = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+            // Determine maximum available dataset date as analysis reference point
+            let maxDatasetDate = new Date(0);
+            cases.forEach(c => {
+                const dateStr = c.CrimeRegisteredDate || c.CREATEDTIME || c.FIRDate;
+                if (dateStr) {
+                    const dt = new Date(dateStr);
+                    if (!isNaN(dt.getTime()) && dt > maxDatasetDate) {
+                        maxDatasetDate = dt;
+                    }
+                }
+            });
+
+            const referenceDate = maxDatasetDate.getTime() > 0 ? maxDatasetDate : new Date();
+            const last30Days = new Date(referenceDate.getTime() - 30 * 24 * 60 * 60 * 1000);
             const prev30Days = new Date(last30Days.getTime() - 30 * 24 * 60 * 60 * 1000);
 
             let recentCount = 0;
             let previousCount = 0;
-
             const timelineData = {}; // For historical trend chart
 
             cases.forEach(c => {
-                const crimeDateStr = c.CrimeRegisteredDate || c.CREATEDTIME;
+                const crimeDateStr = c.CrimeRegisteredDate || c.CREATEDTIME || c.FIRDate;
                 if (!crimeDateStr) return;
                 
                 const crimeDate = new Date(crimeDateStr);
+                if (isNaN(crimeDate.getTime())) return;
                 
-                // For trend chart (by month/year for simple demo)
+                // Chronological monthly period YYYY-MM
                 const monthYear = `${crimeDate.getFullYear()}-${String(crimeDate.getMonth() + 1).padStart(2, '0')}`;
                 timelineData[monthYear] = (timelineData[monthYear] || 0) + 1;
 
-                if (crimeDate >= last30Days) {
+                if (crimeDate >= last30Days && crimeDate <= referenceDate) {
                     recentCount++;
-                } else if (crimeDate >= prev30Days) {
+                } else if (crimeDate >= prev30Days && crimeDate < last30Days) {
                     previousCount++;
                 }
             });
 
-            // Calculate moving average equivalents for simple seed data
+            const sortedPeriods = Object.keys(timelineData).sort();
+
+            // Compute true 3-period deterministic moving average for chart Data
+            const chartData = sortedPeriods.map((period, index) => {
+                const actual = timelineData[period];
+                let maSum = 0;
+                let maCount = 0;
+                for (let k = Math.max(0, index - 2); k <= index; k++) {
+                    maSum += timelineData[sortedPeriods[k]];
+                    maCount++;
+                }
+                const movingAverage = parseFloat((maSum / maCount).toFixed(1));
+                return {
+                    period,
+                    actualCases: actual,
+                    movingAverage
+                };
+            });
+
+            // Calculate trend direction and percentage change
             const baseline = previousCount;
             const recentAverage = recentCount;
             let trendPercentage = 0;
@@ -58,47 +88,60 @@ class CrimeForecastService {
                 trendDirection = 'INCREASING';
             }
 
-            const chartData = Object.keys(timelineData).sort().map(period => ({
-                period,
-                actualCases: timelineData[period],
-                movingAverage: Math.max(0, timelineData[period] * 0.9) // Simplified mock of moving average for the chart
-            }));
+            // Perform genuine historical backtesting (MAE / RMSE computation over actual periods)
+            let totalAbsoluteError = 0;
+            let totalSquaredError = 0;
+            let backtestCount = 0;
 
-            // Calculate historical baseline across all periods
-            let total = 0;
-            chartData.forEach(d => total += d.actualCases);
-            const historicalMean = chartData.length > 0 ? (total / chartData.length) : 0;
+            chartData.forEach((d, idx) => {
+                if (idx >= 2) {
+                    // Forecast for d.actualCases using previous 2 periods average
+                    const prev1 = chartData[idx - 1].actualCases;
+                    const prev2 = chartData[idx - 2].actualCases;
+                    const forecast = (prev1 + prev2) / 2;
+                    const error = Math.abs(d.actualCases - forecast);
+                    totalAbsoluteError += error;
+                    totalSquaredError += (error * error);
+                    backtestCount++;
+                }
+            });
 
-            // Backtesting (mock values derived from datastore row count scaling)
-            const mae = parseFloat((historicalMean * 0.15).toFixed(2));
+            const mae = backtestCount > 0 ? parseFloat((totalAbsoluteError / backtestCount).toFixed(2)) : 0;
+            const rmse = backtestCount > 0 ? parseFloat(Math.sqrt(totalSquaredError / backtestCount).toFixed(2)) : 0;
+
+            const forecastValue = parseFloat((recentAverage + (recentAverage * (trendPercentage / 100) * 0.5)).toFixed(1));
 
             return {
                 status: "AVAILABLE",
                 data: {
-                    historicalRecords: cases.length,
-                    historicalPeriod: "All Time",
+                    recordsAnalyzed: cases.length,
+                    referenceDate: referenceDate.toISOString().split('T')[0],
+                    historicalPeriod: sortedPeriods.length > 0 ? `${sortedPeriods[0]} to ${sortedPeriods[sortedPeriods.length - 1]}` : "All Time",
                     baseline: parseFloat(baseline.toFixed(1)),
                     recentAverage: parseFloat(recentAverage.toFixed(1)),
                     trend: trendDirection,
                     trendPercentage: parseFloat(trendPercentage.toFixed(2)),
                     forecastPeriod: "Next 30 Days",
-                    forecastValue: parseFloat((recentAverage + (recentAverage * (trendPercentage / 100) * 0.5)).toFixed(1)), // Simple linear dampening
-                    method: "30-day deterministic moving average comparison",
-                    reliability: cases.length > 20 ? "HIGH" : (cases.length > 10 ? "MEDIUM" : "LOW"),
+                    forecastValue: Math.max(0, forecastValue),
+                    method: "3-period chronological deterministic moving average",
+                    reliability: cases.length > 50 ? "HIGH" : (cases.length > 15 ? "MEDIUM" : "LOW"),
                     validation: {
                         metric: "MAE",
                         value: mae,
-                        period: "Historical Backtest"
+                        rmse: rmse,
+                        backtestedPeriods: backtestCount,
+                        description: "Genuine historical backtest evaluation over chronological periods."
                     },
                     chartData
                 },
                 evidence: {
                     records_analyzed: cases.length,
                     dataset: ['CaseMaster'],
-                    fields_used: ['CrimeRegisteredDate', 'CREATEDTIME']
+                    fields_used: ['CrimeRegisteredDate', 'CREATEDTIME', 'FIRDate'],
+                    coverage_pct: "100% of queried dataset batch"
                 },
-                method: "Deterministic time-series comparison",
-                limitations: ["Forecast is deterministic based on limited seed data and does not represent complex multi-variate predictions. Never to be used for individual profiling."]
+                method: "Chronological time-series moving average comparison with empirical backtesting",
+                limitations: ["Forecast is deterministic based on available historical records. Does not establish individual culpability or single-factor causality."]
             };
         } catch (error) {
             console.error("Error in getForecast:", error);

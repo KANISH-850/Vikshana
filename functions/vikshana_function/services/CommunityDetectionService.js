@@ -14,10 +14,11 @@ class CommunityDetectionService {
                 const accusedList = await datastoreClient.getRows(req, 'Accused', { maxRows: 100 }).catch(() => []);
                 const accusedByCase = {};
 
-                accusedList.forEach(a => {
+                accusedList.forEach((a, idx) => {
                     const cId = a.CaseMaster_Id || a.CrimeMaster_Id || 'CASE_UNKNOWN';
                     if (!accusedByCase[cId]) accusedByCase[cId] = [];
-                    accusedByCase[cId].push(a.AccusedName || `Accused_${a.ROWID || Math.random()}`);
+                    const fallbackId = `Accused_${a.ROWID || a.Accused_Id || (idx + 1)}`;
+                    accusedByCase[cId].push(a.AccusedName || fallbackId);
                 });
 
                 const nodeMap = new Map();

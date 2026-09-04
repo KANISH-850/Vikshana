@@ -12,9 +12,8 @@ class HallucinationGuardService {
             return this.getFallback();
         }
 
-        // --- HACKATHON DEMO VIDEO BYPASS ---
-        // Temporarily bypass strict entity matching to ensure the mocked demo responses render perfectly.
-        return response;
+        // Demo mode configuration support (preserves demo datasets without bypassing validation)
+        const isDemoMode = process.env.DEMO_MODE === 'true';
 
         // Combine all text fields for validation
         let allText = "";

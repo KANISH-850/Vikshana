@@ -160,49 +160,101 @@ class FinancialIntelligenceService {
             const transactions = await this.getTransactionsData(req);
             const patterns = [];
 
-            // 1. Rapid Multi-Hop Transfers
-            const rapidTransfers = transactions.filter(t => t.riskFlag === 'Rapid Transfer');
-            if (rapidTransfers.length > 0) {
-                patterns.push({
-                    patternId: 'PAT_RAPID_001',
-                    patternType: 'Rapid Transfer Pattern',
-                    severity: 'High',
-                    accountsInvolved: Array.from(new Set(rapidTransfers.flatMap(t => [t.fromAccount, t.toAccount]))),
-                    transactionCount: rapidTransfers.length,
-                    evidenceSummary: `${rapidTransfers.length} transactions executed in rapid succession within short time windows.`,
-                    riskScore: 78,
-                    confidence: 'Medium-High',
-                    status: 'Potentially Suspicious Pattern'
-                });
-            }
+            // Build adjacency map for true graph cycle and sequence traversal
+            const accountTxMap = new Map();
+            transactions.forEach(t => {
+                if (!accountTxMap.has(t.fromAccount)) accountTxMap.set(t.fromAccount, []);
+                accountTxMap.get(t.fromAccount).push(t);
+            });
 
-            // 2. Circular Transaction Detection (A -> B -> C -> A)
-            const circularTransfers = transactions.filter(t => t.riskFlag === 'Circular Transaction');
-            if (circularTransfers.length > 0) {
+            // 1. Independent Graph Cycle Traversal (Circular Transactions: A -> B -> C -> A)
+            const circularPaths = [];
+            accountTxMap.forEach((txs1, accA) => {
+                txs1.forEach(t1 => {
+                    const accB = t1.toAccount;
+                    const txs2 = accountTxMap.get(accB) || [];
+                    txs2.forEach(t2 => {
+                        const accC = t2.toAccount;
+                        const txs3 = accountTxMap.get(accC) || [];
+                        txs3.forEach(t3 => {
+                            if (t3.toAccount === accA) {
+                                circularPaths.push({ path: [accA, accB, accC, accA], txs: [t1, t2, t3] });
+                            }
+                        });
+                    });
+                });
+            });
+
+            if (circularPaths.length > 0) {
+                const accountsInvolved = Array.from(new Set(circularPaths.flatMap(cp => cp.path)));
+                const factorWeight = 35;
+                const riskScore = Math.min(100, 50 + factorWeight);
                 patterns.push({
-                    patternId: 'PAT_CIRCULAR_002',
+                    patternId: 'PAT_CIRCULAR_001',
                     patternType: 'Circular Transaction Pattern',
+                    detectionMethod: 'Graph Cycle Traversal Algorithm (3-hop closure)',
                     severity: 'Critical',
-                    accountsInvolved: Array.from(new Set(circularTransfers.flatMap(t => [t.fromAccount, t.toAccount]))),
-                    transactionCount: circularTransfers.length,
-                    evidenceSummary: 'Funds circulated through intermediate accounts returning to original source account.',
-                    riskScore: 88,
+                    accountsInvolved,
+                    transactionCount: circularPaths.length * 3,
+                    evidenceSummary: `Detected ${circularPaths.length} closed-loop transaction cycles returning funds to original source account.`,
+                    riskScore,
+                    scoreBreakdown: { base: 50, circularFactor: 35, total: riskScore },
                     confidence: 'High',
                     status: 'Potentially Suspicious Pattern'
                 });
             }
 
-            // 3. High-Value Threshold Transfers
-            const highValueTransfers = transactions.filter(t => t.amount >= 400000);
+            // 2. Timestamp Sequence Delta Analysis (Rapid Multi-Hop Transfers)
+            const rapidTransfers = [];
+            accountTxMap.forEach((txs1, accA) => {
+                txs1.forEach(t1 => {
+                    const t1Time = new Date(t1.timestamp).getTime();
+                    const txs2 = accountTxMap.get(t1.toAccount) || [];
+                    txs2.forEach(t2 => {
+                        const t2Time = new Date(t2.timestamp).getTime();
+                        const timeDiffMinutes = (t2Time - t1Time) / (1000 * 60);
+                        if (timeDiffMinutes >= 0 && timeDiffMinutes <= 60) { // Hop within 60 mins
+                            rapidTransfers.push({ t1, t2, timeDiffMinutes });
+                        }
+                    });
+                });
+            });
+
+            if (rapidTransfers.length > 0) {
+                const accountsInvolved = Array.from(new Set(rapidTransfers.flatMap(rt => [rt.t1.fromAccount, rt.t1.toAccount, rt.t2.toAccount])));
+                const factorWeight = 25;
+                const riskScore = Math.min(100, 45 + factorWeight);
+                patterns.push({
+                    patternId: 'PAT_RAPID_002',
+                    patternType: 'Rapid Multi-Hop Transfer Pattern',
+                    detectionMethod: 'Timestamp Delta Analysis (<60 minutes transfer window)',
+                    severity: 'High',
+                    accountsInvolved,
+                    transactionCount: rapidTransfers.length * 2,
+                    evidenceSummary: `Detected ${rapidTransfers.length} rapid multi-hop transfers executed in sequence within 60 minutes.`,
+                    riskScore,
+                    scoreBreakdown: { base: 45, rapidSequenceFactor: 25, total: riskScore },
+                    confidence: 'Medium-High',
+                    status: 'Potentially Suspicious Pattern'
+                });
+            }
+
+            // 3. High-Value Threshold Detection (Configurable threshold ₹4,00,000)
+            const HIGH_VALUE_THRESHOLD = 400000;
+            const highValueTransfers = transactions.filter(t => t.amount >= HIGH_VALUE_THRESHOLD);
             if (highValueTransfers.length > 0) {
+                const accountsInvolved = Array.from(new Set(highValueTransfers.flatMap(t => [t.fromAccount, t.toAccount])));
+                const riskScore = 65;
                 patterns.push({
                     patternId: 'PAT_HIGHVAL_003',
                     patternType: 'High-Value Transaction Pattern',
+                    detectionMethod: `Threshold Filter (Amount >= ₹${HIGH_VALUE_THRESHOLD.toLocaleString('en-IN')})`,
                     severity: 'Moderate',
-                    accountsInvolved: Array.from(new Set(highValueTransfers.flatMap(t => [t.fromAccount, t.toAccount]))),
+                    accountsInvolved,
                     transactionCount: highValueTransfers.length,
-                    evidenceSummary: `${highValueTransfers.length} transactions exceeded configured high-value threshold (₹4,00,000).`,
-                    riskScore: 62,
+                    evidenceSummary: `${highValueTransfers.length} transactions exceeded high-value threshold.`,
+                    riskScore,
+                    scoreBreakdown: { base: 40, highValueFactor: 25, total: riskScore },
                     confidence: 'High',
                     status: 'Potentially Suspicious Pattern'
                 });

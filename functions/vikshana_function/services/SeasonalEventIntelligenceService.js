@@ -1,19 +1,7 @@
 const datastoreClient = require('../queries/datastoreClient');
+const EventCalendarService = require('./EventCalendarService');
 
 class SeasonalEventIntelligenceService {
-    static KARNATAKA_EVENTS = [
-        { name: 'New Year', month: 1, day: 1, windowDays: 3 },
-        { name: 'Republic Day', month: 1, day: 26, windowDays: 2 },
-        { name: 'Ugadi', month: 3, day: 30, windowDays: 3 },
-        { name: 'Ramadan / Eid', month: 4, day: 10, windowDays: 4 },
-        { name: 'Independence Day', month: 8, day: 15, windowDays: 2 },
-        { name: 'Ganesh Chaturthi', month: 9, day: 7, windowDays: 5 },
-        { name: 'Dasara', month: 10, day: 12, windowDays: 7 },
-        { name: 'Deepavali', month: 11, day: 1, windowDays: 4 },
-        { name: 'Christmas', month: 12, day: 25, windowDays: 3 },
-        { name: 'Major Public Event', month: 11, day: 25, windowDays: 3 }
-    ];
-
     static MONTH_NAMES = [
         'January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'
@@ -43,12 +31,16 @@ class SeasonalEventIntelligenceService {
             const hourCounts = Array(24).fill(0);
             let detailedTimeAvailable = false;
 
+            const caseDates = [];
+
             cases.forEach(c => {
                 const dateStr = c.CrimeRegisteredDate || c.CREATEDTIME || c.FIRDate;
                 if (!dateStr) return;
 
                 const dt = new Date(dateStr);
                 if (isNaN(dt.getTime())) return;
+
+                caseDates.push({ date: dt, record: c });
 
                 const monthIdx = dt.getMonth();
                 const dayIdx = dt.getDay();
@@ -118,34 +110,46 @@ class SeasonalEventIntelligenceService {
             const peakDay = [...dailyPatterns].sort((a, b) => b.crimeCount - a.crimeCount)[0] || dailyPatterns[0];
             const lowestDay = [...dailyPatterns].sort((a, b) => a.crimeCount - b.crimeCount)[0] || dailyPatterns[0];
 
-            // Event Intelligence Analysis
+            // Event Intelligence Analysis — Uses Actual Case Date Filtering against Configurable Event Windows
             const dailyHistoricalAvg = parseFloat((totalCases / 365).toFixed(2));
-            const eventAnalysis = this.KARNATAKA_EVENTS.map(event => {
+            const configuredEvents = EventCalendarService.getEventsForYear(2026);
+
+            const eventAnalysis = configuredEvents.map(event => {
                 const windowBaseline = dailyHistoricalAvg * event.windowDays;
-                // Calculate observed cases near event window month
-                const monthCases = monthCounts[event.month - 1];
-                const observedCount = Math.round((monthCases / 30) * event.windowDays);
+                
+                // Actual incident count within exact event date window (month & day match across years)
+                let actualObservedCount = 0;
+                caseDates.forEach(cd => {
+                    const m = cd.date.getMonth() + 1;
+                    const d = cd.date.getDate();
+                    if (m === event.month && d >= event.day && d < (event.day + event.windowDays)) {
+                        actualObservedCount++;
+                    }
+                });
+
                 const deviationPct = windowBaseline > 0 
-                    ? parseFloat((((observedCount - windowBaseline) / windowBaseline) * 100).toFixed(2)) 
+                    ? parseFloat((((actualObservedCount - windowBaseline) / windowBaseline) * 100).toFixed(2)) 
                     : 0;
 
                 const anomalyScore = parseFloat((Math.abs(deviationPct) / 10).toFixed(2));
 
                 return {
                     event: event.name,
+                    category: event.category,
                     eventWindow: `${event.windowDays} days (Month ${event.month})`,
                     historicalBaseline: parseFloat(windowBaseline.toFixed(1)),
-                    observedCrimeCount: observedCount,
+                    observedCrimeCount: actualObservedCount,
                     percentageChange: deviationPct,
                     anomalyScore: anomalyScore,
                     confidence: cases.length > 50 ? 'High' : 'Medium',
                     evidence: [
-                        `Observed incident count of ${observedCount} during ${event.name} window.`,
+                        `Actual filtered incident count of ${actualObservedCount} recorded during ${event.name} date window.`,
                         `Historical baseline for ${event.windowDays}-day period is ${windowBaseline.toFixed(1)}.`,
                         `Statistical deviation observed: ${deviationPct >= 0 ? '+' : ''}${deviationPct}%.`
                     ],
+                    disclaimer: "Observed variation during an event period does not establish that the event caused the change.",
                     neutralInsight: deviationPct > 10 
-                        ? `Reported incidents during the ${event.name} window coincided with a ${deviationPct}% increase above historical baseline.`
+                        ? `Reported incidents during the ${event.name} window coincided with a ${deviationPct}% increase above baseline.`
                         : `Incident levels observed during ${event.name} remained consistent with baseline patterns.`
                 };
             });

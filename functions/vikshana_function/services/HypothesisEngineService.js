@@ -15,33 +15,47 @@ class HypothesisEngineService {
         let supportingEvidence = [];
         let contradictingEvidence = [];
         let missingEvidence = [];
-        let score = 50; // Base score
         
-        // Simulated deterministic evaluation
+        let verifiedCount = 0;
+        let corroborationBonus = 0;
+        let contradictionPenalty = 0;
+        let gapPenalty = 0;
+
+        const availableTypes = new Set();
+
         for (const ev of evidenceRows) {
-            // For demo/prototype, we use simple keyword matching to relate evidence to the hypothesis
-            // In production, this would use semantic similarity or LLM extraction.
-            if (ev.Description && hypothesis.Statement && hypothesis.Statement.toLowerCase().includes(ev.SourceType.toLowerCase())) {
+            const sourceType = (ev.SourceType || 'General').toLowerCase();
+            availableTypes.add(sourceType);
+
+            if (ev.Description && hypothesis.Statement && hypothesis.Statement.toLowerCase().includes(sourceType)) {
                 supportingEvidence.push(ev);
-                score += ev.Verified ? 15 : 5;
+                if (ev.Verified) verifiedCount++;
             } else if (ev.Description && ev.Description.toLowerCase().includes('conflict')) {
                 contradictingEvidence.push(ev);
-                score -= 20;
+                contradictionPenalty += 15;
             }
         }
         
         // Corroboration Engine integration
         const corroborationStatus = await EvidenceCorroborationService.analyzeCorroboration(supportingEvidence);
         if (corroborationStatus === 'MULTI_SOURCE_CORROBORATED') {
-            score += 20; // Corroboration bonus
+            corroborationBonus = 20;
         }
 
-        // Add dummy missing evidence for completeness if score is low
-        if (score < 60) {
-            missingEvidence.push({ gap: 'Missing physical verification', reason: 'Could independently resolve uncertainty' });
-        }
+        // Potential Evidence Gap Analysis (derive missing categories based on standard forensic requirement types)
+        const expectedTypes = ['physical', 'digital', 'witness', 'documentary'];
+        expectedTypes.forEach(type => {
+            if (!availableTypes.has(type)) {
+                missingEvidence.push({
+                    gap: `Potential ${type.toUpperCase()} evidence coverage gap`,
+                    reason: `No verified ${type} evidence records present in current case file.`
+                });
+                gapPenalty += 5;
+            }
+        });
 
-        // Cap score 0-100
+        // Explainable Rule-Based Evidence Support Score Calculation (Base 50)
+        let score = 50 + (supportingEvidence.length * 10) + (verifiedCount * 5) + corroborationBonus - contradictionPenalty - gapPenalty;
         score = Math.max(0, Math.min(100, score));
 
         let status = 'INCONCLUSIVE';
@@ -53,15 +67,26 @@ class HypothesisEngineService {
             ...hypothesis,
             EvidenceSupportScore: score,
             Status: status,
-            UpdatedAt: new Date().toISOString()
+            UpdatedAt: new Date().toISOString(),
+            scoreBreakdown: {
+                baseScore: 50,
+                supportingFactor: supportingEvidence.length * 10,
+                verifiedFactor: verifiedCount * 5,
+                corroborationBonus,
+                contradictionPenalty: -contradictionPenalty,
+                gapPenalty: -gapPenalty,
+                finalScore: score
+            }
         };
 
         return {
             hypothesis: updatedHypothesis,
             supportingEvidence,
             contradictingEvidence,
-            missingEvidence,
-            corroborationStatus
+            potentialEvidenceGaps: missingEvidence,
+            missingEvidence, // Preserved for API backwards compatibility
+            corroborationStatus,
+            methodology: "Explainable Rule-Based Evidence Support Score. Measures data and evidence coverage, not legal guilt."
         };
     }
 

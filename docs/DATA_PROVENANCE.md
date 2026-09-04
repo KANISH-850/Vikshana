@@ -41,3 +41,13 @@ Per strict data transparency guidelines, external socio-economic and financial t
    - Criminal relationship graph clusters use neutral labels (`High-Connectivity Cluster`, `Potential Association Network`) rather than subjective gang or syndicate labels.
 4. **Deterministic & Explainable Analytics**:
    - All intelligence scores include evidence grounds, methodology descriptions, confidence ratings, and explicit dataset limitation disclaimers.
+
+---
+
+## 4. Data Quality Intelligence Layer
+
+- **Service**: `DataQualityService.js`
+- **Endpoint**: `GET /intelligence/data-quality`
+- **Metrics**: Completeness (35%), Validity (30%), Uniqueness (20%), Freshness (15%).
+- **Documentation**: Refer to [ANALYTICS_METHODOLOGY.md](file:///c:/Users/Abarna/OneDrive/Pictures/vikshana/docs/ANALYTICS_METHODOLOGY.md) and [DEMO_MODE.md](file:///c:/Users/Abarna/OneDrive/Pictures/vikshana/docs/DEMO_MODE.md).
+
