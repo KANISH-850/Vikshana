@@ -9,7 +9,7 @@ const EvidenceImpactTimeline = ({ caseId }) => {
     const loadImpacts = async () => {
         setLoading(true);
         try {
-            const res = await api.get(`/server/vikshana_function/cases/${caseId}/evidence/impact`);
+            const res = await api.get(`/evidence/impact?caseId=${caseId}`);
             if (res.data?.success) {
                 setImpacts(res.data.data.sort((a,b) => new Date(b.Timestamp) - new Date(a.Timestamp)));
             }

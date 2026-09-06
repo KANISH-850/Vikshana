@@ -92,8 +92,8 @@ function isEnglishText(text) {
     // Skip IP addresses, hex hashes
     if (/^[\da-f]{8,}$/i.test(s) || /^\d{1,3}(\.\d{1,3}){3}$/.test(s)) return false;
 
-    // Skip ALL_CAPS_UNDERSCORE identifiers (code/enum values)
-    if (/^[A-Z][A-Z0-9_]{3,}$/.test(s)) return false;
+    // Skip ALL_CAPS_UNDERSCORE identifiers (code/enum values like SOME_ENUM_KEY)
+    if (/^[A-Z0-9]+_[A-Z0-9_]+$/.test(s)) return false;
 
     // Skip pure time strings like "3:15 AM", "21:45:00"
     if (/^\d{1,2}:\d{2}(:\d{2})?(\s?(AM|PM))?$/i.test(s)) return false;
@@ -353,11 +353,16 @@ const AutoTranslator = () => {
 
         observerRef.current = observer;
 
-        // Initial full-page scan (delayed slightly to let React finish its render)
-        const scanTimer = setTimeout(() => walkDom(document.body), INITIAL_SCAN_DELAY);
+        // Immediate + staggered full-page scans on language change
+        walkDom(document.body);
+        const t1 = setTimeout(() => walkDom(document.body), 100);
+        const t2 = setTimeout(() => walkDom(document.body), 400);
+        const t3 = setTimeout(() => walkDom(document.body), 1000);
 
         return () => {
-            clearTimeout(scanTimer);
+            clearTimeout(t1);
+            clearTimeout(t2);
+            clearTimeout(t3);
             if (debounceRef.current) clearTimeout(debounceRef.current);
             observer.disconnect();
         };

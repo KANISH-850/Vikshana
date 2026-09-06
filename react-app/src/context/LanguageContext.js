@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import translations from '../translations/translations';
-import { clearTranslationCache } from '../services/translationService';
+import translationService, { clearTranslationCache } from '../services/translationService';
 
 const LanguageContext = createContext();
 
@@ -34,32 +34,36 @@ export const LanguageProvider = ({ children }) => {
 
   const switchLanguage = useCallback((lang) => {
     if (!VALID_CODES.includes(lang)) return;
-    // Clear the translation cache so stale entries from a previous language
-    // don't bleed into the new language selection.
-    clearTranslationCache();
     setLanguage(lang);
   }, []);
 
   const toggleLanguage = useCallback(() => {
-    setLanguage(prev => {
-      const next = prev === 'en' ? 'kn' : 'en';
-      clearTranslationCache();
-      return next;
-    });
+    setLanguage(prev => (prev === 'en' ? 'kn' : 'en'));
   }, []);
 
   /**
-   * Helper function to retrieve nested translation strings by path.
+   * Helper function to retrieve nested translation strings by path or direct text string.
    * Example: t('nav.dashboard') -> "Dashboard" or "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್"
-   *
-   * For languages without a static translation dictionary (hi, ta), the
-   * static strings fall back to English while dynamic content goes through
-   * the Zia API via useTranslateDynamic.
+   *          t('Crime Forecasting') -> "ಅಪರಾಧ ಮುನ್ಸೂಚನೆ"
    */
   const t = useCallback((path, fallback = '') => {
     if (!path) return fallback;
+    if (language === 'en') {
+      const keys = path.split('.');
+      let result = translations.en;
+      for (const key of keys) {
+        if (result && result[key] !== undefined) {
+          result = result[key];
+        } else {
+          result = null;
+          break;
+        }
+      }
+      return typeof result === 'string' ? result : (fallback || path);
+    }
+
+    // Non-English language (kn, hi)
     const keys = path.split('.');
-    // Prefer exact language; fall back to English
     const langDict = translations[language] || translations['en'];
     let result = langDict;
 
@@ -67,17 +71,25 @@ export const LanguageProvider = ({ children }) => {
       if (result && result[key] !== undefined) {
         result = result[key];
       } else {
-        // Fallback to English if key missing in chosen language
-        let enResult = translations.en;
-        for (const k of keys) {
-          if (enResult && enResult[k] !== undefined) enResult = enResult[k];
-          else return fallback || path;
-        }
-        return enResult || fallback || path;
+        result = null;
+        break;
       }
     }
 
-    return typeof result === 'string' ? result : (fallback || path);
+    if (typeof result === 'string') return result;
+
+    // Check direct dictionary / cached lookup via translationService
+    const cachedDirect = translationService.getCached(path, language);
+    if (cachedDirect && cachedDirect !== path) return cachedDirect;
+
+    // Fallback to English dictionary for nested path
+    let enResult = translations.en;
+    for (const k of keys) {
+      if (enResult && enResult[k] !== undefined) enResult = enResult[k];
+      else { enResult = null; break; }
+    }
+
+    return typeof enResult === 'string' ? enResult : (fallback || path);
   }, [language]);
 
   const value = {

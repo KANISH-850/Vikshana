@@ -273,7 +273,7 @@ const Navbar = () => {
             ) : (
               <>
                 <Languages size={11} />
-                <span>ಅನುವಾದಿಸಲಾಗಿದೆ</span>
+                <span>{t ? t('Page Translated') : 'Translated'}</span>
               </>
             )}
           </div>
@@ -283,7 +283,9 @@ const Navbar = () => {
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', borderLeft: '1px solid var(--border-color)', paddingLeft: '14px' }}>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontWeight: '600', fontSize: '13px', color: 'var(--text-primary)', lineHeight: 1.2 }}>{displayUserName}</div>
+            <div style={{ fontWeight: '600', fontSize: '13px', color: 'var(--text-primary)', lineHeight: 1.2 }}>
+              {t ? t(displayUserName) : displayUserName}
+            </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', marginTop: '3px' }}>
               <span style={{ 
                 background: getRoleColor(displayRole), 
@@ -295,7 +297,7 @@ const Navbar = () => {
                 letterSpacing: '0.3px',
                 textTransform: 'uppercase'
               }}>
-                {displayRole}
+                {t ? t(`roles.${displayRole}`, displayRole) : displayRole}
               </span>
             </div>
           </div>

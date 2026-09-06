@@ -6,8 +6,10 @@ import {
 import { motion } from 'framer-motion';
 import api from '../services/api';
 import AIAssistantPanel from '../components/AIAssistantPanel';
+import { useLanguage } from '../context/LanguageContext';
 
 const CrimeForecasting = () => {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('forecast'); // 'forecast' | 'seasonal'
   const [forecast, setForecast] = useState(null);
   const [warnings, setWarnings] = useState([]);
@@ -54,7 +56,7 @@ const CrimeForecasting = () => {
         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 2, ease: "linear" }}>
           <TrendingUp size={48} color="var(--accent-primary)" />
         </motion.div>
-        <div style={{ marginTop: '16px', color: 'var(--text-secondary)' }}>Calculating Deterministic Baseline & Seasonal Forecasts...</div>
+        <div style={{ marginTop: '16px', color: 'var(--text-secondary)' }}>{t('Calculating Deterministic Baseline & Seasonal Forecasts...', 'Calculating Deterministic Baseline & Seasonal Forecasts...')}</div>
       </div>
     );
   }
@@ -76,8 +78,8 @@ const CrimeForecasting = () => {
     <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px', height: '100%', overflowY: 'auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
         <div>
-          <h1 className="page-title">Crime Forecasting & Seasonal Intelligence</h1>
-          <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Deterministic time-series analysis, event anomaly detection, and seasonal trend modeling.</p>
+          <h1 className="page-title">{t('Crime Forecasting & Seasonal Intelligence')}</h1>
+          <p style={{ color: 'var(--text-secondary)', margin: 0 }}>{t('Deterministic time-series analysis, event anomaly detection, and seasonal trend modeling.')}</p>
         </div>
 
         {/* Workspace Navigation Tabs */}
@@ -91,7 +93,7 @@ const CrimeForecasting = () => {
               fontWeight: '600', fontSize: '13px', cursor: 'pointer', transition: 'all 0.2s ease'
             }}
           >
-            <TrendingUp size={16} /> 30-Day Trend Forecast
+            <TrendingUp size={16} /> {t('30-Day Trend Forecast')}
           </button>
           <button
             onClick={() => setActiveTab('seasonal')}
@@ -102,7 +104,7 @@ const CrimeForecasting = () => {
               fontWeight: '600', fontSize: '13px', cursor: 'pointer', transition: 'all 0.2s ease'
             }}
           >
-            <CalendarDays size={16} /> Seasonal & Event Intelligence
+            <CalendarDays size={16} /> {t('Seasonal & Event Intelligence')}
           </button>
         </div>
       </div>

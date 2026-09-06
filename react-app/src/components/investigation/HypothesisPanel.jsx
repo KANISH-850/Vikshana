@@ -11,7 +11,7 @@ const HypothesisPanel = ({ caseId }) => {
     const loadHypotheses = async () => {
         setLoading(true);
         try {
-            const res = await api.get(`/server/vikshana_function/cases/${caseId}/hypotheses`);
+            const res = await api.get(`/cases/${caseId}/hypotheses`);
             if (res.data?.success) {
                 setHypotheses(res.data.data);
             }
@@ -30,7 +30,7 @@ const HypothesisPanel = ({ caseId }) => {
         if (!newStatement.trim()) return;
         setSubmitting(true);
         try {
-            await api.post(`/server/vikshana_function/cases/${caseId}/hypotheses`, { statement: newStatement });
+            await api.post(`/cases/${caseId}/hypotheses`, { statement: newStatement });
             setNewStatement('');
             await loadHypotheses();
         } catch (e) {

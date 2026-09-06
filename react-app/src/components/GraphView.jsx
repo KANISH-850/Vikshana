@@ -15,6 +15,7 @@ import {
   ReactFlowProvider
 } from '@xyflow/react';
 import { Network } from 'lucide-react';
+import api from '../services/api';
 
 // --- ENTERPRISE CONFIGURATION ---
 const NODE_STYLE = {
@@ -187,22 +188,35 @@ const nodeTypes = {
     investigationNode: CustomInvestigationNode,
 };
 
-const GraphViewInner = ({ nodes = [], edges = [], searchQuery = '', onNodeSelect, onEdgeSelect }) => {
+const GraphViewInner = ({ nodes = [], edges = [], caseId = null, searchQuery = '', onNodeSelect, onEdgeSelect }) => {
     const [rfNodes, setNodes, onNodesChange] = useNodesState([]);
     const [rfEdges, setEdges, onEdgesChange] = useEdgesState([]);
+    const [fetchedNodes, setFetchedNodes] = useState([]);
+    const [fetchedEdges, setFetchedEdges] = useState([]);
     const [viewMode, setViewMode] = useState('all'); // 'all' | 'community'
     const [communities, setCommunities] = useState([]);
     const [selectedCommunity, setSelectedCommunity] = useState(null);
     const { fitView, setCenter } = useReactFlow();
     
     useEffect(() => {
-        // Fetch communities from API when component mounts
         fetchCommunities();
     }, []);
 
+    useEffect(() => {
+        if (caseId && (!nodes || nodes.length === 0)) {
+            api.get(`/relationships?caseId=${caseId}`)
+                .then(res => {
+                    if (res.data?.success && res.data?.data) {
+                        setFetchedNodes(res.data.data.nodes || []);
+                        setFetchedEdges(res.data.data.edges || []);
+                    }
+                })
+                .catch(err => console.error('[GraphView] Failed to fetch relationships:', err));
+        }
+    }, [caseId, nodes]);
+
     const fetchCommunities = async () => {
         try {
-            const api = require('../services/api').default;
             const res = await api.get('/relationships/communities').catch(() => ({ data: { success: false } }));
             if (res.data?.success && res.data?.data?.communities) {
                 setCommunities(res.data.data.communities);
@@ -212,16 +226,19 @@ const GraphViewInner = ({ nodes = [], edges = [], searchQuery = '', onNodeSelect
         }
     };
 
+    const effectiveNodes = (nodes && nodes.length > 0) ? nodes : fetchedNodes;
+    const effectiveEdges = (edges && edges.length > 0) ? edges : fetchedEdges;
+
     useEffect(() => {
         // Center node anchoring (offset by half width/height so 0,0 is true center)
-        const initialNodes = nodes.map(n => ({
+        const initialNodes = effectiveNodes.map(n => ({
             id: n.id,
             type: 'investigationNode',
             data: { ...n, isFaded: false },
             position: { x: 0, y: 0 }
         }));
 
-        const initialEdges = edges.map(e => {
+        const initialEdges = effectiveEdges.map(e => {
             const src = e.source.id || e.source;
             const tgt = e.target.id || e.target;
             const label = e.label || 'LINKED';
@@ -259,8 +276,8 @@ const GraphViewInner = ({ nodes = [], edges = [], searchQuery = '', onNodeSelect
             setNodes([]);
             setEdges([]);
         }
-        
-    }, [nodes, edges, setNodes, setEdges, fitView]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [effectiveNodes, effectiveEdges]);
 
     const toggleCommunityView = (mode) => {
         setViewMode(mode);

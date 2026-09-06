@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { 
     Loader2, FileText, Database, Compass, Clock, Search, Bot, 
-    Layers, Network, ChevronRight, Share2, 
-    Zap, Fingerprint, Link as LinkIcon, Sparkles 
+    Layers, ChevronRight, Share2, Zap, Fingerprint, Link as LinkIcon, Sparkles 
 } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import { ConversationProvider } from '../context/ConversationContext';
@@ -29,6 +28,7 @@ import EvidenceIntegrityView from '../components/investigation/EvidenceIntegrity
 import VictimPanel from '../components/fir/VictimPanel';
 import AccusedPanel from '../components/fir/AccusedPanel';
 import CaseCompletenessCard from '../components/advanced-intelligence/CaseCompletenessCard';
+import GraphView from '../components/GraphView';
 
 const InvestigationWorkspace = () => {
     const navigate = useNavigate();
@@ -373,8 +373,34 @@ const InvestigationWorkspace = () => {
                                 <EvidenceIntegrityView caseId={activeCaseId} />
                             </>
                         ) : (
-                             <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>Insufficient evidence data.</div>
+                            <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                                {loadingEvidence ? 'Loading evidence intelligence...' : 'Insufficient evidence data for this docket.'}
+                            </div>
                         )}
+                    </div>
+                )}
+
+                {activeTab === 'timeline' && (
+                    <div style={{ padding: '10px' }}>
+                        <TimelineIntelligencePanel caseId={activeCaseId} />
+                    </div>
+                )}
+
+                {activeTab === 'historical' && (
+                    <div style={{ padding: '10px' }}>
+                        <HistoricalIntelligencePanel caseId={activeCaseId} />
+                    </div>
+                )}
+
+                {activeTab === 'relationships' && (
+                    <div style={{ height: 'calc(100vh - 220px)', minHeight: '600px', border: '1px solid var(--glass-border)', borderRadius: '12px', overflow: 'hidden' }}>
+                        <GraphView caseId={activeCaseId} />
+                    </div>
+                )}
+
+                {activeTab === 'decision-support' && (
+                    <div style={{ padding: '10px' }}>
+                        <DecisionSupportPanel caseId={activeCaseId} />
                     </div>
                 )}
 

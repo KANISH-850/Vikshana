@@ -9,7 +9,7 @@ const ActionManagementPanel = ({ caseId }) => {
     const loadActions = async () => {
         setLoading(true);
         try {
-            const res = await api.get(`/server/vikshana_function/cases/${caseId}/actions`);
+            const res = await api.get(`/cases/${caseId}/actions`);
             if (res.data?.success) {
                 setActions(res.data.data);
             }
@@ -25,7 +25,7 @@ const ActionManagementPanel = ({ caseId }) => {
 
     const updateStatus = async (actionId, status) => {
         try {
-            await api.post(`/server/vikshana_function/cases/${caseId}/actions/${actionId}/status`, { status });
+            await api.post(`/cases/${caseId}/actions/${actionId}/status`, { status });
             await loadActions();
         } catch (e) {
             console.error(e);
